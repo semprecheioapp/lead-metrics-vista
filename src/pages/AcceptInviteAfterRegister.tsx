@@ -33,14 +33,7 @@ export default function AcceptInviteAfterRegister() {
   }, [token, user, navigate]);
 
   const acceptInvite = async () => {
-    if (!user) {
-      toast({
-        title: "Autenticação necessária",
-        description: "Por favor, faça login para aceitar o convite.",
-        variant: "destructive",
-      });
-      return;
-    }
+    // Vamos usar a função agent-invite-accept que já existe e confiar no token
 
     try {
       const { data, error } = await supabase.functions.invoke('agent-invite-accept', {

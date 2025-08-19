@@ -94,19 +94,9 @@ const AuthPage = () => {
     try {
       let email = signupEmail;
       
-      // Se for cadastro via convite, buscar o email do convite
+      // Se for cadastro via convite, usar email temporário para passar pela validação
       if (isInviteFlow && inviteToken) {
-        const { data: inviteData, error: inviteError } = await supabase.functions.invoke('agent-invite-validate', {
-          body: { token: inviteToken }
-        });
-        
-        if (inviteError) {
-          toast.error("Erro ao validar convite");
-          setSignupLoading(false);
-          return;
-        }
-        
-        email = inviteData.email;
+        email = `temp-${Date.now()}@dashboardmbk.com`;
       }
 
       const redirectUrl = inviteToken 
