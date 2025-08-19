@@ -16,6 +16,7 @@ import { Lock, UserPlus } from "lucide-react";
 const AuthPage = () => {
   const { user } = useAuth();
   const [searchParams] = useSearchParams();
+  const hash = window.location.hash;
   
   // Parâmetros de convite
   const inviteToken = searchParams.get('invite_token');
@@ -148,7 +149,7 @@ const AuthPage = () => {
       subtitle="Acesse sua conta ou crie uma nova"
     >
       <BlurFade delay={0.1}>
-        <Tabs defaultValue="login" className="w-full">
+        <Tabs defaultValue={hash === "#cadastro" || inviteToken ? "cadastro" : "login"} className="w-full">
           <TabsList className="grid w-full grid-cols-2 mb-6">
             <TabsTrigger value="login">Login</TabsTrigger>
             <TabsTrigger value="cadastro">Cadastro</TabsTrigger>

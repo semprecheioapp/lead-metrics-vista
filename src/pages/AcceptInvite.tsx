@@ -28,7 +28,7 @@ export default function AcceptInvite() {
   const acceptInvite = async () => {
     if (!user) {
       // Redirecionar para cadastro com email do convite
-      navigate(`/auth?invite_token=${token}`);
+      navigate(`/auth?invite_token=${token}#cadastro`);
       return;
     }
 
