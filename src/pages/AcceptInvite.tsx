@@ -23,13 +23,33 @@ export default function AcceptInvite() {
     }
 
     if (!user) {
-      // Redirecionar direto para cadastro
-      navigate(`/auth?invite_token=${token}#cadastro`);
+      // Primeiro validar o convite, depois redirecionar
+      validateAndRedirect();
       return;
     } else {
       acceptInvite();
     }
   }, [token, user]);
+
+  const validateAndRedirect = async () => {
+    try {
+      // Validar convite antes de redirecionar
+      const { data, error } = await supabase.functions.invoke('agent-invite-preview', {
+        body: { token }
+      });
+
+      if (error || !data?.valid) {
+        setStatus('error');
+        return;
+      }
+
+      // Redirecionar com email pré-preenchido
+      navigate(`/auth?invite_token=${token}&email=${encodeURIComponent(data.email)}#cadastro`);
+    } catch (error) {
+      console.error('Error validating invite:', error);
+      setStatus('error');
+    }
+  };
 
   const acceptInvite = async () => {
     try {

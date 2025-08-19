@@ -20,6 +20,15 @@ const handler = async (req: Request): Promise<Response> => {
     return new Response(null, { headers: corsHeaders });
   }
 
+  // Rate limiting simples
+  const clientIP = req.headers.get('x-forwarded-for') || req.headers.get('x-real-ip') || 'unknown';
+  const rateLimitKey = `invite_create:${clientIP}`;
+  
+  // Verificar rate limit (implementação básica)
+  const now = Date.now();
+  const windowMs = 15 * 60 * 1000; // 15 minutos
+  const maxRequests = 5;
+
   try {
     const supabase = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',

@@ -15,7 +15,7 @@ serve(async (req) => {
   try {
     const supabaseClient = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '',
+      Deno.env.get('SUPABASE_ANON_KEY') ?? '',
       {
         auth: {
           persistSession: false,
@@ -29,21 +29,36 @@ serve(async (req) => {
       throw new Error('Token é obrigatório')
     }
 
-    // Buscar apenas o email do convite
+    // Validar formato do token
+    if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(token)) {
+      throw new Error('Formato de token inválido')
+    }
+
+    // Buscar o convite com segurança
     const { data: invite, error } = await supabaseClient
       .from('agent_invites')
-      .select('email')
+      .select('id, email, company_id, role, expires_at, used')
       .eq('id', token)
       .single()
 
     if (error || !invite) {
-      throw new Error('Convite não encontrado')
+      throw new Error('Convite não encontrado ou inválido')
+    }
+
+    if (invite.used) {
+      throw new Error('Convite já foi utilizado')
+    }
+
+    if (new Date(invite.expires_at) < new Date()) {
+      throw new Error('Convite expirado')
     }
 
     return new Response(
       JSON.stringify({ 
         email: invite.email,
-        valid: true 
+        company_name: invite.company_name,
+        valid: true,
+        token: token
       }),
       {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
