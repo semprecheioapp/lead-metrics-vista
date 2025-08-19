@@ -23,34 +23,15 @@ export default function AcceptInvite() {
     }
 
     if (!user) {
-      // Buscar dados do convite primeiro para obter o email
-      fetchInviteData();
+      // Redirecionar diretamente para cadastro
+      navigate(`/auth?invite_token=${token}#cadastro`);
+      return;
     } else {
       acceptInvite();
     }
   }, [token, user]);
 
-  const fetchInviteData = async () => {
-    try {
-      const { data, error } = await supabase.functions.invoke('agent-invite-validate', {
-        body: { token }
-      });
-
-      if (error) {
-        setStatus('error');
-        return;
-      }
-
-      // Redirecionar para cadastro com email do convite
-      navigate(`/auth?invite_token=${token}&email=${data.email}#cadastro`);
-    } catch (error) {
-      console.error('Error fetching invite data:', error);
-      setStatus('error');
-    }
-  };
-
   const acceptInvite = async () => {
-
     try {
       const { data, error } = await supabase.functions.invoke('agent-invite-accept', {
         body: { token }

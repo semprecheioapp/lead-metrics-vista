@@ -79,7 +79,7 @@ const AuthPage = () => {
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!signupName || !signupEmail || !signupPassword) {
+    if (!signupName || !signupPassword) {
       toast.error("Por favor, preencha todos os campos obrigatórios");
       return;
     }
@@ -92,13 +92,29 @@ const AuthPage = () => {
     setSignupLoading(true);
     
     try {
-      // Se for cadastro via convite, não precisa de empresa
+      let email = signupEmail;
+      
+      // Se for cadastro via convite, buscar o email do convite
+      if (isInviteFlow && inviteToken) {
+        const { data: inviteData, error: inviteError } = await supabase.functions.invoke('agent-invite-validate', {
+          body: { token: inviteToken }
+        });
+        
+        if (inviteError) {
+          toast.error("Erro ao validar convite");
+          setSignupLoading(false);
+          return;
+        }
+        
+        email = inviteData.email;
+      }
+
       const redirectUrl = inviteToken 
         ? `${window.location.origin}/accept-invite-after-register?token=${inviteToken}`
         : `${window.location.origin}/`;
       
       const { data, error } = await supabase.auth.signUp({
-        email: signupEmail,
+        email: email,
         password: signupPassword,
         options: {
           emailRedirectTo: redirectUrl,
@@ -238,8 +254,8 @@ const AuthPage = () => {
                     <h3 className="text-blue-300 font-semibold">Cadastro via Convite</h3>
                   </div>
                   <p className="text-sm text-blue-200">
-                    Você está criando uma conta para aceitar o convite enviado para: <br />
-                    <strong className="text-blue-100">{inviteEmail}</strong>
+                    Você está criando uma conta para aceitar o convite. <br />
+                    Complete apenas seu nome e senha.
                   </p>
                 </div>
               )}
@@ -261,27 +277,24 @@ const AuthPage = () => {
                 </div>
               </BlurFade>
               
-              <BlurFade delay={0.25}>
-                <div className="space-y-2">
-                  <Label htmlFor="signup-email" className="text-blue-300 font-semibold text-base">
-                    E-mail *
-                  </Label>
-                  <Input
-                    id="signup-email"
-                    type="email"
-                    placeholder="seu@email.com"
-                    value={inviteEmail && inviteEmail !== "" ? inviteEmail : signupEmail}
-                    onChange={(e) => !isInviteFlow && setSignupEmail(e.target.value)}
-                    className="bg-slate-800/50 border-slate-600 focus:border-blue-400 text-white placeholder:text-slate-400 transition-all duration-300 min-h-[44px] text-sm sm:text-base"
-                    required
-                    readOnly={isInviteFlow}
-                    disabled={isInviteFlow}
-                  />
-                  {isInviteFlow && (
-                    <p className="text-xs text-blue-200">Email verificado pelo convite</p>
-                  )}
-                </div>
-              </BlurFade>
+              {!isInviteFlow && (
+                <BlurFade delay={0.25}>
+                  <div className="space-y-2">
+                    <Label htmlFor="signup-email" className="text-blue-300 font-semibold text-base">
+                      E-mail *
+                    </Label>
+                    <Input
+                      id="signup-email"
+                      type="email"
+                      placeholder="seu@email.com"
+                      value={signupEmail}
+                      onChange={(e) => setSignupEmail(e.target.value)}
+                      className="bg-slate-800/50 border-slate-600 focus:border-blue-400 text-white placeholder:text-slate-400 transition-all duration-300 min-h-[44px] text-sm sm:text-base"
+                      required
+                    />
+                  </div>
+                </BlurFade>
+              )}
               
               <BlurFade delay={0.3}>
                 <div className="space-y-2">
