@@ -79,7 +79,7 @@ const AuthPage = () => {
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!signupName || !signupPassword) {
+    if (!signupName || !signupPassword || (!isInviteFlow && !signupEmail)) {
       toast.error("Por favor, preencha todos os campos obrigatórios");
       return;
     }
@@ -92,12 +92,7 @@ const AuthPage = () => {
     setSignupLoading(true);
     
     try {
-      let email = signupEmail;
-      
-      // Se for cadastro via convite, usar email temporário para passar pela validação
-      if (isInviteFlow && inviteToken) {
-        email = `temp-${Date.now()}@dashboardmbk.com`;
-      }
+      let email = isInviteFlow ? (inviteEmail || signupEmail) : signupEmail;
 
       const redirectUrl = inviteToken 
         ? `${window.location.origin}/accept-invite-after-register?token=${inviteToken}`
@@ -114,7 +109,9 @@ const AuthPage = () => {
               empresa_name: companyName,
               empresa_phone: companyPhone
             })
-          }
+          },
+          // Desabilitar confirmação de email para convites
+          ...(isInviteFlow ? { email_confirm: true } : {})
         }
       });
 
@@ -267,24 +264,27 @@ const AuthPage = () => {
                 </div>
               </BlurFade>
               
-              {!isInviteFlow && (
-                <BlurFade delay={0.25}>
-                  <div className="space-y-2">
-                    <Label htmlFor="signup-email" className="text-blue-300 font-semibold text-base">
-                      E-mail *
-                    </Label>
-                    <Input
-                      id="signup-email"
-                      type="email"
-                      placeholder="seu@email.com"
-                      value={signupEmail}
-                      onChange={(e) => setSignupEmail(e.target.value)}
-                      className="bg-slate-800/50 border-slate-600 focus:border-blue-400 text-white placeholder:text-slate-400 transition-all duration-300 min-h-[44px] text-sm sm:text-base"
-                      required
-                    />
-                  </div>
-                </BlurFade>
-              )}
+              <BlurFade delay={0.25}>
+                <div className="space-y-2">
+                  <Label htmlFor="signup-email" className="text-blue-300 font-semibold text-base">
+                    E-mail *
+                  </Label>
+                  <Input
+                    id="signup-email"
+                    type="email"
+                    placeholder="seu@email.com"
+                    value={isInviteFlow ? (inviteEmail || "Email será obtido do convite") : signupEmail}
+                    onChange={(e) => !isInviteFlow && setSignupEmail(e.target.value)}
+                    className="bg-slate-800/50 border-slate-600 focus:border-blue-400 text-white placeholder:text-slate-400 transition-all duration-300 min-h-[44px] text-sm sm:text-base"
+                    required
+                    readOnly={isInviteFlow}
+                    disabled={isInviteFlow}
+                  />
+                  {isInviteFlow && (
+                    <p className="text-xs text-blue-200">Email será obtido automaticamente do convite</p>
+                  )}
+                </div>
+              </BlurFade>
               
               <BlurFade delay={0.3}>
                 <div className="space-y-2">
