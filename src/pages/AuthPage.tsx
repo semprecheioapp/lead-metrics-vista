@@ -38,6 +38,13 @@ const AuthPage = () => {
   const [companyName, setCompanyName] = useState("");
   const [companyPhone, setCompanyPhone] = useState("");
 
+  // Garantir que o email do convite seja aplicado
+  useEffect(() => {
+    if (isInviteFlow && inviteEmail) {
+      setSignupEmail(inviteEmail);
+    }
+  }, [isInviteFlow, inviteEmail]);
+
   // Redirect if already authenticated
   if (user) {
     return <Navigate to="/" replace />;
