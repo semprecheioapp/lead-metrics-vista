@@ -22,13 +22,6 @@ export default function AcceptInviteAfterRegister() {
       return;
     }
 
-    // Ensure user is authenticated before processing invite
-    if (!user) {
-      // Redirect to auth with invite token
-      navigate(`/auth?invite_token=${token}&intent=accept`);
-      return;
-    }
-
     acceptInvite();
   }, [token, user, navigate]);
 
