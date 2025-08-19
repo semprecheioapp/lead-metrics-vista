@@ -1,0 +1,721 @@
+/* chat_mbk Extension Styles - Interface Completa */
+
+/* Sidebar Principal */
+.chatmbk-sidebar {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 380px;
+  height: 100vh;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+  color: white;
+  z-index: 9999;
+  box-shadow: -4px 0 20px rgba(0,0,0,0.3);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  overflow: hidden;
+}
+
+.chatmbk-sidebar-content {
+  height: 100%;
+  overflow-y: auto;
+  padding: 0;
+}
+
+/* Scrollbar personalizada */
+.chatmbk-sidebar-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.chatmbk-sidebar-content::-webkit-scrollbar-track {
+  background: rgba(255,255,255,0.1);
+}
+
+.chatmbk-sidebar-content::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.3);
+  border-radius: 3px;
+}
+
+/* Header */
+.chatmbk-header {
+  padding: 20px;
+  background: rgba(255,255,255,0.05);
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.chatmbk-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.chatmbk-icon {
+  font-size: 24px;
+}
+
+.chatmbk-title {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.chatmbk-status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+}
+
+.chatmbk-status.online {
+  color: #4CAF50;
+}
+
+.chatmbk-status.offline {
+  color: #f44336;
+}
+
+.chatmbk-status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.chatmbk-user-info {
+  margin-top: 5px;
+  opacity: 0.8;
+  font-size: 11px;
+}
+
+/* Seções */
+.chatmbk-section {
+  padding: 15px 20px;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.chatmbk-section:last-child {
+  border-bottom: none;
+}
+
+.chatmbk-section-title {
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: rgba(255,255,255,0.9);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Menu Grid */
+.chatmbk-menu-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.chatmbk-menu-item {
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 8px;
+  padding: 12px 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: white;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+}
+
+.chatmbk-menu-item:hover {
+  background: rgba(255,255,255,0.15);
+  transform: translateY(-1px);
+}
+
+.chatmbk-menu-icon {
+  font-size: 18px;
+}
+
+/* Ações Rápidas */
+.chatmbk-quick-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Botões */
+.chatmbk-btn {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  text-align: center;
+  display: inline-block;
+}
+
+.chatmbk-btn-primary {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+}
+
+.chatmbk-btn-primary:hover {
+  background: linear-gradient(135deg, #5a6fd8, #6a4190);
+  transform: translateY(-1px);
+}
+
+.chatmbk-btn-secondary {
+  background: rgba(255,255,255,0.1);
+  color: white;
+  border: 1px solid rgba(255,255,255,0.2);
+}
+
+.chatmbk-btn-secondary:hover {
+  background: rgba(255,255,255,0.2);
+}
+
+.chatmbk-btn-small {
+  padding: 6px 12px;
+  font-size: 10px;
+}
+
+/* Contato Atual */
+.chatmbk-contact-card {
+  background: rgba(255,255,255,0.08);
+  border-radius: 8px;
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.chatmbk-contact-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+}
+
+.chatmbk-avatar-placeholder {
+  opacity: 0.7;
+}
+
+.chatmbk-contact-details {
+  flex: 1;
+}
+
+.chatmbk-contact-name {
+  font-weight: 600;
+  font-size: 13px;
+  margin-bottom: 2px;
+}
+
+.chatmbk-contact-number {
+  font-size: 11px;
+  opacity: 0.7;
+  font-family: monospace;
+}
+
+.chatmbk-contact-status {
+  font-size: 10px;
+  opacity: 0.6;
+}
+
+.chatmbk-contact-actions {
+  margin-top: 10px;
+  display: flex;
+  gap: 8px;
+}
+
+/* Agendamentos */
+.chatmbk-appointment-item {
+  background: rgba(255,255,255,0.08);
+  padding: 10px;
+  border-radius: 6px;
+  margin-bottom: 8px;
+  border-left: 3px solid #4CAF50;
+}
+
+.chatmbk-appointment-time {
+  font-weight: 600;
+  font-size: 11px;
+  color: #4CAF50;
+}
+
+.chatmbk-appointment-name {
+  font-size: 12px;
+  font-weight: 500;
+  margin: 2px 0;
+}
+
+.chatmbk-appointment-service {
+  font-size: 10px;
+  opacity: 0.7;
+}
+
+.chatmbk-loading,
+.chatmbk-no-appointments {
+  text-align: center;
+  padding: 15px;
+  color: rgba(255,255,255,0.6);
+  font-size: 12px;
+  font-style: italic;
+}
+
+/* Ferramentas */
+.chatmbk-tools {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.chatmbk-tool-btn {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 6px;
+  padding: 10px 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: white;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+}
+
+.chatmbk-tool-btn:hover {
+  background: rgba(255,255,255,0.12);
+}
+
+.chatmbk-tool-icon {
+  font-size: 16px;
+}
+
+/* Autenticação */
+.chatmbk-auth-section {
+  padding: 40px 20px;
+  text-align: center;
+}
+
+.chatmbk-auth-content {
+  background: rgba(255,255,255,0.08);
+  border-radius: 12px;
+  padding: 30px 20px;
+}
+
+.chatmbk-auth-icon {
+  font-size: 48px;
+  margin-bottom: 20px;
+  opacity: 0.8;
+}
+
+.chatmbk-auth-content p {
+  margin-bottom: 20px;
+  color: rgba(255,255,255,0.8);
+  line-height: 1.5;
+  font-size: 13px;
+}
+
+/* Modal */
+.chatmbk-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  backdrop-filter: blur(4px);
+}
+
+.chatmbk-modal-content {
+  background: white;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+}
+
+.chatmbk-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 25px;
+  border-bottom: 1px solid #eee;
+}
+
+.chatmbk-modal-header h2 {
+  margin: 0;
+  color: #333;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.chatmbk-modal-close {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #666;
+  padding: 0;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background 0.2s ease;
+}
+
+.chatmbk-modal-close:hover {
+  background: #f5f5f5;
+}
+
+/* Formulário */
+.chatmbk-form {
+  padding: 25px;
+}
+
+.chatmbk-form-group {
+  margin-bottom: 20px;
+}
+
+.chatmbk-form-group label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 500;
+  color: #333;
+  font-size: 13px;
+}
+
+.chatmbk-form-group input,
+.chatmbk-form-group select,
+.chatmbk-form-group textarea {
+  width: 100%;
+  padding: 10px;
+  border: 2px solid #e1e5e9;
+  border-radius: 6px;
+  font-size: 13px;
+  transition: border-color 0.2s ease;
+  box-sizing: border-box;
+}
+
+.chatmbk-form-group input:focus,
+.chatmbk-form-group select:focus,
+.chatmbk-form-group textarea:focus {
+  outline: none;
+  border-color: #667eea;
+}
+
+.chatmbk-form-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  padding-top: 20px;
+  border-top: 1px solid #eee;
+}
+
+.chatmbk-form .chatmbk-btn {
+  color: white;
+  min-width: 100px;
+}
+
+.chatmbk-form .chatmbk-btn-secondary {
+  background: #6c757d;
+  color: white;
+}
+
+.chatmbk-form .chatmbk-btn-secondary:hover {
+  background: #5a6268;
+}
+
+/* Mensagens Rápidas */
+.chatmbk-quick-messages {
+  padding: 25px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.chatmbk-quick-msg-btn {
+  background: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  padding: 15px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: left;
+  color: #333;
+  font-size: 13px;
+}
+
+.chatmbk-quick-msg-btn:hover {
+  background: #e9ecef;
+  border-color: #667eea;
+}
+
+/* Templates */
+.chatmbk-templates-grid {
+  padding: 25px;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+.chatmbk-template-item {
+  background: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  padding: 15px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.chatmbk-template-item:hover {
+  background: #e9ecef;
+  border-color: #667eea;
+}
+
+.chatmbk-template-item h4 {
+  margin: 0 0 8px 0;
+  color: #333;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.chatmbk-template-item p {
+  margin: 0;
+  color: #666;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+/* Etiquetas */
+.chatmbk-tags-container {
+  padding: 25px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.chatmbk-tag-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.chatmbk-tag-item input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+}
+
+.chatmbk-tag-item label {
+  font-size: 13px;
+  color: #333;
+  cursor: pointer;
+}
+
+/* Sugestão de Agendamento */
+.chatmbk-appointment-suggestion {
+  position: fixed;
+  top: 20px;
+  right: 400px;
+  width: 300px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+  z-index: 9998;
+  animation: slideInRight 0.3s ease;
+  border-left: 4px solid #4CAF50;
+}
+
+.chatmbk-suggestion-content {
+  padding: 20px;
+}
+
+.chatmbk-suggestion-title {
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.chatmbk-suggestion-text {
+  color: #666;
+  font-size: 13px;
+  margin-bottom: 15px;
+  line-height: 1.4;
+}
+
+.chatmbk-suggestion-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.chatmbk-suggestion-actions .chatmbk-btn {
+  flex: 1;
+  font-size: 12px;
+  padding: 8px 12px;
+}
+
+/* Toast */
+.chatmbk-toast {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  padding: 12px 20px;
+  border-radius: 6px;
+  color: white;
+  font-size: 13px;
+  font-weight: 500;
+  z-index: 10001;
+  transform: translateY(100px);
+  opacity: 0;
+  transition: all 0.3s ease;
+  max-width: 300px;
+}
+
+.chatmbk-toast-show {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.chatmbk-toast-success {
+  background: linear-gradient(135deg, #4CAF50, #45a049);
+}
+
+.chatmbk-toast-error {
+  background: linear-gradient(135deg, #f44336, #d32f2f);
+}
+
+.chatmbk-toast-info {
+  background: linear-gradient(135deg, #2196F3, #1976D2);
+}
+
+/* Animações */
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* Toggle para mostrar/ocultar sidebar */
+.chatmbk-toggle {
+  position: fixed;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  border: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  z-index: 9997;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  transition: all 0.3s ease;
+}
+
+.chatmbk-toggle:hover {
+  transform: translateY(-50%) scale(1.1);
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .chatmbk-sidebar {
+    width: 100%;
+  }
+  
+  .chatmbk-appointment-suggestion {
+    right: 20px;
+    width: calc(100% - 40px);
+  }
+  
+  .chatmbk-modal-content {
+    width: 95%;
+    margin: 20px;
+  }
+  
+  .chatmbk-menu-grid,
+  .chatmbk-tools {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Integração com WhatsApp Web */
+#app {
+  display: flex !important;
+}
+
+#app > div:first-child {
+  width: calc(100% - 380px) !important;
+  transition: width 0.3s ease;
+}
+
+/* Estados de carregamento */
+.chatmbk-loading-spinner {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Modal overlay para autenticação */
+.chatmbk-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  backdrop-filter: blur(4px);
+}
+
+.chatmbk-modal-overlay .chatmbk-modal-content {
+  background: linear-gradient(135deg, #1a1a2e, #16213e);
+  color: white;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+.chatmbk-modal-overlay .chatmbk-modal-header h2 {
+  color: white;
+}
+
+.chatmbk-modal-overlay .chatmbk-auth-content {
+  background: transparent;
+}

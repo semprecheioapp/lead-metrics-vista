@@ -1,0 +1,64 @@
+{
+  "manifest_version": 3,
+  "name": "chat_mbk - WhatsApp CRM",
+  "version": "1.0.0",
+  "description": "Extensão de CRM integrada para WhatsApp Web com auto-captura de agendamentos",
+  
+  "permissions": [
+    "storage",
+    "tabs",
+    "activeTab",
+    "background",
+    "alarms"
+  ],
+  
+  "host_permissions": [
+    "https://web.whatsapp.com/*",
+    "https://mycjqmnvyphnarjoriux.supabase.co/*",
+    "https://dashboardmbk.vercel.app/*"
+  ],
+  
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  
+  "content_scripts": [
+    {
+      "matches": ["https://web.whatsapp.com/*"],
+      "js": ["content.js"],
+      "css": ["styles.css"],
+      "run_at": "document_end"
+    },
+    {
+      "matches": ["https://dashboardmbk.vercel.app/*"],
+      "js": ["dashboard-content.js"],
+      "run_at": "document_end"
+    }
+  ],
+  
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "chat_mbk CRM",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  
+  "web_accessible_resources": [
+    {
+      "resources": ["sidebar.html", "sidebar.js", "styles.css"],
+      "matches": ["https://web.whatsapp.com/*"]
+    }
+  ]
+}

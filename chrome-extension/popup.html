@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>chat_mbk CRM</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="popup-container">
+    <div class="popup-header">
+      <div class="popup-logo">
+        <span class="popup-icon">📅</span>
+        <span class="popup-title">chat_mbk</span>
+      </div>
+      <div class="popup-status" id="status">
+        <span class="status-indicator"></span>
+        <span class="status-text">Verificando...</span>
+      </div>
+    </div>
+
+    <div class="popup-content">
+      <!-- Seção de Status -->
+      <div class="section">
+        <h3>Status da Conexão</h3>
+        <div id="connection-info" class="connection-info">
+          <div class="info-loading">Verificando autenticação...</div>
+        </div>
+      </div>
+
+      <!-- Seção de Agendamentos Hoje -->
+      <div class="section">
+        <h3>Agendamentos Hoje</h3>
+        <div id="today-appointments" class="appointments-list">
+          <div class="info-loading">Carregando...</div>
+        </div>
+      </div>
+
+      <!-- Ações Rápidas -->
+      <div class="section">
+        <h3>Ações Rápidas</h3>
+        <div class="actions-grid">
+          <button id="open-whatsapp" class="action-btn primary">
+            <span class="btn-icon">💬</span>
+            <span class="btn-text">Abrir WhatsApp</span>
+          </button>
+          <button id="open-dashboard" class="action-btn secondary">
+            <span class="btn-icon">📊</span>
+            <span class="btn-text">Dashboard</span>
+          </button>
+          <button id="new-appointment" class="action-btn tertiary">
+            <span class="btn-icon">➕</span>
+            <span class="btn-text">Novo Agendamento</span>
+          </button>
+          <button id="sync-data" class="action-btn tertiary">
+            <span class="btn-icon">🔄</span>
+            <span class="btn-text">Sincronizar</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Configurações -->
+      <div class="section">
+        <h3>Configurações</h3>
+        <div class="settings-list">
+          <div class="setting-item">
+            <label for="auto-detect">
+              <input type="checkbox" id="auto-detect" checked>
+              <span class="setting-label">Auto-detectar agendamentos</span>
+            </label>
+          </div>
+          <div class="setting-item">
+            <label for="notifications">
+              <input type="checkbox" id="notifications" checked>
+              <span class="setting-label">Notificações</span>
+            </label>
+          </div>
+          <div class="setting-item">
+            <label for="sidebar-auto">
+              <input type="checkbox" id="sidebar-auto" checked>
+              <span class="setting-label">Sidebar automática</span>
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="popup-footer">
+      <div class="version-info">
+        v1.0.0 - chat_mbk CRM
+      </div>
+      <div class="footer-links">
+        <a href="#" id="help-link">Ajuda</a>
+        <a href="#" id="feedback-link">Feedback</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
