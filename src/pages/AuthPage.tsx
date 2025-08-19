@@ -269,7 +269,7 @@ const AuthPage = () => {
                     id="signup-email"
                     type="email"
                     placeholder="seu@email.com"
-                    value={inviteEmail || signupEmail}
+                    value={inviteEmail && inviteEmail !== "" ? inviteEmail : signupEmail}
                     onChange={(e) => !isInviteFlow && setSignupEmail(e.target.value)}
                     className="bg-slate-800/50 border-slate-600 focus:border-blue-400 text-white placeholder:text-slate-400 transition-all duration-300 min-h-[44px] text-sm sm:text-base"
                     required
