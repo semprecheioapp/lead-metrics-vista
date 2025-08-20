@@ -40,6 +40,9 @@ const handler = async (req: Request): Promise<Response> => {
     const hashArray = Array.from(new Uint8Array(tokenHash));
     const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
 
+    console.log('Token hash:', hashHex);
+    console.log('Original token:', token.substring(0, 10) + '...');
+
     // Find the invite
     const { data: invite, error: inviteError } = await supabase
       .from('convites_empresa')
@@ -52,7 +55,19 @@ const handler = async (req: Request): Promise<Response> => {
       .single();
 
     if (inviteError || !invite) {
-      throw new Error('Convite não encontrado ou já utilizado');
+      console.log('Invite error:', inviteError);
+      console.log('Invite data:', invite);
+      
+      // Tentar buscar com status diferente para debugging
+      const { data: debugInvite } = await supabase
+        .from('convites_empresa')
+        .select('token_hash, status, email, expires_at')
+        .eq('token_hash', hashHex)
+        .single();
+      
+      console.log('Debug invite:', debugInvite);
+      
+      throw new Error(`Convite não encontrado ou já utilizado. Status: ${debugInvite?.status || 'não encontrado'}`);
     }
 
     // Check if invite is expired
@@ -89,9 +104,15 @@ const handler = async (req: Request): Promise<Response> => {
       throw new Error('Usuário não autenticado');
     }
 
-    // Check if user email matches invite
-    if (user.email !== invite.email) {
-      throw new Error('Este convite é para outro e-mail');
+    // Check if user email matches invite (case-insensitive)
+    const userEmail = user.email?.toLowerCase().trim();
+    const inviteEmail = invite.email?.toLowerCase().trim();
+    
+    console.log('User email:', userEmail);
+    console.log('Invite email:', inviteEmail);
+    
+    if (userEmail !== inviteEmail) {
+      throw new Error(`Este convite é para o e-mail: ${inviteEmail}, mas você está logado com: ${userEmail}`);
     }
 
     // Check if user already is a member

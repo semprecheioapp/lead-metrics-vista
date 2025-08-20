@@ -15,7 +15,7 @@ serve(async (req) => {
   try {
     const supabaseClient = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_ANON_KEY') ?? '',
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '',
       {
         auth: {
           persistSession: false,
@@ -29,24 +29,34 @@ serve(async (req) => {
       throw new Error('Token é obrigatório')
     }
 
-    // Validar formato do token
-    if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(token)) {
-      throw new Error('Formato de token inválido')
-    }
+    console.log('Validating token:', token)
 
-    // Buscar o convite com segurança
+    // Hash the token to find the invite (same as accept)
+    const tokenHash = await crypto.subtle.digest(
+      'SHA-256',
+      new TextEncoder().encode(token)
+    );
+    const hashArray = Array.from(new Uint8Array(tokenHash));
+    const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+
+    console.log('Token hash for preview:', hashHex)
+
+    // Buscar o convite usando a mesma tabela que accept
     const { data: invite, error } = await supabaseClient
-      .from('agent_invites')
-      .select('id, email, company_id, role, expires_at, used')
-      .eq('id', token)
+      .from('convites_empresa')
+      .select(`
+        *,
+        empresas!inner(name_empresa)
+      `)
+      .eq('token_hash', hashHex)
+      .eq('status', 'pending')
       .single()
+
+    console.log('Preview invite data:', invite)
+    console.log('Preview error:', error)
 
     if (error || !invite) {
       throw new Error('Convite não encontrado ou inválido')
-    }
-
-    if (invite.used) {
-      throw new Error('Convite já foi utilizado')
     }
 
     if (new Date(invite.expires_at) < new Date()) {
@@ -56,7 +66,7 @@ serve(async (req) => {
     return new Response(
       JSON.stringify({ 
         email: invite.email,
-        company_name: invite.company_name,
+        company_name: invite.empresas.name_empresa,
         valid: true,
         token: token
       }),
