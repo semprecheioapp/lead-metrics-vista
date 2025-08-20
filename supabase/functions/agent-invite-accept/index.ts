@@ -32,25 +32,16 @@ const handler = async (req: Request): Promise<Response> => {
       throw new Error('Token é obrigatório');
     }
 
-    // Hash the token to find the invite
-    const tokenHash = await crypto.subtle.digest(
-      'SHA-256',
-      new TextEncoder().encode(token)
-    );
-    const hashArray = Array.from(new Uint8Array(tokenHash));
-    const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    console.log('Processing token:', token)
 
-    console.log('Token hash:', hashHex);
-    console.log('Original token:', token.substring(0, 10) + '...');
-
-    // Find the invite
+    // Buscar o convite pelo token UUID direto
     const { data: invite, error: inviteError } = await supabase
       .from('convites_empresa')
       .select(`
         *,
         empresas!inner(name_empresa)
       `)
-      .eq('token_hash', hashHex)
+      .eq('token_hash', token)
       .eq('status', 'pending')
       .single();
 

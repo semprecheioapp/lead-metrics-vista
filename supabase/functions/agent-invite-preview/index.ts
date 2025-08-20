@@ -31,24 +31,14 @@ serve(async (req) => {
 
     console.log('Validating token:', token)
 
-    // Hash the token to find the invite (same as accept)
-    const tokenHash = await crypto.subtle.digest(
-      'SHA-256',
-      new TextEncoder().encode(token)
-    );
-    const hashArray = Array.from(new Uint8Array(tokenHash));
-    const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-
-    console.log('Token hash for preview:', hashHex)
-
-    // Buscar o convite usando a mesma tabela que accept
+    // Buscar o convite pelo token UUID direto
     const { data: invite, error } = await supabaseClient
       .from('convites_empresa')
       .select(`
         *,
         empresas!inner(name_empresa)
       `)
-      .eq('token_hash', hashHex)
+      .eq('token_hash', token)
       .eq('status', 'pending')
       .single()
 
