@@ -2,7 +2,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, Clock, User, Phone, Mail, MoreVertical } from "lucide-react";
+import { Calendar, Clock, User, Phone, Mail, MoreVertical, CheckCircle } from "lucide-react";
 import { Agendamento } from "@/hooks/useAgendamentos";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
@@ -12,6 +12,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useConfirmAtendimento } from "@/hooks/useConfirmAtendimento";
 
 interface AgendamentosKanbanProps {
   agendamentos: Agendamento[];
@@ -20,6 +21,7 @@ interface AgendamentosKanbanProps {
 }
 
 export function AgendamentosKanban({ agendamentos, onEdit, onDelete }: AgendamentosKanbanProps) {
+  const confirmAtendimento = useConfirmAtendimento();
   const columns = [
     {
       id: "agendado",
@@ -107,6 +109,28 @@ export function AgendamentosKanban({ agendamentos, onEdit, onDelete }: Agendamen
                             </Button>
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end">
+                            {!agendamento.compareceu && agendamento.status && (
+                              <DropdownMenuItem 
+                                onClick={async () => {
+                                  if (confirm('Confirma que o cliente foi atendido? Isso enviará pesquisa NPS.')) {
+                                    await confirmAtendimento.mutateAsync({
+                                      id: agendamento.id,
+                                      empresa_id: agendamento.empresa_id!,
+                                      name: agendamento.name || 'Cliente',
+                                      number: agendamento.number || '',
+                                      email: agendamento.email || '',
+                                      data: agendamento.data || '',
+                                      hora: agendamento.hora || '',
+                                      serviço: agendamento.serviço || '',
+                                    });
+                                  }
+                                }}
+                                disabled={confirmAtendimento.isPending}
+                              >
+                                <CheckCircle className="w-3 h-3 mr-2" />
+                                Confirmar Atendimento
+                              </DropdownMenuItem>
+                            )}
                             <DropdownMenuItem onClick={() => onEdit(agendamento)}>
                               Editar
                             </DropdownMenuItem>

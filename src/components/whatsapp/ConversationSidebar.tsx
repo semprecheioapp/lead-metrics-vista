@@ -24,6 +24,7 @@ const filterOptions = [
   { type: 'unread' as const, label: 'Não Atendidas', icon: Filter },
   { type: 'contacts' as const, label: 'Contatos', icon: Users },
   { type: 'favorites' as const, label: 'Favoritos', icon: Star },
+  { type: 'attended' as const, label: 'Atendidos', icon: Archive },
 ];
 
 export function ConversationSidebar({

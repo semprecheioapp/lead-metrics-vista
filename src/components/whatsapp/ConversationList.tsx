@@ -218,6 +218,17 @@ export function ConversationList({ selectedChat, onSelectChat, filters, collapse
     }
   });
 
+  // Buscar conversas resolvidas
+  const { data: resolvedConversations } = useQuery({
+    queryKey: ["resolved_conversations"],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from('conversas_resolvidas')
+        .select('session_id');
+      return data || [];
+    }
+  });
+
   const filteredLeads = leads?.filter(lead => {
     // Buscar dados do lead para verificar tags
     const leadData = allLeadsData?.find(l => l.number === lead.telefone);
@@ -247,6 +258,8 @@ export function ConversationList({ selectedChat, onSelectChat, filters, collapse
         return true; // Todos são contatos
       case 'favorites':
         return isFavorite(lead.telefone);
+      case 'attended':
+        return resolvedConversations?.some(r => r.session_id === lead.telefone);
       default:
         return true;
     }

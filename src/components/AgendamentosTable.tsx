@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Agendamento } from "@/hooks/useAgendamentos";
+import { useConfirmAtendimento } from "@/hooks/useConfirmAtendimento";
+import { CheckCircle } from "lucide-react";
 
 interface AgendamentosTableProps {
   agendamentos: Agendamento[];
@@ -13,6 +15,23 @@ interface AgendamentosTableProps {
 }
 
 export function AgendamentosTable({ agendamentos, onEdit, onDelete, getStatusBadge }: AgendamentosTableProps) {
+  const confirmAtendimento = useConfirmAtendimento();
+
+  const handleConfirmAtendimento = async (agendamento: Agendamento) => {
+    if (confirm('Confirma que o cliente foi atendido? Isso enviará pesquisa NPS.')) {
+      await confirmAtendimento.mutateAsync({
+        id: agendamento.id,
+        empresa_id: agendamento.empresa_id!,
+        name: agendamento.name || 'Cliente',
+        number: agendamento.number || '',
+        email: agendamento.email || '',
+        data: agendamento.data || '',
+        hora: agendamento.hora || '',
+        serviço: agendamento.serviço || '',
+      });
+    }
+  };
+
   return (
     <Card className="border-border bg-card/50">
       <CardHeader>
@@ -68,6 +87,18 @@ export function AgendamentosTable({ agendamentos, onEdit, onDelete, getStatusBad
                   </TableCell>
                   <TableCell className="p-2 sm:p-4">
                     <div className="flex flex-col sm:flex-row gap-1 sm:gap-2">
+                      {!agendamento.compareceu && agendamento.status && (
+                        <Button
+                          variant="default"
+                          size="sm"
+                          className="text-xs px-2 sm:px-3 bg-green-600 hover:bg-green-700"
+                          onClick={() => handleConfirmAtendimento(agendamento)}
+                          disabled={confirmAtendimento.isPending}
+                        >
+                          <CheckCircle className="w-3 h-3 mr-1" />
+                          Confirmar
+                        </Button>
+                      )}
                       <Button
                         variant="outline"
                         size="sm"

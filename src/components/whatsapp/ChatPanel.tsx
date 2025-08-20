@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { Send, Info, MoreVertical, Phone, Video, Paperclip, ArrowLeft, Edit3, Check, X } from "lucide-react";
+import { Send, Info, MoreVertical, Phone, Video, Paperclip, ArrowLeft, Edit3, Check, X, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -11,6 +11,8 @@ import { useWhatsAppLeads } from "@/hooks/useWhatsAppLeads";
 import { useLeadConversations } from "@/hooks/useLeadConversations";
 import { useSendWhatsAppMessage } from "@/hooks/useSendWhatsAppMessage";
 import { useConfiguracoesEmpresa } from "@/hooks/useConfiguracoesEmpresa";
+import { useResolveConversation } from "@/hooks/useResolveConversation";
+import { useAuth } from "@/contexts/AuthContext";
 import { cn } from "@/lib/utils";
 import { Smartphone } from "lucide-react";
 import { Input } from "@/components/ui/input";
@@ -95,6 +97,8 @@ export function ChatPanel({ chatId, onToggleInfoPanel, infoPanelCollapsed, onBac
   const { data: conversations, isLoading: conversationsLoading } = useLeadConversations(chatId || "");
   const { mutate: sendMessage, isPending: isSending } = useSendWhatsAppMessage();
   const { data: config } = useConfiguracoesEmpresa();
+  const { mutate: resolveConversation, isPending: isResolving } = useResolveConversation();
+  const { empresaData } = useAuth();
 
   const currentLead = leads?.find(lead => lead.session_id === chatId);
 
@@ -255,7 +259,22 @@ export function ChatPanel({ chatId, onToggleInfoPanel, infoPanelCollapsed, onBac
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                  <DropdownMenuItem>Marcar como resolvido</DropdownMenuItem>
+                  <DropdownMenuItem 
+                    onClick={async () => {
+                      if (currentLead && empresaData) {
+                        await resolveConversation({
+                          chatId,
+                          empresa_id: empresaData.id,
+                          nome: currentLead.name,
+                          numero: currentLead.telefone,
+                        });
+                      }
+                    }}
+                    disabled={isResolving}
+                  >
+                    <CheckCircle className="w-4 h-4 mr-2" />
+                    Marcar como resolvido
+                  </DropdownMenuItem>
                   <DropdownMenuItem>Agendar follow-up</DropdownMenuItem>
                   <DropdownMenuItem>Bloquear contato</DropdownMenuItem>
                 </DropdownMenuContent>
