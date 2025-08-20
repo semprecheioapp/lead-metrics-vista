@@ -19,18 +19,32 @@ export const useDeleteContact = () => {
         throw new Error("Empresa ID não encontrado");
       }
 
-      const response = await supabase.functions.invoke('delete-lead-with-conversations', {
-        body: {
-          phone_number: phoneNumber,
-          empresa_id: empresaId
-        }
-      });
+      // Use direct database operations instead of Edge Function
+      // 1. Delete from novos_leads
+      const { error: leadsError } = await supabase
+        .from('novos_leads')
+        .delete()
+        .eq('number', phoneNumber)
+        .eq('empresa_id', empresaId);
 
-      if (response.error) {
-        throw new Error(response.error.message);
+      if (leadsError) {
+        console.error('Error deleting from novos_leads:', leadsError);
+        throw new Error(`Failed to delete lead: ${leadsError.message}`);
       }
 
-      return response.data;
+      // 2. Delete from memoria_ai
+      const { error: memoriaError } = await supabase
+        .from('memoria_ai')
+        .delete()
+        .eq('session_id', phoneNumber)
+        .eq('empresa_id', empresaId);
+
+      if (memoriaError) {
+        console.error('Error deleting from memoria_ai:', memoriaError);
+        // Don't throw here - it's ok if memoria_ai doesn't exist
+      }
+
+      return { success: true, phone_number: phoneNumber };
     },
     onSuccess: () => {
       // Invalidate all related caches
@@ -75,21 +89,31 @@ export const useBulkDeleteContacts = () => {
         throw new Error("Empresa ID não encontrado");
       }
 
+      // Use direct database operations instead of Edge Function
       const results = await Promise.all(
-        phoneNumbers.map(phoneNumber =>
-          supabase.functions.invoke('delete-lead-with-conversations', {
-            body: {
-              phone_number: phoneNumber,
-              empresa_id: empresaId
-            }
-          })
-        )
-      );
+        phoneNumbers.map(async (phoneNumber) => {
+          // 1. Delete from novos_leads
+          const { error: leadsError } = await supabase
+            .from('novos_leads')
+            .delete()
+            .eq('number', phoneNumber)
+            .eq('empresa_id', empresaId);
 
-      const errors = results.filter(result => result.error);
-      if (errors.length > 0) {
-        throw new Error(`${errors.length} contatos não puderam ser excluídos`);
-      }
+          if (leadsError) {
+            throw new Error(`Failed to delete lead ${phoneNumber}: ${leadsError.message}`);
+          }
+
+          // 2. Delete from memoria_ai
+          const { error: memoriaError } = await supabase
+            .from('memoria_ai')
+            .delete()
+            .eq('session_id', phoneNumber)
+            .eq('empresa_id', empresaId);
+
+          // Don't fail if memoria_ai doesn't exist
+          return { success: true, phone_number: phoneNumber };
+        })
+      );
 
       return results;
     },
