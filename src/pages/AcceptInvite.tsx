@@ -33,12 +33,16 @@ export default function AcceptInvite() {
 
   const validateAndRedirect = async () => {
     try {
+      console.log('Validating token in preview:', token);
       // Validar convite antes de redirecionar
       const { data, error } = await supabase.functions.invoke('agent-invite-preview', {
         body: { token }
       });
 
+      console.log('Preview response:', { data, error });
+
       if (error || !data?.valid) {
+        console.error('Preview error details:', error);
         setStatus('error');
         return;
       }
@@ -53,11 +57,15 @@ export default function AcceptInvite() {
 
   const acceptInvite = async () => {
     try {
+      console.log('Accepting token:', token);
       const { data, error } = await supabase.functions.invoke('agent-invite-accept', {
         body: { token }
       });
 
+      console.log('Accept response:', { data, error });
+
       if (error) {
+        console.error('Accept error details:', error);
         if (error.message?.includes('expired')) {
           setStatus('expired');
         } else if (error.message?.includes('email')) {
@@ -148,10 +156,12 @@ export default function AcceptInvite() {
           <div className="flex flex-col items-center space-y-4">
             <XCircle className="h-8 w-8 text-destructive" />
             <h2 className="text-lg font-semibold text-destructive">Erro ao processar convite</h2>
-            <p className="text-muted-foreground text-center">
-              Ocorreu um erro ao processar seu convite. Verifique se o link está correto ou 
-              entre em contato com o administrador.
-            </p>
+            <div className="text-sm text-muted-foreground text-center space-y-2">
+              <p>Ocorreu um erro ao processar seu convite.</p>
+              <p className="font-mono text-xs bg-gray-100 p-2 rounded">
+                Token: {token}
+              </p>
+            </div>
             <div className="flex gap-2">
               <Button onClick={() => window.location.reload()} variant="outline">
                 Tentar Novamente
