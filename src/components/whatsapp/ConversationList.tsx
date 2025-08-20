@@ -173,23 +173,21 @@ function ConversationItem({ lead, isSelected, onSelect, collapsed }: Conversatio
             <span className="text-xs text-muted-foreground">
               {lead.telefone}
             </span>
-            <MessageCircle className="h-3 w-3 text-muted-foreground" />
-          </div>
-          
-          {/* Botões de ação */}
-          <div className="flex items-center gap-1 mt-2">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={(e) => {
-                e.stopPropagation();
-                setShowDeleteModal(true);
-              }}
-              className="h-6 px-2 text-red-600 hover:text-red-700 hover:bg-red-50"
-            >
-              <Trash2 className="h-3 w-3" />
-              <span className="text-xs">Excluir</span>
-            </Button>
+            <div className="flex items-center gap-1">
+              <MessageCircle className="h-3 w-3 text-muted-foreground" />
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setShowDeleteModal(true);
+                }}
+                className="h-6 px-2 text-red-600 hover:text-red-700 hover:bg-red-50"
+              >
+                <Trash2 className="h-3 w-3" />
+                <span className="text-xs">Excluir</span>
+              </Button>
+            </div>
           </div>
         </div>
       </div>
