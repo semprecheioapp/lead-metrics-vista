@@ -86,7 +86,7 @@ class CacheService {
         const { data } = await supabase
           .from('novos_leads')
           .select('id,name,number,etapa,created_at')
-          .eq('empresa_id', empresaId)
+          .eq('empresa_id', parseInt(empresaId))
           .order('created_at', { ascending: false })
           .limit(10);
         return data;
@@ -104,7 +104,7 @@ class CacheService {
         const { count } = await supabase
           .from('novos_leads')
           .select('id', { count: 'exact', head: true })
-          .eq('empresa_id', empresaId)
+          .eq('empresa_id', parseInt(empresaId))
           .gte('created_at', sevenDaysAgo.toISOString());
         
         return { recentLeads: count || 0 };
@@ -136,7 +136,7 @@ class CacheService {
             const { data } = await supabase
               .from('memoria_ai')
               .select('session_id, message, created_at')
-              .eq('empresa_id', empresaId)
+              .eq('empresa_id', parseInt(empresaId))
               .order('created_at', { ascending: false });
             return data;
           }
@@ -147,4 +147,5 @@ class CacheService {
 }
 
 // Singleton instance
-export const cacheService = new CacheService();
+import { queryClient } from './cache';
+export const cacheService = new CacheService(queryClient);

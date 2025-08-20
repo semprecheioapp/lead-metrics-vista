@@ -13,7 +13,7 @@ export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       staleTime: CACHE_CONFIG.STALE_TIME,
-      cacheTime: CACHE_CONFIG.CACHE_TIME,
+      gcTime: CACHE_CONFIG.CACHE_TIME,
       refetchOnWindowFocus: CACHE_CONFIG.REFETCH_ON_WINDOW_FOCUS,
       refetchOnReconnect: CACHE_CONFIG.REFETCH_ON_RECONNECT,
       retry: 3,

@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
-import { toast } from '@/components/ui/use-toast';
+import { toast } from '@/hooks/use-toast';
 
 export interface RealtimeNotification {
   id: string;
@@ -25,9 +25,9 @@ export const useRealtimeNotifications = () => {
     if (!empresaId || !user?.id) return;
 
     const { data, error } = await supabase
-      .from('notifications')
+      .from('notificacoes')
       .select('*')
-      .eq('empresa_id', empresaId)
+      .eq('empresa_id', parseInt(empresaId.toString()))
       .order('created_at', { ascending: false })
       .limit(50);
 
@@ -36,16 +36,26 @@ export const useRealtimeNotifications = () => {
       return;
     }
 
-    setNotifications(data || []);
-    setUnreadCount((data || []).filter(n => !n.read).length);
+    const mappedNotifications = (data || []).map(n => ({
+      id: n.id.toString(),
+      type: n.tipo as RealtimeNotification['type'],
+      title: n.titulo,
+      message: n.mensagem,
+      data: n.dados_contexto,
+      created_at: n.created_at,
+      read: n.lida,
+      empresa_id: n.empresa_id.toString()
+    }));
+    setNotifications(mappedNotifications);
+    setUnreadCount(mappedNotifications.filter(n => !n.read).length);
   }, [empresaId, user?.id]);
 
   // Mark notification as read
   const markAsRead = useCallback(async (notificationId: string) => {
     const { error } = await supabase
-      .from('notifications')
-      .update({ read: true })
-      .eq('id', notificationId);
+      .from('notificacoes')
+      .update({ lida: true })
+      .eq('id', parseInt(notificationId));
 
     if (error) {
       console.error('Error marking notification as read:', error);
@@ -63,10 +73,10 @@ export const useRealtimeNotifications = () => {
     if (!empresaId) return;
 
     const { error } = await supabase
-      .from('notifications')
-      .update({ read: true })
-      .eq('empresa_id', empresaId)
-      .eq('read', false);
+      .from('notificacoes')
+      .update({ lida: true })
+      .eq('empresa_id', parseInt(empresaId.toString()))
+      .eq('lida', false);
 
     if (error) {
       console.error('Error marking all notifications as read:', error);
@@ -91,12 +101,19 @@ export const useRealtimeNotifications = () => {
       title,
       message,
       data,
-      empresa_id: empresaId
+      empresa_id: empresaId.toString()
     };
 
     const { error } = await supabase
-      .from('notifications')
-      .insert([notification]);
+      .from('notificacoes')
+      .insert([{
+        tipo: type,
+        titulo: title,
+        mensagem: message,
+        dados: data,
+        empresa_id: parseInt(empresaId.toString()),
+        lida: false
+      }]);
 
     if (error) {
       console.error('Error creating notification:', error);
@@ -115,7 +132,7 @@ export const useRealtimeNotifications = () => {
         {
           event: 'INSERT',
           schema: 'public',
-          table: 'notifications',
+          table: 'notificacoes',
           filter: `empresa_id=eq.${empresaId}`,
         },
         (payload) => {

@@ -36,7 +36,7 @@ export const useLeadsOptimized = (options?: {
   const { page = 1, limit = 50, search, stage, dateRange } = options || {};
 
   return useQuery({
-    queryKey: cacheKeys.leads.all(empresaId || ""),
+    queryKey: cacheKeys.leads.all(empresaId?.toString() || ""),
     queryFn: async () => {
       if (!empresaId) return [];
 
@@ -80,7 +80,7 @@ export const useLeadsOptimized = (options?: {
     },
     enabled: !!empresaId,
     staleTime: 5 * 60 * 1000, // 5 minutes
-    cacheTime: 10 * 60 * 1000, // 10 minutes
+    gcTime: 10 * 60 * 1000, // 10 minutes
   });
 };
 
@@ -89,7 +89,7 @@ export const useRecentLeadsOptimized = (limit = 10) => {
   const { empresaId } = useAuth();
 
   return useQuery({
-    queryKey: cacheKeys.leads.recent(empresaId || "", limit),
+    queryKey: cacheKeys.leads.recent(empresaId?.toString() || "", limit),
     queryFn: async () => {
       if (!empresaId) return [];
 
@@ -120,7 +120,7 @@ export const useLeadsCountOptimized = (period: '7d' | '30d' | 'all' = '7d') => {
   const { empresaId } = useAuth();
 
   return useQuery({
-    queryKey: cacheKeys.leads.count(empresaId || "", period),
+    queryKey: cacheKeys.leads.count(empresaId?.toString() || "", period),
     queryFn: async () => {
       if (!empresaId) return 0;
 
@@ -168,10 +168,10 @@ export const useBulkUpdateLeads = () => {
     },
     onSuccess: () => {
       // Invalidate all lead caches
-      invalidateCache(cacheKeys.leads.all(empresaId || ""));
-      invalidateCache(cacheKeys.leads.recent(empresaId || ""));
-      invalidateCache(cacheKeys.leads.count(empresaId || "", "7d"));
-      invalidateCache(cacheKeys.leads.count(empresaId || "", "30d"));
+      invalidateCache(cacheKeys.leads.all(empresaId?.toString() || ""));
+      invalidateCache(cacheKeys.leads.recent(empresaId?.toString() || "", 10));
+      invalidateCache(cacheKeys.leads.count(empresaId?.toString() || "", "7d"));
+      invalidateCache(cacheKeys.leads.count(empresaId?.toString() || "", "30d"));
     },
   });
 };

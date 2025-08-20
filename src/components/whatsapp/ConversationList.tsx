@@ -223,7 +223,7 @@ export function ConversationList({ selectedChat, onSelectChat, filters, collapse
     queryKey: ["resolved_conversations"],
     queryFn: async () => {
       const { data } = await supabase
-        .from('conversas_resolvidas')
+        .from('memoria_ai')
         .select('session_id');
       return data || [];
     }

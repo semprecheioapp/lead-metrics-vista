@@ -57,7 +57,7 @@ export const useDeleteContact = () => {
       toast({
         title: "Contato excluído",
         description: "O contato e todas as suas conversas foram removidos com sucesso.",
-        variant: "success",
+        variant: "default",
       });
     },
     onError: (error) => {
@@ -126,7 +126,7 @@ export const useBulkDeleteContacts = () => {
       toast({
         title: "Contatos excluídos",
         description: "Todos os contatos selecionados foram removidos com sucesso.",
-        variant: "success",
+        variant: "default",
       });
     },
     onError: (error) => {
