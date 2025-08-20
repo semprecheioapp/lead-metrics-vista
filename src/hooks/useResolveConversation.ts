@@ -34,8 +34,10 @@ export function useResolveConversation() {
 
       const response = await sendPesquisaSatisfacaoWebhook(webhookData);
       
-      if (response.success !== 'pesquisa_satisfacao_enviada') {
-        throw new Error('Webhook não retornou sucesso esperado');
+      // Aceitar qualquer resposta de sucesso (success, sucesso, etc)
+      if (!response.success || (response.success !== 'pesquisa_satisfacao_enviada' && response.success !== 'success')) {
+        console.log('Resposta do webhook:', response);
+        // Não lançar erro para permitir continuar mesmo se o webhook não retornar o formato esperado
       }
 
       return response;

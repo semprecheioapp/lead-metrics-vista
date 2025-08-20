@@ -16,7 +16,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { useAgendamentos, useCreateAgendamento, useUpdateAgendamento, useDeleteAgendamento, Agendamento } from "@/hooks/useAgendamentos";
+import { useAgendamentos, useCreateAgendamento, useUpdateAgendamento, useDeleteAgendamento, useConfirmarAtendimentoComWebhook, Agendamento } from "@/hooks/useAgendamentos";
 import { useCompany } from "@/hooks/useCompany";
 import { AgendamentosFilters } from "@/components/AgendamentosFilters";
 import { AgendamentosKanban } from "@/components/AgendamentosKanban";
@@ -30,6 +30,7 @@ export default function Agendamentos() {
   const createAgendamento = useCreateAgendamento();
   const updateAgendamento = useUpdateAgendamento();
   const deleteAgendamento = useDeleteAgendamento();
+  const confirmarAtendimento = useConfirmarAtendimentoComWebhook();
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingAgendamento, setEditingAgendamento] = useState<Agendamento | null>(null);
@@ -181,6 +182,12 @@ export default function Agendamentos() {
   const handleDelete = (id: number) => {
     if (confirm("Tem certeza que deseja excluir este agendamento?")) {
       deleteAgendamento.mutate(id);
+    }
+  };
+
+  const handleConfirmarAtendimento = (agendamento: Agendamento) => {
+    if (confirm(`Confirma que ${agendamento.name || 'o cliente'} compareceu ao agendamento? Isso enviará pesquisa NPS.`)) {
+      confirmarAtendimento.mutate(agendamento);
     }
   };
 
@@ -360,12 +367,14 @@ export default function Agendamentos() {
             agendamentos={filteredAgendamentos}
             onEdit={handleOpenDialog}
             onDelete={handleDelete}
+            onConfirmarAtendimento={handleConfirmarAtendimento}
           />
         ) : (
           <AgendamentosTable
             agendamentos={filteredAgendamentos}
             onEdit={handleOpenDialog}
             onDelete={handleDelete}
+            onConfirmarAtendimento={handleConfirmarAtendimento}
             getStatusBadge={getStatusBadge}
           />
         )}

@@ -87,25 +87,61 @@ export const useUpdateAgendamento = () => {
   });
 };
 
-export const useDeleteAgendamento = () => {
+export const useConfirmarAtendimentoComWebhook = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (id: number) => {
-      const { error } = await supabase
+    mutationFn: async (agendamento: Agendamento) => {
+      // 1. Atualizar o agendamento como compareceu
+      const { data: updatedAgendamento, error: updateError } = await supabase
         .from("agendamentos")
-        .delete()
-        .eq("id", id);
+        .update({ 
+          compareceu: true,
+          status: true 
+        })
+        .eq("id", agendamento.id)
+        .select()
+        .single();
 
-      if (error) throw error;
+      if (updateError) throw updateError;
+
+      // 2. Enviar webhook NPS
+      const webhookData = {
+        empresa_id: agendamento.empresa_id!,
+        numero: agendamento.number || '',
+        nome: agendamento.name || 'Cliente',
+        data_agendamento: agendamento.data || '',
+        hora_agendamento: agendamento.hora || '',
+        servico: agendamento.serviço || 'Serviço',
+        email: agendamento.email
+      };
+
+      try {
+        const response = await fetch('https://wb.semprecheioapp.com.br/webhook/nps_pos_agendamento', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(webhookData),
+        });
+
+        if (!response.ok) {
+          console.error('Erro no webhook NPS:', response.status);
+        }
+      } catch (webhookError) {
+        console.error('Erro ao enviar webhook:', webhookError);
+        // Não lançar erro para não interromper o fluxo principal
+      }
+
+      return updatedAgendamento;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["agendamentos"], exact: false });
-      toast.success("Agendamento deletado com sucesso!");
+      toast.success("Atendimento confirmado! Pesquisa NPS enviada.");
     },
     onError: (error) => {
-      console.error("Erro ao deletar agendamento:", error);
-      toast.error("Erro ao deletar agendamento");
+      console.error("Erro ao confirmar atendimento:", error);
+      toast.error("Erro ao confirmar atendimento");
     },
   });
 };

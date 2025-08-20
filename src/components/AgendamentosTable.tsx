@@ -11,25 +11,15 @@ interface AgendamentosTableProps {
   agendamentos: Agendamento[];
   onEdit: (agendamento: Agendamento) => void;
   onDelete: (id: number) => void;
+  onConfirmarAtendimento: (agendamento: Agendamento) => void;
   getStatusBadge: (status: boolean | null, compareceu: boolean | null) => React.ReactNode;
 }
 
-export function AgendamentosTable({ agendamentos, onEdit, onDelete, getStatusBadge }: AgendamentosTableProps) {
+export function AgendamentosTable({ agendamentos, onEdit, onDelete, onConfirmarAtendimento, getStatusBadge }: AgendamentosTableProps) {
   const confirmAtendimento = useConfirmAtendimento();
 
   const handleConfirmAtendimento = async (agendamento: Agendamento) => {
-    if (confirm('Confirma que o cliente foi atendido? Isso enviará pesquisa NPS.')) {
-      await confirmAtendimento.mutateAsync({
-        id: agendamento.id,
-        empresa_id: agendamento.empresa_id!,
-        name: agendamento.name || 'Cliente',
-        number: agendamento.number || '',
-        email: agendamento.email || '',
-        data: agendamento.data || '',
-        hora: agendamento.hora || '',
-        serviço: agendamento.serviço || '',
-      });
-    }
+    onConfirmarAtendimento(agendamento);
   };
 
   return (
@@ -93,7 +83,6 @@ export function AgendamentosTable({ agendamentos, onEdit, onDelete, getStatusBad
                           size="sm"
                           className="text-xs px-2 sm:px-3 bg-green-600 hover:bg-green-700"
                           onClick={() => handleConfirmAtendimento(agendamento)}
-                          disabled={confirmAtendimento.isPending}
                         >
                           <CheckCircle className="w-3 h-3 mr-1" />
                           Confirmar

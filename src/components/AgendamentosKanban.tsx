@@ -18,9 +18,10 @@ interface AgendamentosKanbanProps {
   agendamentos: Agendamento[];
   onEdit: (agendamento: Agendamento) => void;
   onDelete: (id: number) => void;
+  onConfirmarAtendimento: (agendamento: Agendamento) => void;
 }
 
-export function AgendamentosKanban({ agendamentos, onEdit, onDelete }: AgendamentosKanbanProps) {
+export function AgendamentosKanban({ agendamentos, onEdit, onDelete, onConfirmarAtendimento }: AgendamentosKanbanProps) {
   const confirmAtendimento = useConfirmAtendimento();
   const columns = [
     {
@@ -111,25 +112,11 @@ export function AgendamentosKanban({ agendamentos, onEdit, onDelete }: Agendamen
                           <DropdownMenuContent align="end">
                             {!agendamento.compareceu && agendamento.status && (
                               <DropdownMenuItem 
-                                onClick={async () => {
-                                  if (confirm('Confirma que o cliente foi atendido? Isso enviará pesquisa NPS.')) {
-                                    await confirmAtendimento.mutateAsync({
-                                      id: agendamento.id,
-                                      empresa_id: agendamento.empresa_id!,
-                                      name: agendamento.name || 'Cliente',
-                                      number: agendamento.number || '',
-                                      email: agendamento.email || '',
-                                      data: agendamento.data || '',
-                                      hora: agendamento.hora || '',
-                                      serviço: agendamento.serviço || '',
-                                    });
-                                  }
-                                }}
-                                disabled={confirmAtendimento.isPending}
+                                onClick={() => onConfirmarAtendimento(agendamento)}
                               >
                                 <CheckCircle className="w-3 h-3 mr-2" />
                                 Confirmar Atendimento
-                              </DropdownMenuItem>
+                              </DropdownItem>
                             )}
                             <DropdownMenuItem onClick={() => onEdit(agendamento)}>
                               Editar

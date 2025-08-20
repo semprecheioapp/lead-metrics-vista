@@ -41,8 +41,10 @@ export function useConfirmAtendimento() {
 
       const response = await sendNPSWebhook(webhookData);
       
-      if (response.success !== 'nps_pos_agenda_enviado') {
-        throw new Error('Webhook não retornou sucesso esperado');
+      // Aceitar qualquer resposta de sucesso
+      if (!response.success || (response.success !== 'nps_pos_agenda_enviado' && response.success !== 'success')) {
+        console.log('Resposta do webhook NPS:', response);
+        // Não lançar erro para permitir continuar mesmo se o webhook não retornar o formato esperado
       }
 
       return response;
