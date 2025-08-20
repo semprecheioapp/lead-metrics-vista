@@ -31,14 +31,14 @@ serve(async (req) => {
 
     console.log('Validating token:', token)
 
-    // Buscar o convite pelo token UUID direto
+    // Buscar o convite pelo token_hash (campo correto)
     const { data: invite, error } = await supabaseClient
       .from('convites_empresa')
       .select(`
         *,
         empresas!inner(name_empresa)
       `)
-      .eq('id', token)
+      .eq('token_hash', token)
       .eq('status', 'pending')
       .single()
 

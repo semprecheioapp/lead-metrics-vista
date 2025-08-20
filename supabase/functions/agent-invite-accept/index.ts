@@ -34,14 +34,14 @@ const handler = async (req: Request): Promise<Response> => {
 
     console.log('Processing token:', token)
 
-    // Buscar o convite pelo token UUID direto
+    // Buscar o convite pelo token_hash (campo correto)
     const { data: invite, error: inviteError } = await supabase
       .from('convites_empresa')
       .select(`
         *,
         empresas!inner(name_empresa)
       `)
-      .eq('id', token)
+      .eq('token_hash', token)
       .eq('status', 'pending')
       .single();
 
@@ -52,8 +52,8 @@ const handler = async (req: Request): Promise<Response> => {
       // Tentar buscar com status diferente para debugging
       const { data: debugInvite } = await supabase
         .from('convites_empresa')
-        .select('id, status, email, expires_at')
-        .eq('id', token)
+        .select('id, token_hash, status, email, expires_at')
+        .eq('token_hash', token)
         .single();
       
       console.log('Debug invite:', debugInvite);
