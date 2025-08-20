@@ -1,11 +1,13 @@
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Star, Circle, CheckCircle, Clock, MessageCircle, Tag } from "lucide-react";
+import { Star, Circle, CheckCircle, Clock, MessageCircle, Tag, Trash2 } from "lucide-react";
 import { useWhatsAppLeads, WhatsAppLead } from "@/hooks/useWhatsAppLeads";
 import { useLeadByPhone } from "@/hooks/useLeadByPhone";
 import { ConversationFilter } from "./WhatsAppCRM";
 import { useFavoritesStore } from "@/hooks/useFavoritesStore";
+import { useDeleteContact } from "@/hooks/useDeleteContact";
+import { ConfirmDeleteModal } from "@/components/ConfirmDeleteModal";
 import { cn } from "@/lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";
 import { supabase } from "@/integrations/supabase/client";
@@ -57,10 +59,17 @@ function formatTime(timestamp: string): string {
 function ConversationItem({ lead, isSelected, onSelect, collapsed }: ConversationItemProps) {
   const { isFavorite } = useFavoritesStore();
   const { data: leadData } = useLeadByPhone(lead.telefone);
+  const { deleteContact } = useDeleteContact();
+  const [showDeleteModal, setShowDeleteModal] = React.useState(false);
   
   // Buscar status real do lead
   const status = 'new'; // Por enquanto fixo, depois vem da tabela novos_leads
   const isLeadFavorite = isFavorite(lead.telefone);
+
+  const handleDelete = () => {
+    deleteContact({ phoneNumber: lead.telefone });
+    setShowDeleteModal(false);
+  };
   
   if (collapsed) {
     return (
@@ -165,9 +174,33 @@ function ConversationItem({ lead, isSelected, onSelect, collapsed }: Conversatio
             </span>
             <MessageCircle className="h-3 w-3 text-muted-foreground" />
           </div>
+          
+          {/* Botões de ação */}
+          <div className="flex items-center gap-1 mt-2">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={(e) => {
+                e.stopPropagation();
+                setShowDeleteModal(true);
+              }}
+              className="h-6 px-2 text-red-600 hover:text-red-700 hover:bg-red-50"
+            >
+              <Trash2 className="h-3 w-3" />
+              <span className="text-xs">Excluir</span>
+            </Button>
+          </div>
         </div>
       </div>
     </Button>
+    
+    <ConfirmDeleteModal
+      isOpen={showDeleteModal}
+      onClose={() => setShowDeleteModal(false)}
+      onConfirm={handleDelete}
+      contactName={lead.name}
+      contactPhone={lead.telefone}
+    />
   );
 }
 

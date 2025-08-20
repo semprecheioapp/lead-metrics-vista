@@ -1,12 +1,15 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Eye, Phone, Tag } from "lucide-react";
+import { Eye, Phone, Tag, Trash2 } from "lucide-react";
 import { useRecentLeads } from "@/hooks/useLeads";
 import { formatDistanceToNow } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { LeadConversationModal } from "@/components/LeadConversationModal";
+import { ConfirmDeleteModal } from "@/components/ConfirmDeleteModal";
+import { useDeleteContact } from "@/hooks/useDeleteContact";
 import { useState } from "react";
+import React from "react";
 
 interface Lead {
   id: number;
@@ -31,6 +34,8 @@ const getStageColor = (stage: string) => {
 export const ResponsiveLeadsTable = () => {
   const { data: leads } = useRecentLeads(10);
   const [selectedLead, setSelectedLead] = useState<{ name: string; phone: string } | null>(null);
+  const [leadToDelete, setLeadToDelete] = useState<{ name: string; phone: string } | null>(null);
+  const { deleteContact } = useDeleteContact();
 
   return (
     <Card className="animate-slide-up">
@@ -79,17 +84,26 @@ export const ResponsiveLeadsTable = () => {
                   
                   <div className="flex justify-between items-center mt-3">
                     <span className="text-xs text-muted-foreground">{lastContact}</span>
-                    <Button 
-                      variant="outline" 
-                      size="sm"
-                      className="px-3 py-1 h-7"
-                      onClick={() => {
-                        setSelectedLead({ name: lead.name, phone: lead.phone });
-                      }}
-                    >
-                      <Eye className="w-3 h-3 mr-1" />
-                      Ver
-                    </Button>
+                    <div className="flex gap-1">
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        className="px-2 py-1 h-7"
+                        onClick={() => {
+                          setSelectedLead({ name: lead.name, phone: lead.phone });
+                        }}
+                      >
+                        <Eye className="w-3 h-3" />
+                      </Button>
+                      <Button 
+                        variant="ghost" 
+                        size="sm"
+                        className="px-2 py-1 h-7 text-red-600 hover:text-red-700 hover:bg-red-50"
+                        onClick={() => setLeadToDelete({ name: lead.name, phone: lead.phone })}
+                      >
+                        <Trash2 className="w-3 h-3" />
+                      </Button>
+                    </div>
                   </div>
                 </CardContent>
               </Card>
@@ -161,17 +175,28 @@ export const ResponsiveLeadsTable = () => {
                     </td>
                     <td className="p-3 md:p-4 text-xs sm:text-sm text-muted-foreground">{lastContact}</td>
                     <td className="p-3 md:p-4">
-                      <Button 
-                        variant="outline" 
-                        size="sm"
-                        className="px-2 sm:px-3"
-                        onClick={() => {
-                          setSelectedLead({ name: lead.name, phone: lead.phone });
-                        }}
-                      >
-                        <Eye className="w-3 h-3 sm:w-4 sm:h-4" />
-                        <span className="hidden sm:inline ml-1">Ver</span>
-                      </Button>
+                      <div className="flex gap-1">
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          className="px-2 sm:px-3"
+                          onClick={() => {
+                            setSelectedLead({ name: lead.name, phone: lead.phone });
+                          }}
+                        >
+                          <Eye className="w-3 h-3 sm:w-4 sm:h-4" />
+                          <span className="hidden sm:inline ml-1">Ver</span>
+                        </Button>
+                        <Button 
+                          variant="ghost" 
+                          size="sm"
+                          className="px-2 sm:px-3 text-red-600 hover:text-red-700 hover:bg-red-50"
+                          onClick={() => setLeadToDelete({ name: lead.name, phone: lead.phone })}
+                        >
+                          <Trash2 className="w-3 h-3 sm:w-4 sm:h-4" />
+                          <span className="hidden sm:inline ml-1">Excluir</span>
+                        </Button>
+                      </div>
                     </td>
                   </tr>
                 );
@@ -186,6 +211,19 @@ export const ResponsiveLeadsTable = () => {
         onClose={() => setSelectedLead(null)}
         leadName={selectedLead?.name || ""}
         phoneNumber={selectedLead?.phone || ""}
+      />
+      
+      <ConfirmDeleteModal
+        isOpen={!!leadToDelete}
+        onClose={() => setLeadToDelete(null)}
+        onConfirm={() => {
+          if (leadToDelete) {
+            deleteContact({ phoneNumber: leadToDelete.phone });
+            setLeadToDelete(null);
+          }
+        }}
+        contactName={leadToDelete?.name}
+        contactPhone={leadToDelete?.phone}
       />
     </Card>
   );

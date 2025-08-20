@@ -2,11 +2,13 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Eye, Phone, Tag } from "lucide-react";
+import { Eye, Phone, Tag, Trash2 } from "lucide-react";
 import { useRecentLeads } from "@/hooks/useLeads";
 import { formatDistanceToNow } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { LeadConversationModal } from "@/components/LeadConversationModal";
+import { ConfirmDeleteModal } from "@/components/ConfirmDeleteModal";
+import { useDeleteContact } from "@/hooks/useDeleteContact";
 import { useState } from "react";
 
 interface Lead {
@@ -32,6 +34,8 @@ const getStageColor = (stage: string) => {
 export const LeadsTable = () => {
   const { data: leads } = useRecentLeads(10);
   const [selectedLead, setSelectedLead] = useState<{ name: string; phone: string } | null>(null);
+  const [leadToDelete, setLeadToDelete] = useState<{ name: string; phone: string } | null>(null);
+  const { deleteContact } = useDeleteContact();
 
   return (
     <Card className="animate-slide-up">
@@ -116,6 +120,15 @@ export const LeadsTable = () => {
                           <Eye className="w-3 h-3 sm:w-4 sm:h-4" />
                           <span className="sr-only sm:not-sr-only sm:ml-1">Ver</span>
                         </Button>
+                        <Button 
+                          variant="ghost" 
+                          size="sm"
+                          className="px-2 sm:px-3 text-red-600 hover:text-red-700 hover:bg-red-50"
+                          onClick={() => setLeadToDelete({ name: lead.name, phone: lead.phone })}
+                        >
+                          <Trash2 className="w-3 h-3 sm:w-4 sm:h-4" />
+                          <span className="sr-only sm:not-sr-only sm:ml-1">Excluir</span>
+                        </Button>
                       </div>
                     </td>
                   </tr>
@@ -131,6 +144,19 @@ export const LeadsTable = () => {
         onClose={() => setSelectedLead(null)}
         leadName={selectedLead?.name || ""}
         phoneNumber={selectedLead?.phone || ""}
+      />
+      
+      <ConfirmDeleteModal
+        isOpen={!!leadToDelete}
+        onClose={() => setLeadToDelete(null)}
+        onConfirm={() => {
+          if (leadToDelete) {
+            deleteContact({ phoneNumber: leadToDelete.phone });
+            setLeadToDelete(null);
+          }
+        }}
+        contactName={leadToDelete?.name}
+        contactPhone={leadToDelete?.phone}
       />
     </Card>
   );
