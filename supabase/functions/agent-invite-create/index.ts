@@ -103,14 +103,9 @@ const handler = async (req: Request): Promise<Response> => {
       throw new Error('Este usuário já é membro da empresa');
     }
 
-    // Generate secure token
+    // Generate secure token (UUID direto)
     const token = crypto.randomUUID();
-    const tokenHash = await crypto.subtle.digest(
-      'SHA-256',
-      new TextEncoder().encode(token)
-    );
-    const hashArray = Array.from(new Uint8Array(tokenHash));
-    const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    const hashHex = token; // Usar UUID direto sem hash
 
     // Create invite
     const expiresAt = new Date();

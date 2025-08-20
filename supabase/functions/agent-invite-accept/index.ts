@@ -41,7 +41,7 @@ const handler = async (req: Request): Promise<Response> => {
         *,
         empresas!inner(name_empresa)
       `)
-      .eq('token_hash', token)
+      .eq('id', token)
       .eq('status', 'pending')
       .single();
 
@@ -52,8 +52,8 @@ const handler = async (req: Request): Promise<Response> => {
       // Tentar buscar com status diferente para debugging
       const { data: debugInvite } = await supabase
         .from('convites_empresa')
-        .select('token_hash, status, email, expires_at')
-        .eq('token_hash', hashHex)
+        .select('id, status, email, expires_at')
+        .eq('id', token)
         .single();
       
       console.log('Debug invite:', debugInvite);

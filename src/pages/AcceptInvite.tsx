@@ -33,8 +33,7 @@ export default function AcceptInvite() {
 
   const validateAndRedirect = async () => {
     try {
-      console.log('Validating token in preview:', token);
-      // Validar convite antes de redirecionar
+      console.log('Validating token via preview:', token);
       const { data, error } = await supabase.functions.invoke('agent-invite-preview', {
         body: { token }
       });

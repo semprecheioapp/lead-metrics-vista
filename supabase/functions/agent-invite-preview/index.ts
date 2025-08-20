@@ -38,7 +38,7 @@ serve(async (req) => {
         *,
         empresas!inner(name_empresa)
       `)
-      .eq('token_hash', token)
+      .eq('id', token)
       .eq('status', 'pending')
       .single()
 
