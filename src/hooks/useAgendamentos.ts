@@ -87,6 +87,29 @@ export const useUpdateAgendamento = () => {
   });
 };
 
+export const useDeleteAgendamento = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (id: number) => {
+      const { error } = await supabase
+        .from("agendamentos")
+        .delete()
+        .eq("id", id);
+
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["agendamentos"], exact: false });
+      toast.success("Agendamento deletado com sucesso!");
+    },
+    onError: (error) => {
+      console.error("Erro ao deletar agendamento:", error);
+      toast.error("Erro ao deletar agendamento");
+    },
+  });
+};
+
 export const useConfirmarAtendimentoComWebhook = () => {
   const queryClient = useQueryClient();
 

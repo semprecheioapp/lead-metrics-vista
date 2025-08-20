@@ -12,7 +12,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useConfirmAtendimento } from "@/hooks/useConfirmAtendimento";
 
 interface AgendamentosKanbanProps {
   agendamentos: Agendamento[];
@@ -116,7 +115,7 @@ export function AgendamentosKanban({ agendamentos, onEdit, onDelete, onConfirmar
                               >
                                 <CheckCircle className="w-3 h-3 mr-2" />
                                 Confirmar Atendimento
-                              </DropdownItem>
+                              </DropdownMenuItem>
                             )}
                             <DropdownMenuItem onClick={() => onEdit(agendamento)}>
                               Editar

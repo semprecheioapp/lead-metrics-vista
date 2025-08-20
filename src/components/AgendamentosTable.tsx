@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Agendamento } from "@/hooks/useAgendamentos";
-import { useConfirmAtendimento } from "@/hooks/useConfirmAtendimento";
 import { CheckCircle } from "lucide-react";
 
 interface AgendamentosTableProps {
