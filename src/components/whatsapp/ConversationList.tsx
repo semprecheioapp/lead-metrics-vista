@@ -192,15 +192,15 @@ function ConversationItem({ lead, isSelected, onSelect, collapsed }: Conversatio
           </div>
         </div>
       </div>
+      
+      <ConfirmDeleteModal
+        isOpen={showDeleteModal}
+        onClose={() => setShowDeleteModal(false)}
+        onConfirm={handleDelete}
+        contactName={lead.name}
+        contactPhone={lead.telefone}
+      />
     </Button>
-    
-    <ConfirmDeleteModal
-      isOpen={showDeleteModal}
-      onClose={() => setShowDeleteModal(false)}
-      onConfirm={handleDelete}
-      contactName={lead.name}
-      contactPhone={lead.telefone}
-    />
   );
 }
 
