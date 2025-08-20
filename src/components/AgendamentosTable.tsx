@@ -15,7 +15,6 @@ interface AgendamentosTableProps {
 }
 
 export function AgendamentosTable({ agendamentos, onEdit, onDelete, onConfirmarAtendimento, getStatusBadge }: AgendamentosTableProps) {
-  const confirmAtendimento = useConfirmAtendimento();
 
   const handleConfirmAtendimento = async (agendamento: Agendamento) => {
     onConfirmarAtendimento(agendamento);

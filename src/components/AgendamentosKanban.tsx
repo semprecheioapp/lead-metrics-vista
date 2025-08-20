@@ -21,7 +21,6 @@ interface AgendamentosKanbanProps {
 }
 
 export function AgendamentosKanban({ agendamentos, onEdit, onDelete, onConfirmarAtendimento }: AgendamentosKanbanProps) {
-  const confirmAtendimento = useConfirmAtendimento();
   const columns = [
     {
       id: "agendado",
