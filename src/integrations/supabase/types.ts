@@ -949,6 +949,10 @@ export type Database = {
         Args: { lead_etapa: number; pipeline_id: number }
         Returns: number
       }
+      user_has_scope: {
+        Args: { required_scope: string }
+        Returns: boolean
+      }
     }
     Enums: {
       [_ in never]: never
