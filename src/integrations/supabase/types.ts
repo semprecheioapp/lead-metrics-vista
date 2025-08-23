@@ -105,6 +105,13 @@ export type Database = {
             foreignKeyName: "audit_logs_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "empresa_safe_view"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "audit_logs_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "empresas"
             referencedColumns: ["id"]
           },
@@ -163,6 +170,13 @@ export type Database = {
           webhook_url?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "configuracoes_empresa_empresa_id_fkey"
+            columns: ["empresa_id"]
+            isOneToOne: true
+            referencedRelation: "empresa_safe_view"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "configuracoes_empresa_empresa_id_fkey"
             columns: ["empresa_id"]
@@ -260,6 +274,13 @@ export type Database = {
             columns: ["accepted_by"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "convites_empresa_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "empresa_safe_view"
             referencedColumns: ["id"]
           },
           {
@@ -422,6 +443,13 @@ export type Database = {
             foreignKeyName: "logs_erros_agent_empresa_id_fkey"
             columns: ["empresa_id"]
             isOneToOne: false
+            referencedRelation: "empresa_safe_view"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "logs_erros_agent_empresa_id_fkey"
+            columns: ["empresa_id"]
+            isOneToOne: false
             referencedRelation: "empresas"
             referencedColumns: ["id"]
           },
@@ -466,6 +494,13 @@ export type Database = {
             foreignKeyName: "logs_erros_whatsapp_empresa_id_fkey"
             columns: ["empresa_id"]
             isOneToOne: false
+            referencedRelation: "empresa_safe_view"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "logs_erros_whatsapp_empresa_id_fkey"
+            columns: ["empresa_id"]
+            isOneToOne: false
             referencedRelation: "empresas"
             referencedColumns: ["id"]
           },
@@ -506,6 +541,13 @@ export type Database = {
           user_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "membros_empresa_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "empresa_safe_view"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "membros_empresa_company_id_fkey"
             columns: ["company_id"]
@@ -674,6 +716,13 @@ export type Database = {
             foreignKeyName: "novos_leads_empresa_id_fkey"
             columns: ["empresa_id"]
             isOneToOne: false
+            referencedRelation: "empresa_safe_view"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "novos_leads_empresa_id_fkey"
+            columns: ["empresa_id"]
+            isOneToOne: false
             referencedRelation: "empresas"
             referencedColumns: ["id"]
           },
@@ -712,6 +761,13 @@ export type Database = {
             foreignKeyName: "numero_bloqueados_empresa_id_fkey"
             columns: ["empresa_id"]
             isOneToOne: false
+            referencedRelation: "empresa_safe_view"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "numero_bloqueados_empresa_id_fkey"
+            columns: ["empresa_id"]
+            isOneToOne: false
             referencedRelation: "empresas"
             referencedColumns: ["id"]
           },
@@ -746,6 +802,13 @@ export type Database = {
           updated_at?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "papeis_empresa_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "empresa_safe_view"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "papeis_empresa_company_id_fkey"
             columns: ["company_id"]
@@ -841,6 +904,13 @@ export type Database = {
             foreignKeyName: "profiles_empresa_id_fkey"
             columns: ["empresa_id"]
             isOneToOne: false
+            referencedRelation: "empresa_safe_view"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "profiles_empresa_id_fkey"
+            columns: ["empresa_id"]
+            isOneToOne: false
             referencedRelation: "empresas"
             referencedColumns: ["id"]
           },
@@ -893,7 +963,60 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      empresa_safe_view: {
+        Row: {
+          ativo: boolean | null
+          created_at: string | null
+          email: string | null
+          host: string | null
+          id: number | null
+          instance: string | null
+          limite_leads: number | null
+          limite_mensagens: number | null
+          max_agents: number | null
+          name_empresa: string | null
+          plano: string | null
+          prompt: string | null
+          telefone: string | null
+          token: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          ativo?: boolean | null
+          created_at?: string | null
+          email?: string | null
+          host?: never
+          id?: number | null
+          instance?: never
+          limite_leads?: number | null
+          limite_mensagens?: number | null
+          max_agents?: number | null
+          name_empresa?: string | null
+          plano?: string | null
+          prompt?: never
+          telefone?: string | null
+          token?: never
+          updated_at?: string | null
+        }
+        Update: {
+          ativo?: boolean | null
+          created_at?: string | null
+          email?: string | null
+          host?: never
+          id?: number | null
+          instance?: never
+          limite_leads?: number | null
+          limite_mensagens?: number | null
+          max_agents?: number | null
+          name_empresa?: string | null
+          plano?: string | null
+          prompt?: never
+          telefone?: string | null
+          token?: never
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       audit_log: {
@@ -936,6 +1059,10 @@ export type Database = {
       get_user_empresa_id: {
         Args: Record<PropertyKey, never>
         Returns: number
+      }
+      is_admin_user: {
+        Args: Record<PropertyKey, never>
+        Returns: boolean
       }
       is_super_admin: {
         Args: Record<PropertyKey, never>
