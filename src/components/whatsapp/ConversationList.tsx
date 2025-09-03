@@ -126,7 +126,7 @@ function ConversationItem({ lead, isSelected, onSelect, collapsed }: Conversatio
         <div className="flex-1 min-w-0 max-w-full overflow-hidden">
           {/* Header: Nome, Status e Time/Badge */}
           <div className="flex items-center justify-between mb-1 w-full">
-            <div className="flex items-center gap-1 min-w-0 flex-1 max-w-[60%]">
+            <div className="flex items-center gap-1 min-w-0 flex-1">
               <h4 className="font-medium text-xs sm:text-sm text-foreground truncate">
                 {lead.name}
               </h4>
@@ -153,7 +153,7 @@ function ConversationItem({ lead, isSelected, onSelect, collapsed }: Conversatio
             </div>
             
             {/* Time e Badge - sempre visíveis */}
-            <div className="flex items-center gap-1 flex-shrink-0 max-w-[40%]">
+            <div className="flex items-center gap-1 flex-shrink-0">
               <span className="text-xs text-muted-foreground whitespace-nowrap">
                 {formatTime(lead.lastMessageTime)}
               </span>
@@ -195,7 +195,7 @@ function ConversationItem({ lead, isSelected, onSelect, collapsed }: Conversatio
           
           {/* Footer: Telefone e Actions */}
           <div className="flex items-center justify-between w-full">
-            <span className="text-xs text-muted-foreground truncate flex-1 min-w-0 max-w-[60%]">
+            <span className="text-xs text-muted-foreground truncate flex-1 min-w-0">
               {lead.telefone}
             </span>
             <div className="flex items-center gap-1 flex-shrink-0">
