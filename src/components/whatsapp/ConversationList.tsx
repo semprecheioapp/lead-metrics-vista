@@ -105,11 +105,11 @@ function ConversationItem({ lead, isSelected, onSelect, collapsed }: Conversatio
       variant="ghost"
       onClick={onSelect}
       className={cn(
-        "w-full h-auto p-2 sm:p-3 justify-start hover:bg-muted/50 transition-colors",
+        "w-full h-auto p-2 sm:p-3 justify-start hover:bg-muted/50 transition-colors text-left",
         isSelected && "bg-primary/10 border-l-2 border-primary"
       )}
     >
-      <div className="flex items-start gap-2 sm:gap-3 w-full min-w-0">
+      <div className="flex items-start gap-2 sm:gap-3 w-full min-w-0 max-w-full overflow-hidden">
         {/* Avatar */}
         <div className="relative flex-shrink-0">
           <Avatar className="h-8 w-8 sm:h-10 sm:w-10">
@@ -123,10 +123,10 @@ function ConversationItem({ lead, isSelected, onSelect, collapsed }: Conversatio
         </div>
 
         {/* Conteúdo Principal */}
-        <div className="flex-1 min-w-0 overflow-hidden">
+        <div className="flex-1 min-w-0 max-w-full overflow-hidden">
           {/* Header: Nome, Status e Time/Badge */}
-          <div className="flex items-center justify-between mb-1 gap-2">
-            <div className="flex items-center gap-1 min-w-0 flex-1">
+          <div className="flex items-center justify-between mb-1 w-full">
+            <div className="flex items-center gap-1 min-w-0 flex-1 max-w-[60%]">
               <h4 className="font-medium text-xs sm:text-sm text-foreground truncate">
                 {lead.name}
               </h4>
@@ -153,7 +153,7 @@ function ConversationItem({ lead, isSelected, onSelect, collapsed }: Conversatio
             </div>
             
             {/* Time e Badge - sempre visíveis */}
-            <div className="flex items-center gap-1 flex-shrink-0">
+            <div className="flex items-center gap-1 flex-shrink-0 max-w-[40%]">
               <span className="text-xs text-muted-foreground whitespace-nowrap">
                 {formatTime(lead.lastMessageTime)}
               </span>
@@ -166,38 +166,39 @@ function ConversationItem({ lead, isSelected, onSelect, collapsed }: Conversatio
           </div>
           
           {/* Última mensagem */}
-          <p className="text-xs text-muted-foreground truncate mb-1">
-            {lead.lastMessage}
-          </p>
+          <div className="w-full overflow-hidden mb-1">
+            <p className="text-xs text-muted-foreground truncate">
+              {lead.lastMessage}
+            </p>
+          </div>
           
           {/* Tags - responsivas */}
           {leadData?.tags && Array.isArray(leadData.tags) && leadData.tags.length > 0 && (
-            <div className="flex flex-wrap gap-1 mb-1">
-              {(leadData.tags as string[]).slice(0, window.innerWidth < 640 ? 1 : 2).map((tag: string, index: number) => (
+            <div className="flex flex-wrap gap-1 mb-1 overflow-hidden">
+              {(leadData.tags as string[]).slice(0, 1).map((tag: string, index: number) => (
                 <Badge 
                   key={index} 
                   variant="secondary" 
-                  className="text-xs px-1 py-0 h-3 sm:h-4 flex items-center gap-1 max-w-[4rem] sm:max-w-none"
+                  className="text-xs px-1 py-0 h-3 sm:h-4 flex items-center gap-1 max-w-[5rem] flex-shrink-0"
                 >
                   <Tag className="w-2 h-2 flex-shrink-0" />
                   <span className="truncate">{tag}</span>
                 </Badge>
               ))}
-              {(leadData.tags as string[]).length > (window.innerWidth < 640 ? 1 : 2) && (
+              {(leadData.tags as string[]).length > 1 && (
                 <Badge variant="outline" className="text-xs px-1 py-0 h-3 sm:h-4 flex-shrink-0">
-                  +{(leadData.tags as string[]).length - (window.innerWidth < 640 ? 1 : 2)}
+                  +{(leadData.tags as string[]).length - 1}
                 </Badge>
               )}
             </div>
           )}
           
           {/* Footer: Telefone e Actions */}
-          <div className="flex items-center justify-between gap-2">
-            <span className="text-xs text-muted-foreground truncate flex-1 min-w-0">
+          <div className="flex items-center justify-between w-full">
+            <span className="text-xs text-muted-foreground truncate flex-1 min-w-0 max-w-[60%]">
               {lead.telefone}
             </span>
             <div className="flex items-center gap-1 flex-shrink-0">
-              <MessageCircle className="h-3 w-3 text-muted-foreground hidden sm:block" />
               <Button
                 variant="ghost"
                 size="sm"
