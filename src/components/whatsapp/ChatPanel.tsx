@@ -66,7 +66,7 @@ function MessageBubble({ content, timestamp, isFromAI, isLast, senderName, isMan
             ? "bg-primary text-primary-foreground rounded-br-md" 
             : "bg-muted text-foreground rounded-bl-md"
         )}>
-          <p className="text-sm leading-relaxed whitespace-pre-wrap word-break">{content}</p>
+          <p className="text-sm leading-relaxed whitespace-pre-wrap break-words overflow-wrap-anywhere">{content}</p>
           <div className={cn(
             "flex items-center justify-end mt-1 gap-1",
             isFromAI ? "text-primary-foreground/70" : "text-muted-foreground"
@@ -196,7 +196,7 @@ export function ChatPanel({ chatId, onToggleInfoPanel, infoPanelCollapsed, onBac
   }
 
   return (
-    <div className="flex-1 flex flex-col h-full">
+    <div className="flex-1 flex flex-col h-full min-h-0 min-w-0 max-w-full">
       {/* Header do Chat */}
       <div className="p-4 border-b border-border bg-card">
         <div className="flex items-center justify-between">
@@ -216,10 +216,10 @@ export function ChatPanel({ chatId, onToggleInfoPanel, infoPanelCollapsed, onBac
                 {currentLead.name.charAt(0).toUpperCase()}
               </AvatarFallback>
             </Avatar>
-            <div className="flex-1 min-w-0">
-              <h3 className="font-semibold text-foreground truncate">{currentLead.name}</h3>
-              <div className="flex items-center gap-2">
-                <p className="text-sm text-muted-foreground truncate">{currentLead.telefone}</p>
+            <div className="flex-1 min-w-0 max-w-full">
+              <h3 className="font-semibold text-foreground truncate break-words">{currentLead.name}</h3>
+              <div className="flex items-center gap-2 min-w-0">
+                <p className="text-sm text-muted-foreground truncate break-words">{currentLead.telefone}</p>
                 {currentLead.isOnline && (
                   <Badge variant="secondary" className="text-xs px-2 py-0">
                     Online
@@ -280,7 +280,7 @@ export function ChatPanel({ chatId, onToggleInfoPanel, infoPanelCollapsed, onBac
       </div>
 
       {/* Área de Mensagens */}
-      <ScrollArea className="flex-1 px-4">
+      <ScrollArea className="flex-1 px-4 min-h-0">
         <div className="py-4">
           {conversationsLoading ? (
             <div className="space-y-4">
@@ -407,7 +407,7 @@ export function ChatPanel({ chatId, onToggleInfoPanel, infoPanelCollapsed, onBac
                 <Paperclip className="h-4 w-4" />
               </Button>
             )}
-            <div className="flex-1 relative">
+            <div className="flex-1 relative min-w-0">
               <Textarea
                 ref={textareaRef}
                 placeholder="Digite sua mensagem..."
@@ -415,7 +415,7 @@ export function ChatPanel({ chatId, onToggleInfoPanel, infoPanelCollapsed, onBac
                 onChange={(e) => setMessage(e.target.value)}
                 onKeyPress={handleKeyPress}
                 disabled={isSending}
-                className="min-h-[40px] max-h-[120px] resize-none pr-12 bg-background"
+                className="min-h-[40px] max-h-[120px] resize-none pr-12 bg-background w-full"
                 rows={1}
               />
             </div>

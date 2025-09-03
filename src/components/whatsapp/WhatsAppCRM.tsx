@@ -47,13 +47,13 @@ export function WhatsAppCRM() {
   };
 
   return (
-    <div className="h-[calc(100vh-2rem)] bg-background flex overflow-hidden rounded-lg border">
+    <div className="h-[calc(100vh-2rem)] bg-background flex min-h-0 rounded-lg border">
       {/* Layout Mobile/Tablet */}
       {isMobile ? (
         <>
           {/* Lista de Conversas - Mobile */}
           {showConversations && (
-            <div className="w-full bg-card">
+            <div className="w-full bg-card min-h-0 flex flex-col">
               <ConversationSidebar
                 selectedChat={selectedChat}
                 onSelectChat={handleSelectChat}
@@ -67,7 +67,7 @@ export function WhatsAppCRM() {
 
           {/* Chat Ativo - Mobile */}
           {!showConversations && selectedChat && (
-            <div className="w-full flex flex-col">
+            <div className="w-full flex flex-col min-h-0 max-w-full">
               <ChatPanel 
                 chatId={selectedChat}
                 onToggleInfoPanel={() => setInfoPanelCollapsed(!infoPanelCollapsed)}
@@ -81,7 +81,7 @@ export function WhatsAppCRM() {
           {/* Painel de Info - Mobile (Modal) */}
           {selectedChat && !infoPanelCollapsed && (
             <div className="fixed inset-0 z-50 bg-black/50 flex p-4">
-              <div className="w-full max-w-sm bg-card ml-auto animate-slide-in-right rounded-lg">
+              <div className="w-full max-w-sm bg-card ml-auto animate-slide-in-right rounded-lg min-h-0 flex flex-col">
                 <LeadInfoPanel 
                   chatId={selectedChat}
                   onClose={() => setInfoPanelCollapsed(true)}
@@ -109,7 +109,7 @@ export function WhatsAppCRM() {
           </div>
 
           {/* Coluna Central - Chat Ativo */}
-          <div className="flex-1 flex flex-col min-w-0">
+          <div className="flex-1 flex flex-col min-w-0 min-h-0 max-w-full">
             <ChatPanel 
               chatId={selectedChat}
               onToggleInfoPanel={() => setInfoPanelCollapsed(!infoPanelCollapsed)}
@@ -119,7 +119,7 @@ export function WhatsAppCRM() {
 
           {/* Coluna Direita - Informações do Lead */}
           {selectedChat && !infoPanelCollapsed && (
-            <div className="w-72 md:w-80 xl:w-96 bg-card border-l border-border flex-shrink-0 animate-slide-in-right">
+            <div className="w-72 md:w-80 xl:w-96 bg-card border-l border-border flex-shrink-0 animate-slide-in-right min-h-0 min-w-0 max-w-full">
               <LeadInfoPanel 
                 chatId={selectedChat}
                 onClose={() => setInfoPanelCollapsed(true)}

@@ -44,7 +44,7 @@ export function ConversationSidebar({
   const unreadCount = leads?.filter(lead => lead.unreadCount > 0).length || 0;
 
   return (
-    <div className="h-full flex flex-col">
+    <div className="h-full flex flex-col min-h-0 min-w-0 max-w-full">
       {/* Header */}
       <div className="p-4 border-b border-border bg-card">
         <div className="flex items-center justify-between mb-4">
@@ -122,7 +122,7 @@ export function ConversationSidebar({
       )}
 
       {/* Lista de Conversas */}
-      <ScrollArea className="flex-1">
+      <ScrollArea className="flex-1 min-h-0">
         <ConversationList
           selectedChat={selectedChat}
           onSelectChat={onSelectChat}

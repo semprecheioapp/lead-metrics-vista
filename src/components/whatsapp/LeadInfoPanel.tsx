@@ -74,7 +74,7 @@ export const LeadInfoPanel = ({ chatId, onClose }: LeadInfoPanelProps) => {
   }
 
   return (
-    <div className="w-full h-full border-l border-border bg-card overflow-y-auto">
+    <div className="w-full h-full border-l border-border bg-card overflow-y-auto min-h-0 min-w-0 max-w-full">
       {/* Header com botão de fechar em mobile */}
       {onClose && (
         <div className="flex items-center justify-between p-4 border-b border-border">
@@ -85,7 +85,7 @@ export const LeadInfoPanel = ({ chatId, onClose }: LeadInfoPanelProps) => {
         </div>
       )}
       
-      <div className="p-4 space-y-4">
+      <div className="p-4 space-y-4 min-w-0 max-w-full">
         {/* Informações do Lead */}
         <Card>
           <CardHeader className="pb-3">
@@ -96,13 +96,13 @@ export const LeadInfoPanel = ({ chatId, onClose }: LeadInfoPanelProps) => {
           </CardHeader>
           <CardContent className="space-y-3">
             <div className="space-y-2">
-              <div className="flex items-center gap-2">
-                <User className="w-4 h-4 text-muted-foreground" />
-                <span className="font-medium">{leadName}</span>
+              <div className="flex items-center gap-2 min-w-0">
+                <User className="w-4 h-4 text-muted-foreground flex-shrink-0" />
+                <span className="font-medium truncate break-words">{leadName}</span>
               </div>
-              <div className="flex items-center gap-2">
-                <Phone className="w-4 h-4 text-muted-foreground" />
-                <span className="text-sm text-muted-foreground">{phoneNumber}</span>
+              <div className="flex items-center gap-2 min-w-0">
+                <Phone className="w-4 h-4 text-muted-foreground flex-shrink-0" />
+                <span className="text-sm text-muted-foreground truncate break-words">{phoneNumber}</span>
               </div>
             </div>
 
