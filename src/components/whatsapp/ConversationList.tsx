@@ -239,7 +239,7 @@ export function ConversationList({ selectedChat, onSelectChat, filters, collapse
     queryKey: ["resolved_conversations"],
     queryFn: async () => {
       const { data } = await supabase
-        .from('memoria_ai')
+        .from('conversas_resolvidas')
         .select('session_id');
       console.log('Conversas resolvidas carregadas:', data);
       return data || [];
