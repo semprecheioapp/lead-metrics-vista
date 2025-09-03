@@ -109,9 +109,7 @@ const AuthPage = () => {
               empresa_name: companyName,
               empresa_phone: companyPhone
             })
-          },
-          // Configurar confirmação de email - sempre ativado para segurança
-          email_confirm: true
+          }
         }
       });
 

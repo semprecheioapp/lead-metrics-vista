@@ -22,12 +22,17 @@ export function useResolveConversation() {
           chatId: data.chatId
         });
         
+        // Temporariamente usar memoria_ai até que conversas_resolvidas seja criada
         const { error: insertError } = await supabase
-          .from('conversas_resolvidas')
+          .from('memoria_ai')
           .insert({
             session_id: data.numero,
             empresa_id: data.empresa_id,
-            resolvido_em: new Date().toISOString()
+            message: {
+              type: 'conversation_resolved',
+              resolved_at: new Date().toISOString(),
+              chat_id: data.chatId
+            }
           });
 
         if (insertError && insertError.code !== '23505') { // Ignorar duplicados

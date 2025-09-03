@@ -52,7 +52,7 @@ export const InviteAgentModal = ({ children, canInvite, usedSlots, totalSlots }:
 
     try {
       if (useNewInviteFlow) {
-        console.log('Creating agent with password:', { email, name, role_id, scopes, hasPassword: !!temporaryPassword });
+        console.log('Creating agent with password:', { email, name, role_id: selectedRole, scopes, hasPassword: !!temporaryPassword });
         
         // Usar novo fluxo com senha pré-definida
         const { data, error } = await supabase.functions.invoke('agent-invite-create-with-password', {

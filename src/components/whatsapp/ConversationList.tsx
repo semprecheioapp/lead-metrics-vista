@@ -234,19 +234,32 @@ export function ConversationList({ selectedChat, onSelectChat, filters, collapse
     }
   });
 
-  // Buscar conversas resolvidas
+  // Buscar conversas resolvidas - temporariamente usando memoria_ai até que a tabela conversas_resolvidas seja criada
   const { data: resolvedConversations, refetch: refetchResolved } = useQuery({
     queryKey: ["resolved_conversations"],
     queryFn: async () => {
-      const { data } = await supabase
-        .from('conversas_resolvidas')
-        .select('session_id');
-      console.log('Conversas resolvidas carregadas:', data);
-      return data || [];
+      try {
+        // Temporariamente buscar na memoria_ai com filtro específico
+        const { data, error } = await supabase
+          .from('memoria_ai')
+          .select('session_id')
+          .like('message', '%conversation_resolved%');
+        
+        if (error) {
+          console.log('Tabela conversas_resolvidas ainda não existe, usando fallback');
+          return [];
+        }
+        
+        console.log('Conversas resolvidas carregadas:', data);
+        return data || [];
+      } catch (error) {
+        console.log('Erro ao buscar conversas resolvidas:', error);
+        return [];
+      }
     },
-    refetchInterval: 1000, // Atualizar a cada 1 segundo
-    staleTime: 0, // Sempre considerar stale para refetch imediato
-    cacheTime: 5 * 60 * 1000 // Manter em cache por 5 minutos
+    refetchInterval: 1000,
+    staleTime: 0,
+    gcTime: 5 * 60 * 1000 // Usar gcTime em vez de cacheTime
   });
 
   // Forçar refetch quando houver mudanças nas conversas resolvidas
@@ -288,7 +301,7 @@ export function ConversationList({ selectedChat, onSelectChat, filters, collapse
       case 'favorites':
         return isFavorite(lead.telefone);
       case 'attended':
-        return resolvedConversations?.some(r => r.session_id === lead.telefone);
+        return Array.isArray(resolvedConversations) && resolvedConversations.some((r: any) => r.session_id === lead.telefone);
       default:
         return true;
     }
