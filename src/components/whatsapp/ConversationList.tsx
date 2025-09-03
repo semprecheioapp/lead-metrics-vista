@@ -105,34 +105,35 @@ function ConversationItem({ lead, isSelected, onSelect, collapsed }: Conversatio
       variant="ghost"
       onClick={onSelect}
       className={cn(
-        "w-full h-auto p-3 justify-start hover:bg-muted/50 transition-colors",
+        "w-full h-auto p-2 sm:p-3 justify-start hover:bg-muted/50 transition-colors",
         isSelected && "bg-primary/10 border-l-2 border-primary"
       )}
     >
-      <div className="flex items-start gap-3 w-full">
+      <div className="flex items-start gap-2 sm:gap-3 w-full min-w-0">
         {/* Avatar */}
         <div className="relative flex-shrink-0">
-          <Avatar className="h-10 w-10">
-            <AvatarFallback>
+          <Avatar className="h-8 w-8 sm:h-10 sm:w-10">
+            <AvatarFallback className="text-xs sm:text-sm">
               {lead.name.charAt(0).toUpperCase()}
             </AvatarFallback>
           </Avatar>
           {lead.isOnline && (
-            <div className="absolute bottom-0 right-0 h-3 w-3 bg-green-500 border-2 border-background rounded-full" />
+            <div className="absolute bottom-0 right-0 h-2 w-2 sm:h-3 sm:w-3 bg-green-500 border-2 border-background rounded-full" />
           )}
         </div>
 
-        {/* Conteúdo */}
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center justify-between mb-1">
-            <div className="flex items-center gap-1">
-              <h4 className="font-medium text-sm text-foreground truncate">
+        {/* Conteúdo Principal */}
+        <div className="flex-1 min-w-0 overflow-hidden">
+          {/* Header: Nome, Status e Time/Badge */}
+          <div className="flex items-center justify-between mb-1 gap-2">
+            <div className="flex items-center gap-1 min-w-0 flex-1">
+              <h4 className="font-medium text-xs sm:text-sm text-foreground truncate">
                 {lead.name}
               </h4>
               <Button
                 variant="ghost"
                 size="sm"
-                className="h-4 w-4 p-0 hover:bg-transparent"
+                className="h-3 w-3 sm:h-4 sm:w-4 p-0 hover:bg-transparent flex-shrink-0"
                 onClick={(e) => {
                   e.stopPropagation();
                   const { toggleFavorite } = useFavoritesStore.getState();
@@ -141,56 +142,62 @@ function ConversationItem({ lead, isSelected, onSelect, collapsed }: Conversatio
               >
                 <Star 
                   className={cn(
-                    "h-3 w-3 transition-colors",
+                    "h-2.5 w-2.5 sm:h-3 sm:w-3 transition-colors",
                     isLeadFavorite && "text-yellow-500 fill-yellow-500"
                   )} 
                 />
               </Button>
-              {getStatusIcon(status)}
+              <div className="flex-shrink-0">
+                {getStatusIcon(status)}
+              </div>
             </div>
-            <div className="flex items-center gap-1">
-              <span className="text-xs text-muted-foreground">
+            
+            {/* Time e Badge - sempre visíveis */}
+            <div className="flex items-center gap-1 flex-shrink-0">
+              <span className="text-xs text-muted-foreground whitespace-nowrap">
                 {formatTime(lead.lastMessageTime)}
               </span>
               {lead.unreadCount > 0 && (
-                <Badge variant="destructive" className="h-5 px-1.5 text-xs">
+                <Badge variant="destructive" className="h-4 sm:h-5 px-1 sm:px-1.5 text-xs min-w-[1rem] flex-shrink-0">
                   {lead.unreadCount > 9 ? '9+' : lead.unreadCount}
                 </Badge>
               )}
             </div>
           </div>
           
-          <p className="text-xs text-muted-foreground truncate">
+          {/* Última mensagem */}
+          <p className="text-xs text-muted-foreground truncate mb-1">
             {lead.lastMessage}
           </p>
           
-          {/* Tags do lead */}
+          {/* Tags - responsivas */}
           {leadData?.tags && Array.isArray(leadData.tags) && leadData.tags.length > 0 && (
-            <div className="flex flex-wrap gap-1 mt-2">
-              {(leadData.tags as string[]).slice(0, 2).map((tag: string, index: number) => (
+            <div className="flex flex-wrap gap-1 mb-1">
+              {(leadData.tags as string[]).slice(0, window.innerWidth < 640 ? 1 : 2).map((tag: string, index: number) => (
                 <Badge 
                   key={index} 
                   variant="secondary" 
-                  className="text-xs px-1 py-0 h-4 flex items-center gap-1"
+                  className="text-xs px-1 py-0 h-3 sm:h-4 flex items-center gap-1 max-w-[4rem] sm:max-w-none"
                 >
-                  <Tag className="w-2 h-2" />
-                  {tag}
+                  <Tag className="w-2 h-2 flex-shrink-0" />
+                  <span className="truncate">{tag}</span>
                 </Badge>
               ))}
-              {(leadData.tags as string[]).length > 2 && (
-                <Badge variant="outline" className="text-xs px-1 py-0 h-4">
-                  +{(leadData.tags as string[]).length - 2}
+              {(leadData.tags as string[]).length > (window.innerWidth < 640 ? 1 : 2) && (
+                <Badge variant="outline" className="text-xs px-1 py-0 h-3 sm:h-4 flex-shrink-0">
+                  +{(leadData.tags as string[]).length - (window.innerWidth < 640 ? 1 : 2)}
                 </Badge>
               )}
             </div>
           )}
           
-          <div className="flex items-center justify-between mt-1">
-            <span className="text-xs text-muted-foreground">
+          {/* Footer: Telefone e Actions */}
+          <div className="flex items-center justify-between gap-2">
+            <span className="text-xs text-muted-foreground truncate flex-1 min-w-0">
               {lead.telefone}
             </span>
-            <div className="flex items-center gap-1">
-              <MessageCircle className="h-3 w-3 text-muted-foreground" />
+            <div className="flex items-center gap-1 flex-shrink-0">
+              <MessageCircle className="h-3 w-3 text-muted-foreground hidden sm:block" />
               <Button
                 variant="ghost"
                 size="sm"
@@ -198,10 +205,10 @@ function ConversationItem({ lead, isSelected, onSelect, collapsed }: Conversatio
                   e.stopPropagation();
                   setShowDeleteModal(true);
                 }}
-                className="h-6 px-2 text-red-600 hover:text-red-700 hover:bg-red-50"
+                className="h-5 sm:h-6 px-1 sm:px-2 text-red-600 hover:text-red-700 hover:bg-red-50 flex-shrink-0"
               >
                 <Trash2 className="h-3 w-3" />
-                <span className="text-xs">Excluir</span>
+                <span className="text-xs hidden sm:inline ml-1">Excluir</span>
               </Button>
             </div>
           </div>
@@ -328,7 +335,7 @@ export function ConversationList({ selectedChat, onSelectChat, filters, collapse
   }
 
   return (
-    <div className={cn("p-2", collapsed && "px-1")}>
+    <div className={cn("p-1 sm:p-2 space-y-1", collapsed && "px-0.5")}>
       {filteredLeads.map((lead) => (
         <ConversationItem
           key={lead.session_id}
