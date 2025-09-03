@@ -234,32 +234,19 @@ export function ConversationList({ selectedChat, onSelectChat, filters, collapse
     }
   });
 
-  // Buscar conversas resolvidas - temporariamente usando memoria_ai até que a tabela conversas_resolvidas seja criada
+  // Buscar conversas resolvidas
   const { data: resolvedConversations, refetch: refetchResolved } = useQuery({
     queryKey: ["resolved_conversations"],
     queryFn: async () => {
-      try {
-        // Temporariamente buscar na memoria_ai com filtro específico
-        const { data, error } = await supabase
-          .from('memoria_ai')
-          .select('session_id')
-          .like('message', '%conversation_resolved%');
-        
-        if (error) {
-          console.log('Tabela conversas_resolvidas ainda não existe, usando fallback');
-          return [];
-        }
-        
-        console.log('Conversas resolvidas carregadas:', data);
-        return data || [];
-      } catch (error) {
-        console.log('Erro ao buscar conversas resolvidas:', error);
-        return [];
-      }
+      const { data } = await supabase
+        .from('conversas_resolvidas')
+        .select('session_id');
+      console.log('Conversas resolvidas carregadas:', data);
+      return data || [];
     },
     refetchInterval: 1000,
     staleTime: 0,
-    gcTime: 5 * 60 * 1000 // Usar gcTime em vez de cacheTime
+    gcTime: 5 * 60 * 1000
   });
 
   // Forçar refetch quando houver mudanças nas conversas resolvidas
@@ -301,7 +288,7 @@ export function ConversationList({ selectedChat, onSelectChat, filters, collapse
       case 'favorites':
         return isFavorite(lead.telefone);
       case 'attended':
-        return Array.isArray(resolvedConversations) && resolvedConversations.some((r: any) => r.session_id === lead.telefone);
+        return resolvedConversations?.some((r: any) => r.session_id === lead.telefone);
       default:
         return true;
     }

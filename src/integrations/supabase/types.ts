@@ -23,8 +23,10 @@ export type Database = {
           empresa_id: number | null
           hora: string | null
           id: number
+          id_agendamento: string | null
           lembrete_enviado: boolean
           lembrete_enviado_2: boolean
+          link_da_reuniao: string | null
           name: string | null
           number: string | null
           serviço: string | null
@@ -38,8 +40,10 @@ export type Database = {
           empresa_id?: number | null
           hora?: string | null
           id?: number
+          id_agendamento?: string | null
           lembrete_enviado?: boolean
           lembrete_enviado_2?: boolean
+          link_da_reuniao?: string | null
           name?: string | null
           number?: string | null
           serviço?: string | null
@@ -53,8 +57,10 @@ export type Database = {
           empresa_id?: number | null
           hora?: string | null
           id?: number
+          id_agendamento?: string | null
           lembrete_enviado?: boolean
           lembrete_enviado_2?: boolean
+          link_da_reuniao?: string | null
           name?: string | null
           number?: string | null
           serviço?: string | null
@@ -205,6 +211,39 @@ export type Database = {
           limites_por_tipo?: Json
           tipos_ativos?: Json
           updated_at?: string
+        }
+        Relationships: []
+      }
+      conversas_resolvidas: {
+        Row: {
+          created_at: string | null
+          empresa_id: number
+          id: string
+          motivo: string | null
+          resolvido_em: string
+          resolvido_por: string | null
+          session_id: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          empresa_id: number
+          id?: string
+          motivo?: string | null
+          resolvido_em?: string
+          resolvido_por?: string | null
+          session_id: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          empresa_id?: number
+          id?: string
+          motivo?: string | null
+          resolvido_em?: string
+          resolvido_por?: string | null
+          session_id?: string
+          updated_at?: string | null
         }
         Relationships: []
       }
