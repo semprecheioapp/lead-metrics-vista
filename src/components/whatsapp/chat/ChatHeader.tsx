@@ -1,12 +1,16 @@
-import { ArrowLeft, Info, MoreVertical, CheckCircle } from "lucide-react";
+import { ArrowLeft, Info, MoreVertical, CheckCircle, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
+import { ScheduleFollowupModal } from "@/components/ScheduleFollowupModal";
+import { useScheduleFollowup } from "@/hooks/useScheduleFollowup";
+import { useState } from "react";
 
 interface ChatHeaderProps {
   currentLead: {
+    id: string;
     name: string;
     telefone: string;
     isOnline?: boolean;
@@ -28,6 +32,13 @@ export function ChatHeader({
   onResolveConversation,
   isResolving
 }: ChatHeaderProps) {
+  const [showScheduleModal, setShowScheduleModal] = useState(false);
+  const { scheduleFollowup, isScheduling } = useScheduleFollowup();
+
+  const handleScheduleFollowup = (data: { date: Date; message: string; leadId: string }) => {
+    scheduleFollowup(data);
+    setShowScheduleModal(false);
+  };
   return (
     <div className="p-3 sm:p-4 border-b border-border bg-card">
       <div className="flex items-center justify-between">
@@ -98,12 +109,26 @@ export function ChatHeader({
                 <CheckCircle className="w-4 h-4 mr-2" />
                 Marcar como resolvido
               </DropdownMenuItem>
-              <DropdownMenuItem>Agendar follow-up</DropdownMenuItem>
-              <DropdownMenuItem>Bloquear contato</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setShowScheduleModal(true)}>
+                <Clock className="w-4 h-4 mr-2" />
+                Agendar follow-up
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
       </div>
+
+      <ScheduleFollowupModal
+        open={showScheduleModal}
+        onOpenChange={setShowScheduleModal}
+        lead={{
+          id: currentLead.id,
+          name: currentLead.name,
+          number: currentLead.telefone
+        }}
+        onSchedule={handleScheduleFollowup}
+        isLoading={isScheduling}
+      />
     </div>
   );
 }

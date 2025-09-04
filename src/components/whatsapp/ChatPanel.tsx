@@ -71,19 +71,20 @@ export function ChatPanel({
 
   return (
     <div className="flex-1 flex flex-col h-full min-h-0 min-w-0 max-w-full">
-      <ChatHeader
-        currentLead={{
-          name: currentLead.name,
-          telefone: currentLead.telefone,
-          isOnline: currentLead.isOnline
-        }}
-        onBackToConversations={onBackToConversations}
-        onToggleInfoPanel={onToggleInfoPanel}
-        infoPanelCollapsed={infoPanelCollapsed}
-        isMobile={isMobile}
-        onResolveConversation={handleResolveConversation}
-        isResolving={isResolving}
-      />
+        <ChatHeader
+          currentLead={{
+            id: currentLead.session_id,
+            name: currentLead.name,
+            telefone: currentLead.telefone,
+            isOnline: currentLead.isOnline
+          }}
+          onBackToConversations={onBackToConversations}
+          onToggleInfoPanel={onToggleInfoPanel}
+          infoPanelCollapsed={infoPanelCollapsed}
+          isMobile={isMobile}
+          onResolveConversation={handleResolveConversation}
+          isResolving={isResolving}
+        />
 
       <MessageList
         conversations={conversations}

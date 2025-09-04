@@ -30,7 +30,6 @@ import {
 
 const menuItems = [
   { icon: Home, label: "Dashboard", path: "/" },
-  { icon: BarChart3, label: "Métricas", path: "/metricas" },
   { icon: Users, label: "Leads", path: "/leads" },
   { icon: Target, label: "Oportunidades", path: "/oportunidades" },
   { icon: Send, label: "Follow-up", path: "/follow-up" },

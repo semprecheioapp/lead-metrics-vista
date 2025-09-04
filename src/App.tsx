@@ -8,7 +8,7 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import AuthPage from "@/pages/AuthPage";
 import Index from "@/pages/Index";
 import Landing from "@/pages/Landing";
-import Metricas from "@/pages/Metricas";
+
 import Leads from "@/pages/Leads";
 import FollowUp from "@/pages/FollowUp";
 import Oportunidades from "@/pages/Oportunidades";
@@ -48,7 +48,7 @@ const App: React.FC = () => {
                 <Route path="/landing" element={<Landing />} />
                 <Route path="/" element={<ProtectedRoute><Index /></ProtectedRoute>} />
                 <Route path="/super-admin" element={<ProtectedRoute><SuperAdminRoute><SuperAdminDashboard /></SuperAdminRoute></ProtectedRoute>} />
-                <Route path="/metricas" element={<ProtectedRoute><Index /></ProtectedRoute>} />
+                
                 <Route path="/leads" element={<ProtectedRoute><Leads /></ProtectedRoute>} />
                 <Route path="/follow-up" element={<ProtectedRoute><FollowUp /></ProtectedRoute>} />
                 <Route path="/oportunidades" element={<ProtectedRoute><Oportunidades /></ProtectedRoute>} />
