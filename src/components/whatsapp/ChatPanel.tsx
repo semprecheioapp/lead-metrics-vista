@@ -246,35 +246,38 @@ export function ChatPanel({ chatId, onToggleInfoPanel, infoPanelCollapsed, onBac
                 !infoPanelCollapsed && "text-primary"
               )} />
             </Button>
-            {!isMobile && (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="icon" className="h-8 w-8">
-                    <MoreVertical className="h-4 w-4" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem 
-                    onClick={async () => {
-                      if (currentLead && empresaData) {
-                        await resolveConversation({
-                          chatId,
-                          empresa_id: empresaData.id,
-                          nome: currentLead.name,
-                          numero: currentLead.telefone,
-                        });
-                      }
-                    }}
-                    disabled={isResolving}
-                  >
-                    <CheckCircle className="w-4 h-4 mr-2" />
-                    Marcar como resolvido
-                  </DropdownMenuItem>
-                  <DropdownMenuItem>Agendar follow-up</DropdownMenuItem>
-                  <DropdownMenuItem>Bloquear contato</DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            )}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon" className="h-8 w-8">
+                  <MoreVertical className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent 
+                align="end" 
+                sideOffset={4} 
+                collisionPadding={8} 
+                className="w-56 max-w-[90vw] sm:max-w-[16rem]"
+              >
+                <DropdownMenuItem 
+                  onClick={async () => {
+                    if (currentLead && empresaData) {
+                      await resolveConversation({
+                        chatId,
+                        empresa_id: empresaData.id,
+                        nome: currentLead.name,
+                        numero: currentLead.telefone,
+                      });
+                    }
+                  }}
+                  disabled={isResolving}
+                >
+                  <CheckCircle className="w-4 h-4 mr-2" />
+                  Marcar como resolvido
+                </DropdownMenuItem>
+                <DropdownMenuItem>Agendar follow-up</DropdownMenuItem>
+                <DropdownMenuItem>Bloquear contato</DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
       </div>
