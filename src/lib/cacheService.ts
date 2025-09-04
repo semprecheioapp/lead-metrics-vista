@@ -118,31 +118,81 @@ class CacheService {
     switch (route) {
       case '/leads':
         this.prefetchCompanyData(empresaId);
+        this.prefetchLeadsMetrics(empresaId);
         break;
-      case '/kanban':
-        this.queryClient.prefetchQuery({
-          queryKey: ['pipelines'],
-          queryFn: async () => {
-            const { data } = await supabase.from('pipelines').select('*');
-            return data;
-          }
-        });
+      case '/oportunidades':
+        this.prefetchKanbanData(empresaId);
         break;
       case '/whatsapp':
-        this.queryClient.prefetchQuery({
-          queryKey: ['whatsapp', 'leads', empresaId],
-          queryFn: async () => {
-            // Similar to useWhatsAppLeads query
-            const { data } = await supabase
-              .from('memoria_ai')
-              .select('session_id, message, created_at')
-              .eq('empresa_id', parseInt(empresaId))
-              .order('created_at', { ascending: false });
-            return data;
-          }
-        });
+        this.prefetchWhatsAppData(empresaId);
+        break;
+      case '/metricas':
+        this.prefetchMetricsData(empresaId);
         break;
     }
+  }
+
+  // Prefetch específicos para performance
+  private async prefetchLeadsMetrics(empresaId: string) {
+    await this.queryClient.prefetchQuery({
+      queryKey: ['leads', 'metrics', empresaId],
+      queryFn: async () => {
+        const today = new Date().toISOString().split('T')[0];
+        const { count } = await supabase
+          .from('novos_leads')
+          .select('id', { count: 'exact', head: true })
+          .eq('empresa_id', parseInt(empresaId))
+          .gte('created_at', today);
+        return { todayCount: count || 0 };
+      },
+      staleTime: 2 * 60 * 1000, // 2 minutes
+    });
+  }
+
+  private async prefetchKanbanData(empresaId: string) {
+    await this.queryClient.prefetchQuery({
+      queryKey: ['pipelines'],
+      queryFn: async () => {
+        const { data } = await supabase.from('pipelines').select('*');
+        return data;
+      },
+      staleTime: 10 * 60 * 1000, // 10 minutes
+    });
+  }
+
+  private async prefetchWhatsAppData(empresaId: string) {
+    await this.queryClient.prefetchQuery({
+      queryKey: ['whatsapp', 'leads', empresaId],
+      queryFn: async () => {
+        const { data } = await supabase
+          .from('memoria_ai')
+          .select('session_id, message, created_at')
+          .eq('empresa_id', parseInt(empresaId))
+          .order('created_at', { ascending: false })
+          .limit(50);
+        return data;
+      },
+      staleTime: 5 * 60 * 1000, // 5 minutes
+    });
+  }
+
+  private async prefetchMetricsData(empresaId: string) {
+    await this.queryClient.prefetchQuery({
+      queryKey: ['metrics', 'overview', empresaId],
+      queryFn: async () => {
+        const thirtyDaysAgo = new Date();
+        thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+        
+        const { count } = await supabase
+          .from('novos_leads')
+          .select('id', { count: 'exact', head: true })
+          .eq('empresa_id', parseInt(empresaId))
+          .gte('created_at', thirtyDaysAgo.toISOString());
+        
+        return { monthlyLeads: count || 0 };
+      },
+      staleTime: 15 * 60 * 1000, // 15 minutes
+    });
   }
 }
 

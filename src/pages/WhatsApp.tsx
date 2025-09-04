@@ -1,11 +1,14 @@
 import { DashboardLayout } from "@/components/DashboardLayout";
-import { WhatsAppCRM } from "@/components/whatsapp/WhatsAppCRM";
+import { LazyWhatsAppCRM } from "@/components/LazyComponent";
+import { PageTransition } from "@/components/PageTransition";
 
 export default function WhatsApp() {
   try {
     return (
       <DashboardLayout>
-        <WhatsAppCRM />
+        <PageTransition>
+          <LazyWhatsAppCRM />
+        </PageTransition>
       </DashboardLayout>
     );
   } catch (error) {
