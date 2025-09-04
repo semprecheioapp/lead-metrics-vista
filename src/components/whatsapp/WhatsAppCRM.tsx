@@ -29,7 +29,7 @@ export function WhatsAppCRM() {
     selectedTags: []
   });
   const [sidebarCollapsed, setSidebarCollapsed] = useState(isMobile);
-  const [infoPanelCollapsed, setInfoPanelCollapsed] = useState(isMobile);
+  const [infoPanelCollapsed, setInfoPanelCollapsed] = useState(true); // Sempre iniciar fechado
   const [showConversations, setShowConversations] = useState(true);
 
   // Gestos de swipe para mobile
