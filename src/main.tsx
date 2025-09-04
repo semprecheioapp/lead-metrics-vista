@@ -21,15 +21,19 @@ const root = createRoot(rootElement);
 console.log("Rendering app...");
 root.render(<App />);
 
-// Register service worker for PWA
+// Temporarily disable service worker registration and cleanup old SW to fix white screen
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js')
-      .then((registration) => {
-        console.log('SW registered: ', registration);
-      })
-      .catch((registrationError) => {
-        console.log('SW registration failed: ', registrationError);
+    navigator.serviceWorker.getRegistrations().then((registrations) => {
+      registrations.forEach((registration) => {
+        console.log('Unregistering existing SW:', registration);
+        registration.unregister();
       });
+      // Optional: clear caches to avoid stale pages
+      if (window.caches) {
+        caches.keys().then((keys) => keys.forEach((k) => caches.delete(k)));
+      }
+    });
   });
 }
+
