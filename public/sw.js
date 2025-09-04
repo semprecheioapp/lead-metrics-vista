@@ -1,31 +1,35 @@
-const CACHE_NAME = 'dashboard-mbk-v1';
-const STATIC_CACHE = 'static-v1';
-const DYNAMIC_CACHE = 'dynamic-v1';
+const CACHE_NAME = 'dashboard-mbk-v2';
+const STATIC_CACHE = 'static-v2';
+const DYNAMIC_CACHE = 'dynamic-v2';
 
-// Assets to cache immediately
+// Assets to cache immediately - minimal list for Chrome compatibility
 const STATIC_ASSETS = [
   '/',
-  '/index.html',
-  '/manifest.json',
-  '/lovable-uploads/885ae572-dec3-4868-92e1-8b1fcd6023e6.png'
+  '/manifest.json'
 ];
 
-// Install event - cache static assets
+// Install event - cache minimal assets
 self.addEventListener('install', event => {
-  console.log('Service Worker installing...');
+  console.log('Service Worker installing... v2');
   event.waitUntil(
     caches.open(STATIC_CACHE)
       .then(cache => {
-        console.log('Caching static assets');
+        console.log('Caching minimal assets for Chrome compatibility');
         return cache.addAll(STATIC_ASSETS);
       })
-      .then(() => self.skipWaiting())
+      .then(() => {
+        console.log('SW installed successfully');
+        return self.skipWaiting();
+      })
+      .catch(error => {
+        console.error('SW install failed:', error);
+      })
   );
 });
 
 // Activate event - clean old caches
 self.addEventListener('activate', event => {
-  console.log('Service Worker activating...');
+  console.log('Service Worker activating... v2');
   event.waitUntil(
     caches.keys()
       .then(cacheNames => {
@@ -38,95 +42,77 @@ self.addEventListener('activate', event => {
           })
         );
       })
-      .then(() => self.clients.claim())
+      .then(() => {
+        console.log('SW activated successfully');
+        return self.clients.claim();
+      })
+      .catch(error => {
+        console.error('SW activation failed:', error);
+      })
   );
 });
 
-// Fetch event - serve from cache, fallback to network
+// Simplified fetch strategy for Chrome compatibility
 self.addEventListener('fetch', event => {
   const { request } = event;
   
-  // Skip non-GET requests
-  if (request.method !== 'GET') return;
-  
-  // Skip external requests
-  if (!request.url.startsWith(self.location.origin)) return;
+  // Skip non-GET requests and non-same-origin requests
+  if (request.method !== 'GET' || !request.url.startsWith(self.location.origin)) {
+    return;
+  }
 
+  // For navigation requests, always go to network first
+  if (request.mode === 'navigate') {
+    event.respondWith(
+      fetch(request)
+        .catch(() => {
+          return caches.match('/');
+        })
+    );
+    return;
+  }
+
+  // For other requests, try cache first, then network
   event.respondWith(
     caches.match(request)
       .then(cachedResponse => {
         if (cachedResponse) {
-          // Serve from cache
           return cachedResponse;
         }
         
-        // Fetch from network and cache dynamic content
         return fetch(request)
           .then(response => {
-            // Don't cache error responses
+            // Only cache successful responses
             if (!response || response.status !== 200 || response.type !== 'basic') {
               return response;
             }
             
-            // Cache dynamic content
+            // Cache the response
             const responseToCache = response.clone();
             caches.open(DYNAMIC_CACHE)
               .then(cache => {
                 cache.put(request, responseToCache);
+              })
+              .catch(error => {
+                console.warn('Failed to cache response:', error);
               });
             
             return response;
           })
-          .catch(() => {
-            // Offline fallback
-            if (request.destination === 'document') {
-              return caches.match('/');
-            }
+          .catch(error => {
+            console.warn('Fetch failed:', error);
+            return new Response('Offline', { status: 503 });
           });
       })
   );
 });
 
-// Background sync for offline actions
-self.addEventListener('sync', event => {
-  console.log('Background sync triggered:', event.tag);
-  
-  if (event.tag === 'sync-leads') {
-    event.waitUntil(syncOfflineActions());
-  }
+// Handle errors gracefully
+self.addEventListener('error', event => {
+  console.error('Service Worker error:', event.error);
 });
 
-// Sync offline actions when back online
-async function syncOfflineActions() {
-  try {
-    // Get pending actions from IndexedDB or localStorage
-    const pendingActions = await getPendingActions();
-    
-    for (const action of pendingActions) {
-      try {
-        await executeAction(action);
-        await removePendingAction(action.id);
-      } catch (error) {
-        console.log('Failed to sync action:', error);
-      }
-    }
-  } catch (error) {
-    console.log('Sync failed:', error);
-  }
-}
-
-// Helper functions (implement based on your data structure)
-async function getPendingActions() {
-  // Implementation depends on your offline storage strategy
-  return [];
-}
-
-async function executeAction(action) {
-  // Execute the pending action
-  console.log('Executing action:', action);
-}
-
-async function removePendingAction(actionId) {
-  // Remove from pending actions
-  console.log('Removing action:', actionId);
-}
+self.addEventListener('unhandledrejection', event => {
+  console.error('Service Worker unhandled rejection:', event.reason);
+  event.preventDefault();
+});

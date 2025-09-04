@@ -21,18 +21,36 @@ const root = createRoot(rootElement);
 console.log("Rendering app...");
 root.render(<App />);
 
-// Temporarily disable service worker registration and cleanup old SW to fix white screen
+// Enhanced Service Worker management for Chrome compatibility
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
+    // Clear existing service workers first (especially important for Chrome)
     navigator.serviceWorker.getRegistrations().then((registrations) => {
-      registrations.forEach((registration) => {
-        console.log('Unregistering existing SW:', registration);
-        registration.unregister();
-      });
-      // Optional: clear caches to avoid stale pages
-      if (window.caches) {
-        caches.keys().then((keys) => keys.forEach((k) => caches.delete(k)));
-      }
+      Promise.all(registrations.map(registration => registration.unregister()))
+        .then(() => {
+          console.log('All existing service workers cleared');
+          // Clear caches after unregistering service workers
+          return caches.keys();
+        })
+        .then((cacheNames) => {
+          return Promise.all(cacheNames.map(cacheName => caches.delete(cacheName)));
+        })
+        .then(() => {
+          console.log('All caches cleared');
+          // Now register the new service worker after a delay
+          setTimeout(() => {
+            navigator.serviceWorker.register('/sw.js')
+              .then((registration) => {
+                console.log('New SW registered successfully:', registration);
+              })
+              .catch((error) => {
+                console.log('SW registration failed:', error);
+              });
+          }, 1000);
+        })
+        .catch((error) => {
+          console.error('Error during SW cleanup:', error);
+        });
     });
   });
 }
