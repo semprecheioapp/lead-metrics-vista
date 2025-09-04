@@ -41,7 +41,7 @@ export const useWhiteLabel = () => {
   const { data: config, isLoading, error } = useQuery({
     queryKey: ["whitelabel_config", empresaId],
     queryFn: async () => {
-      if (!empresaId || !hasWhiteLabelPermission) return DEFAULT_CONFIG;
+      if (!empresaId) return DEFAULT_CONFIG;
 
       const { data, error } = await supabase
         .from("configuracoes_empresa")
@@ -58,7 +58,7 @@ export const useWhiteLabel = () => {
         ...data
       } : (DEFAULT_CONFIG as WhiteLabelConfig);
     },
-    enabled: !!empresaId && hasWhiteLabelPermission,
+    enabled: !!empresaId,
   });
 
   const updateConfigMutation = useMutation({
@@ -115,45 +115,51 @@ export const useWhiteLabel = () => {
     },
   });
 
-  // Apply dynamic theming only if has permission
+  // Apply dynamic theming only if has permission - temporarily disabled for debugging
   useEffect(() => {
-    if (config && hasWhiteLabelPermission && typeof document !== 'undefined') {
-      const root = document.documentElement;
-      
-      if (config.cor_primaria) {
-        // Convert hex to HSL
-        const hsl = hexToHsl(config.cor_primaria);
-        root.style.setProperty('--primary', hsl);
-      }
-      
-      if (config.cor_secundaria) {
-        const hsl = hexToHsl(config.cor_secundaria);
-        root.style.setProperty('--secondary', hsl);
-      }
-      
-      if (config.cor_accent) {
-        const hsl = hexToHsl(config.cor_accent);
-        root.style.setProperty('--accent', hsl);
-      }
-      
-      if (config.cor_background) {
-        const hsl = hexToHsl(config.cor_background);
-        root.style.setProperty('--background-base', hsl);
-      }
+    // Temporarily commented out to fix white screen issue
+    /*
+    try {
+      if (config && hasWhiteLabelPermission && typeof document !== 'undefined') {
+        const root = document.documentElement;
+        
+        if (config.cor_primaria) {
+          const hsl = hexToHsl(config.cor_primaria);
+          if (hsl) root.style.setProperty('--primary', hsl);
+        }
+        
+        if (config.cor_secundaria) {
+          const hsl = hexToHsl(config.cor_secundaria);
+          if (hsl) root.style.setProperty('--secondary', hsl);
+        }
+        
+        if (config.cor_accent) {
+          const hsl = hexToHsl(config.cor_accent);
+          if (hsl) root.style.setProperty('--accent', hsl);
+        }
+        
+        if (config.cor_background) {
+          const hsl = hexToHsl(config.cor_background);
+          if (hsl) root.style.setProperty('--background-base', hsl);
+        }
 
-      // Update document title
-      if (config.titulo_sistema) {
-        document.title = config.titulo_sistema;
-      }
+        // Update document title
+        if (config.titulo_sistema) {
+          document.title = config.titulo_sistema;
+        }
 
-      // Update favicon
-      if (config.favicon_url) {
-        const link = document.querySelector("link[rel*='icon']") as HTMLLinkElement;
-        if (link) {
-          link.href = config.favicon_url;
+        // Update favicon
+        if (config.favicon_url) {
+          const link = document.querySelector("link[rel*='icon']") as HTMLLinkElement;
+          if (link) {
+            link.href = config.favicon_url;
+          }
         }
       }
+    } catch (error) {
+      console.error('Error applying white label theme:', error);
     }
+    */
   }, [config, hasWhiteLabelPermission]);
 
   return {
@@ -175,10 +181,16 @@ function hexToHsl(hex: string): string {
   // Remove the hash if present
   hex = hex.replace('#', '');
   
+  // Validate hex color
+  if (!/^[0-9A-F]{6}$/i.test(hex)) {
+    console.warn('Invalid hex color:', hex);
+    return '0 0% 0%'; // fallback to black
+  }
+  
   // Parse the hex values
-  const r = parseInt(hex.substr(0, 2), 16) / 255;
-  const g = parseInt(hex.substr(2, 2), 16) / 255;
-  const b = parseInt(hex.substr(4, 2), 16) / 255;
+  const r = parseInt(hex.substring(0, 2), 16) / 255;
+  const g = parseInt(hex.substring(2, 4), 16) / 255;
+  const b = parseInt(hex.substring(4, 6), 16) / 255;
 
   const max = Math.max(r, g, b);
   const min = Math.min(r, g, b);
