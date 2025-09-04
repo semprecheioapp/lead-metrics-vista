@@ -105,7 +105,7 @@ function ConversationItem({ lead, isSelected, onSelect, collapsed }: Conversatio
       variant="ghost"
       onClick={onSelect}
       className={cn(
-        "w-full h-auto p-2 sm:p-3 justify-start hover:bg-muted/50 transition-colors text-left",
+        "w-full h-auto p-2 sm:p-3 pr-3 justify-start hover:bg-muted/50 transition-colors text-left",
         isSelected && "bg-primary/10 border-l-2 border-primary"
       )}
     >
@@ -123,7 +123,7 @@ function ConversationItem({ lead, isSelected, onSelect, collapsed }: Conversatio
         </div>
 
         {/* Conteúdo Principal - Container com largura controlada */}
-        <div className="flex-1 min-w-0 overflow-hidden">
+        <div className="flex-1 min-w-0">
           {/* Header: Nome e Controles */}
           <div className="flex items-center justify-between mb-1 gap-2">
             {/* Nome e ícones da esquerda */}
@@ -154,7 +154,7 @@ function ConversationItem({ lead, isSelected, onSelect, collapsed }: Conversatio
             </div>
             
             {/* Controles da direita - sempre visíveis */}
-            <div className="flex items-center gap-1 flex-shrink-0">
+            <div className="flex items-center gap-1 flex-shrink-0 min-w-[72px] justify-end">
               <span className="text-xs text-muted-foreground whitespace-nowrap">
                 {formatTime(lead.lastMessageTime)}
               </span>
