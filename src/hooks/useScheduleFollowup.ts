@@ -7,6 +7,7 @@ interface ScheduleFollowupData {
   leadId: string; // session_id (telefone)
   date: Date;
   message: string;
+  leadName?: string;
 }
 
 export const useScheduleFollowup = () => {
@@ -14,35 +15,35 @@ export const useScheduleFollowup = () => {
   const queryClient = useQueryClient();
 
   const scheduleFollowup = useMutation({
-    mutationFn: async ({ leadId, date, message }: ScheduleFollowupData) => {
+    mutationFn: async ({ leadId, date, message, leadName }: ScheduleFollowupData) => {
       if (!empresaId) throw new Error("Empresa ID não encontrado");
 
-      // Buscar dados do lead pelo telefone (session_id)
-      const { data: lead, error: leadError } = await supabase
-        .from("novos_leads")
-        .select("*")
-        .eq("number", leadId)
-        .eq("empresa_id", empresaId)
-        .maybeSingle();
-
-      if (leadError) throw leadError;
-      if (!lead) {
-        console.log("Lead não encontrado na tabela novos_leads, usando dados do WhatsApp");
+      // Buscar dados do lead pelo telefone se não foi fornecido nome
+      let finalLeadName = leadName;
+      if (!finalLeadName) {
+        const { data: lead } = await supabase
+          .from("novos_leads")
+          .select("name")
+          .eq("number", leadId)
+          .eq("empresa_id", empresaId)
+          .maybeSingle();
+        
+        finalLeadName = lead?.name || `Lead ${leadId.slice(-4)}`;
       }
 
-      // Chamar edge function para processar o agendamento
-      const { data, error } = await supabase.functions.invoke('schedule-followup', {
-        body: {
-          leadId,
-          empresaId,
-          scheduledDate: date.toISOString(),
-          message,
-          leadData: {
-            name: lead?.name || `Lead ${leadId.slice(-4)}`,
-            number: leadId
-          }
-        }
-      });
+      // Inserir diretamente na tabela de followups
+      const { data, error } = await supabase
+        .from("followups")
+        .insert({
+          empresa_id: empresaId,
+          lead_nome: finalLeadName,
+          lead_telefone: leadId,
+          mensagem: message,
+          data_envio: date.toISOString(),
+          status: 'agendado'
+        })
+        .select()
+        .single();
 
       if (error) throw error;
       return data;
@@ -50,6 +51,7 @@ export const useScheduleFollowup = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["leads"] });
       queryClient.invalidateQueries({ queryKey: ["whatsapp-chats"] });
+      queryClient.invalidateQueries({ queryKey: ["followups"] });
       toast.success("Follow-up agendado com sucesso!");
     },
     onError: (error) => {

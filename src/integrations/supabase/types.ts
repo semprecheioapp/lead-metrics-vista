@@ -122,6 +122,11 @@ export type Database = {
           auto_resposta: boolean | null
           created_at: string | null
           empresa_id: number
+          followup_abandono_horas: number | null
+          followup_dias_uteis: boolean | null
+          followup_horario_fim: string | null
+          followup_horario_inicio: string | null
+          followup_template: string | null
           horario_funcionamento: Json | null
           id: number
           llm_enabled: boolean | null
@@ -139,6 +144,11 @@ export type Database = {
           auto_resposta?: boolean | null
           created_at?: string | null
           empresa_id: number
+          followup_abandono_horas?: number | null
+          followup_dias_uteis?: boolean | null
+          followup_horario_fim?: string | null
+          followup_horario_inicio?: string | null
+          followup_template?: string | null
           horario_funcionamento?: Json | null
           id?: number
           llm_enabled?: boolean | null
@@ -156,6 +166,11 @@ export type Database = {
           auto_resposta?: boolean | null
           created_at?: string | null
           empresa_id?: number
+          followup_abandono_horas?: number | null
+          followup_dias_uteis?: boolean | null
+          followup_horario_fim?: string | null
+          followup_horario_inicio?: string | null
+          followup_template?: string | null
           horario_funcionamento?: Json | null
           id?: number
           llm_enabled?: boolean | null
@@ -375,6 +390,48 @@ export type Database = {
           telefone?: string | null
           token?: string | null
           updated_at?: string | null
+        }
+        Relationships: []
+      }
+      followups: {
+        Row: {
+          created_at: string
+          data_envio: string
+          empresa_id: number
+          enviado_em: string | null
+          erro_detalhes: string | null
+          id: string
+          lead_nome: string
+          lead_telefone: string
+          mensagem: string
+          status: Database["public"]["Enums"]["followup_status"]
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          data_envio: string
+          empresa_id: number
+          enviado_em?: string | null
+          erro_detalhes?: string | null
+          id?: string
+          lead_nome: string
+          lead_telefone: string
+          mensagem: string
+          status?: Database["public"]["Enums"]["followup_status"]
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          data_envio?: string
+          empresa_id?: number
+          enviado_em?: string | null
+          erro_detalhes?: string | null
+          id?: string
+          lead_nome?: string
+          lead_telefone?: string
+          mensagem?: string
+          status?: Database["public"]["Enums"]["followup_status"]
+          updated_at?: string
         }
         Relationships: []
       }
@@ -1006,7 +1063,7 @@ export type Database = {
       }
     }
     Enums: {
-      [_ in never]: never
+      followup_status: "agendado" | "enviado" | "erro"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -1133,6 +1190,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      followup_status: ["agendado", "enviado", "erro"],
+    },
   },
 } as const

@@ -6,10 +6,11 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { CalendarIcon, Clock, Send, Sparkles } from "lucide-react";
-import { format } from "date-fns";
+import { format, setHours, setMinutes, addDays, isWeekend, getHours } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { cn } from "@/lib/utils";
 import { useFollowupConfig } from "@/hooks/useFollowupConfig";
+import { TimePickerInput } from "@/components/TimePickerInput";
 
 interface ScheduleFollowupModalProps {
   open: boolean;
@@ -35,29 +36,63 @@ export function ScheduleFollowupModal({
   isLoading = false
 }: ScheduleFollowupModalProps) {
   const [selectedDate, setSelectedDate] = useState<Date>();
+  const [selectedTime, setSelectedTime] = useState<string>("09:00");
   const [message, setMessage] = useState("");
   const { config } = useFollowupConfig();
 
   React.useEffect(() => {
     if (open && config) {
       // Definir mensagem padrão quando abrir o modal
-      const defaultMessage = config.template_followup.replace("{nome}", lead.name);
+      const defaultMessage = config.template_followup?.replace("{nome}", lead.name) || 
+        `Olá ${lead.name}, notamos que você demonstrou interesse em nossos produtos. Podemos ajudá-lo a dar continuidade?`;
       setMessage(defaultMessage);
+      
+      // Definir horário padrão (usar 09:00 como padrão)
+      const defaultTime = "09:00";
+      setSelectedTime(defaultTime);
     }
   }, [open, config, lead.name]);
 
+  const getNextBusinessDateTime = () => {
+    const now = new Date();
+    const currentHour = getHours(now);
+    let targetDate = new Date();
+    
+    // Se já passou do horário comercial ou é fim de semana, sugerir próximo dia útil
+    const endHour = 18; // Horário padrão
+    if (currentHour >= endHour || isWeekend(now)) {
+      targetDate = addDays(now, 1);
+      while (isWeekend(targetDate)) {
+        targetDate = addDays(targetDate, 1);
+      }
+    }
+    
+    return targetDate;
+  };
+
   const handleSchedule = () => {
-    if (!selectedDate || !message.trim()) return;
+    if (!selectedDate || !selectedTime || !message.trim()) return;
+
+    // Combinar data e hora selecionadas
+    const [hours, minutes] = selectedTime.split(":").map(Number);
+    const fullDateTime = setMinutes(setHours(selectedDate, hours), minutes);
 
     onSchedule({
-      date: selectedDate,
+      date: fullDateTime,
       message: message.trim(),
       leadId: lead.id
     });
   };
 
-  const tomorrow = new Date();
-  tomorrow.setDate(tomorrow.getDate() + 1);
+  const validateBusinessHours = (time: string): boolean => {
+    const [hours] = time.split(":").map(Number);
+    const startHour = 9; // Horário padrão
+    const endHour = 18; // Horário padrão
+    
+    return hours >= startHour && hours < endHour;
+  };
+
+  const tomorrow = getNextBusinessDateTime();
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -106,6 +141,21 @@ export function ScheduleFollowupModal({
             </Popover>
           </div>
 
+          {/* Seleção de Horário */}
+          <div className="space-y-2">
+            <TimePickerInput 
+              value={selectedTime}
+              onChange={setSelectedTime}
+              label="Horário do Follow-up"
+              placeholder="09:00"
+            />
+            {selectedTime && !validateBusinessHours(selectedTime) && (
+              <p className="text-xs text-amber-600">
+                ⚠️ Horário fora do expediente comercial (9h às 18h)
+              </p>
+            )}
+          </div>
+
           {/* Mensagem do Follow-up */}
           <div className="space-y-2">
             <Label htmlFor="message" className="flex items-center gap-2">
@@ -127,11 +177,11 @@ export function ScheduleFollowupModal({
           </div>
 
           {/* Preview */}
-          {selectedDate && message && (
+          {selectedDate && selectedTime && message && (
             <div className="p-3 rounded-lg bg-muted/50 border border-border">
               <p className="text-xs font-medium text-muted-foreground mb-2">Preview:</p>
               <p className="text-sm">
-                <span className="font-medium">Data:</span> {format(selectedDate, "dd/MM/yyyy", { locale: ptBR })}
+                <span className="font-medium">Data:</span> {format(selectedDate, "dd/MM/yyyy", { locale: ptBR })} às {selectedTime}
               </p>
               <p className="text-sm">
                 <span className="font-medium">Para:</span> {lead.name} ({lead.number})
@@ -149,7 +199,7 @@ export function ScheduleFollowupModal({
           </Button>
           <Button 
             onClick={handleSchedule}
-            disabled={!selectedDate || !message.trim() || isLoading}
+            disabled={!selectedDate || !selectedTime || !message.trim() || isLoading}
             className="bg-primary hover:bg-primary/90"
           >
             {isLoading ? (
