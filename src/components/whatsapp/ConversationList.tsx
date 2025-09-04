@@ -109,7 +109,7 @@ function ConversationItem({ lead, isSelected, onSelect, collapsed }: Conversatio
         isSelected && "bg-primary/10 border-l-2 border-primary"
       )}
     >
-      <div className="flex items-start gap-2 sm:gap-3 w-full min-w-0 max-w-full overflow-hidden">
+      <div className="flex items-start gap-2 sm:gap-3 w-full min-w-0">
         {/* Avatar */}
         <div className="relative flex-shrink-0">
           <Avatar className="h-8 w-8 sm:h-10 sm:w-10">
@@ -122,12 +122,13 @@ function ConversationItem({ lead, isSelected, onSelect, collapsed }: Conversatio
           )}
         </div>
 
-        {/* Conteúdo Principal */}
-        <div className="flex-1 min-w-0 max-w-full overflow-hidden">
-          {/* Header: Nome, Status e Time/Badge */}
-          <div className="flex items-center justify-between mb-1 w-full">
-            <div className="flex items-center gap-1 min-w-0 flex-1">
-              <h4 className="font-medium text-xs sm:text-sm text-foreground truncate">
+        {/* Conteúdo Principal - Container com largura controlada */}
+        <div className="flex-1 min-w-0 overflow-hidden">
+          {/* Header: Nome e Controles */}
+          <div className="flex items-center justify-between mb-1 gap-2">
+            {/* Nome e ícones da esquerda */}
+            <div className="flex items-center gap-1 min-w-0 flex-shrink">
+              <h4 className="font-medium text-xs sm:text-sm text-foreground truncate max-w-[100px] sm:max-w-[150px]">
                 {lead.name}
               </h4>
               <Button
@@ -152,7 +153,7 @@ function ConversationItem({ lead, isSelected, onSelect, collapsed }: Conversatio
               </div>
             </div>
             
-            {/* Time e Badge - sempre visíveis */}
+            {/* Controles da direita - sempre visíveis */}
             <div className="flex items-center gap-1 flex-shrink-0">
               <span className="text-xs text-muted-foreground whitespace-nowrap">
                 {formatTime(lead.lastMessageTime)}
@@ -162,43 +163,6 @@ function ConversationItem({ lead, isSelected, onSelect, collapsed }: Conversatio
                   {lead.unreadCount > 9 ? '9+' : lead.unreadCount}
                 </Badge>
               )}
-            </div>
-          </div>
-          
-          {/* Última mensagem */}
-          <div className="w-full overflow-hidden mb-1">
-            <p className="text-xs text-muted-foreground truncate">
-              {lead.lastMessage}
-            </p>
-          </div>
-          
-          {/* Tags - responsivas */}
-          {leadData?.tags && Array.isArray(leadData.tags) && leadData.tags.length > 0 && (
-            <div className="flex flex-wrap gap-1 mb-1 overflow-hidden">
-              {(leadData.tags as string[]).slice(0, 1).map((tag: string, index: number) => (
-                <Badge 
-                  key={index} 
-                  variant="secondary" 
-                  className="text-xs px-1 py-0 h-3 sm:h-4 flex items-center gap-1 max-w-[5rem] flex-shrink-0"
-                >
-                  <Tag className="w-2 h-2 flex-shrink-0" />
-                  <span className="truncate">{tag}</span>
-                </Badge>
-              ))}
-              {(leadData.tags as string[]).length > 1 && (
-                <Badge variant="outline" className="text-xs px-1 py-0 h-3 sm:h-4 flex-shrink-0">
-                  +{(leadData.tags as string[]).length - 1}
-                </Badge>
-              )}
-            </div>
-          )}
-          
-          {/* Footer: Telefone e Actions */}
-          <div className="flex items-center justify-between w-full">
-            <span className="text-xs text-muted-foreground truncate flex-1 min-w-0">
-              {lead.telefone}
-            </span>
-            <div className="flex items-center gap-1 flex-shrink-0">
               <Button
                 variant="ghost"
                 size="sm"
@@ -206,12 +170,49 @@ function ConversationItem({ lead, isSelected, onSelect, collapsed }: Conversatio
                   e.stopPropagation();
                   setShowDeleteModal(true);
                 }}
-                className="h-5 sm:h-6 px-1 sm:px-2 text-red-600 hover:text-red-700 hover:bg-red-50 flex-shrink-0"
+                className="h-5 w-5 sm:h-6 sm:w-6 p-0 text-red-600 hover:text-red-700 hover:bg-red-50 flex-shrink-0"
               >
                 <Trash2 className="h-3 w-3" />
-                <span className="text-xs hidden sm:inline ml-1">Excluir</span>
               </Button>
             </div>
+          </div>
+          
+          {/* Última mensagem */}
+          <div className="w-full overflow-hidden mb-1">
+            <p className="text-xs text-muted-foreground truncate pr-2">
+              {lead.lastMessage}
+            </p>
+          </div>
+          
+          {/* Row inferior: Tags e Telefone */}
+          <div className="flex items-center justify-between gap-2">
+            {/* Tags */}
+            <div className="flex items-center gap-1 min-w-0 flex-shrink">
+              {leadData?.tags && Array.isArray(leadData.tags) && leadData.tags.length > 0 && (
+                <div className="flex gap-1 overflow-hidden">
+                  {(leadData.tags as string[]).slice(0, 1).map((tag: string, index: number) => (
+                    <Badge 
+                      key={index} 
+                      variant="secondary" 
+                      className="text-xs px-1 py-0 h-3 sm:h-4 flex items-center gap-1 max-w-[4rem] flex-shrink-0"
+                    >
+                      <Tag className="w-2 h-2 flex-shrink-0" />
+                      <span className="truncate text-xs">{tag}</span>
+                    </Badge>
+                  ))}
+                  {(leadData.tags as string[]).length > 1 && (
+                    <Badge variant="outline" className="text-xs px-1 py-0 h-3 sm:h-4 flex-shrink-0">
+                      +{(leadData.tags as string[]).length - 1}
+                    </Badge>
+                  )}
+                </div>
+              )}
+            </div>
+            
+            {/* Telefone */}
+            <span className="text-xs text-muted-foreground truncate max-w-[100px] sm:max-w-[120px] flex-shrink-0 text-right">
+              {lead.telefone}
+            </span>
           </div>
         </div>
       </div>
