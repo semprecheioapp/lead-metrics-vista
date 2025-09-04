@@ -3,6 +3,7 @@ import { ConversationSidebar } from "./ConversationSidebar";
 import { ChatPanel } from "./ChatPanel";
 import { LeadInfoPanel } from "./LeadInfoPanel";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { MobileOptimizations, useSwipeGesture } from "./MobileOptimizations";
 import { cn } from "@/lib/utils";
 
 export interface ConversationFilter {
@@ -31,6 +32,26 @@ export function WhatsAppCRM() {
   const [infoPanelCollapsed, setInfoPanelCollapsed] = useState(isMobile);
   const [showConversations, setShowConversations] = useState(true);
 
+  // Gestos de swipe para mobile
+  useSwipeGesture(
+    () => {
+      // Swipe left - mostrar painel de info
+      if (selectedChat && isMobile && infoPanelCollapsed) {
+        setInfoPanelCollapsed(false);
+      }
+    },
+    () => {
+      // Swipe right - voltar para conversas ou fechar painel
+      if (isMobile) {
+        if (!infoPanelCollapsed) {
+          setInfoPanelCollapsed(true);
+        } else if (!showConversations) {
+          handleBackToConversations();
+        }
+      }
+    }
+  );
+
   const handleSelectChat = (chatId: string) => {
     setSelectedChat(chatId);
     if (isMobile) {
@@ -47,7 +68,7 @@ export function WhatsAppCRM() {
   };
 
   return (
-    <div className="h-full bg-background flex min-h-0 rounded-lg border w-full max-w-full">
+    <MobileOptimizations className="h-full bg-background flex min-h-0 rounded-lg border w-full max-w-full">
       {/* Layout Mobile/Tablet */}
       {isMobile ? (
         <>
@@ -128,6 +149,6 @@ export function WhatsAppCRM() {
           )}
         </>
       )}
-    </div>
+    </MobileOptimizations>
   );
 }
