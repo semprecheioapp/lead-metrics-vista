@@ -5,6 +5,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
+import { GlobalErrorBoundary } from "@/components/GlobalErrorBoundary";
 import AuthPage from "@/pages/AuthPage";
 import Index from "@/pages/Index";
 import Landing from "@/pages/Landing";
@@ -39,7 +40,7 @@ const App: React.FC = () => {
   console.log("App component rendering...");
   
   return (
-    <React.Fragment>
+    <GlobalErrorBoundary>
       <QueryClientProvider client={queryClient}>
         <AuthProvider>
           <TooltipProvider>
@@ -70,8 +71,8 @@ const App: React.FC = () => {
         </TooltipProvider>
       </AuthProvider>
     </QueryClientProvider>
-  </React.Fragment>
-);
+  </GlobalErrorBoundary>
+  );
 };
 
 export default App;

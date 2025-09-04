@@ -26,6 +26,12 @@
     },
     {
       "src": "/lovable-uploads/885ae572-dec3-4868-92e1-8b1fcd6023e6.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/lovable-uploads/885ae572-dec3-4868-92e1-8b1fcd6023e6.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "maskable"

@@ -21,15 +21,16 @@ const root = createRoot(rootElement);
 console.log("Rendering app...");
 root.render(<App />);
 
-// Enhanced Service Worker management for Chrome compatibility
-if ('serviceWorker' in navigator) {
+// Service Worker management - only in production
+const SW_ENABLED = true;
+
+if (import.meta.env.PROD && SW_ENABLED && 'serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    // Clear existing service workers first (especially important for Chrome)
+    // Clear existing service workers and caches first
     navigator.serviceWorker.getRegistrations().then((registrations) => {
       Promise.all(registrations.map(registration => registration.unregister()))
         .then(() => {
           console.log('All existing service workers cleared');
-          // Clear caches after unregistering service workers
           return caches.keys();
         })
         .then((cacheNames) => {
@@ -37,11 +38,11 @@ if ('serviceWorker' in navigator) {
         })
         .then(() => {
           console.log('All caches cleared');
-          // Now register the new service worker after a delay
+          // Register new service worker after cleanup
           setTimeout(() => {
             navigator.serviceWorker.register('/sw.js')
               .then((registration) => {
-                console.log('New SW registered successfully:', registration);
+                console.log('SW registered successfully:', registration);
               })
               .catch((error) => {
                 console.log('SW registration failed:', error);

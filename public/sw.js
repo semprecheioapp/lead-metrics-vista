@@ -1,20 +1,19 @@
-const CACHE_NAME = 'dashboard-mbk-v2';
-const STATIC_CACHE = 'static-v2';
-const DYNAMIC_CACHE = 'dynamic-v2';
+const CACHE_NAME = 'dashboard-mbk-v3';
+const STATIC_CACHE = 'static-v3';
 
-// Assets to cache immediately - minimal list for Chrome compatibility
+// Minimal assets to cache
 const STATIC_ASSETS = [
   '/',
   '/manifest.json'
 ];
 
-// Install event - cache minimal assets
+// Install event - cache minimal assets and skip waiting
 self.addEventListener('install', event => {
-  console.log('Service Worker installing... v2');
+  console.log('Service Worker installing... v3');
   event.waitUntil(
     caches.open(STATIC_CACHE)
       .then(cache => {
-        console.log('Caching minimal assets for Chrome compatibility');
+        console.log('Caching minimal assets');
         return cache.addAll(STATIC_ASSETS);
       })
       .then(() => {
@@ -27,15 +26,15 @@ self.addEventListener('install', event => {
   );
 });
 
-// Activate event - clean old caches
+// Activate event - clean old caches and claim clients
 self.addEventListener('activate', event => {
-  console.log('Service Worker activating... v2');
+  console.log('Service Worker activating... v3');
   event.waitUntil(
     caches.keys()
       .then(cacheNames => {
         return Promise.all(
           cacheNames.map(cacheName => {
-            if (cacheName !== STATIC_CACHE && cacheName !== DYNAMIC_CACHE) {
+            if (cacheName !== STATIC_CACHE) {
               console.log('Deleting old cache:', cacheName);
               return caches.delete(cacheName);
             }
@@ -52,57 +51,20 @@ self.addEventListener('activate', event => {
   );
 });
 
-// Simplified fetch strategy for Chrome compatibility
+// Only handle navigation requests - don't interfere with assets/scripts
 self.addEventListener('fetch', event => {
   const { request } = event;
   
-  // Skip non-GET requests and non-same-origin requests
-  if (request.method !== 'GET' || !request.url.startsWith(self.location.origin)) {
+  // Only handle navigation requests (page loads)
+  if (request.mode !== 'navigate') {
     return;
   }
 
-  // For navigation requests, always go to network first
-  if (request.mode === 'navigate') {
-    event.respondWith(
-      fetch(request)
-        .catch(() => {
-          return caches.match('/');
-        })
-    );
-    return;
-  }
-
-  // For other requests, try cache first, then network
+  // For navigation requests, always try network first, fallback to cache
   event.respondWith(
-    caches.match(request)
-      .then(cachedResponse => {
-        if (cachedResponse) {
-          return cachedResponse;
-        }
-        
-        return fetch(request)
-          .then(response => {
-            // Only cache successful responses
-            if (!response || response.status !== 200 || response.type !== 'basic') {
-              return response;
-            }
-            
-            // Cache the response
-            const responseToCache = response.clone();
-            caches.open(DYNAMIC_CACHE)
-              .then(cache => {
-                cache.put(request, responseToCache);
-              })
-              .catch(error => {
-                console.warn('Failed to cache response:', error);
-              });
-            
-            return response;
-          })
-          .catch(error => {
-            console.warn('Fetch failed:', error);
-            return new Response('Offline', { status: 503 });
-          });
+    fetch(request)
+      .catch(() => {
+        return caches.match('/');
       })
   );
 });
