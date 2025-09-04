@@ -380,6 +380,7 @@ export type Database = {
           telefone: string | null
           token: string | null
           updated_at: string | null
+          whitelabel_enabled: boolean | null
         }
         Insert: {
           ativo?: boolean | null
@@ -397,6 +398,7 @@ export type Database = {
           telefone?: string | null
           token?: string | null
           updated_at?: string | null
+          whitelabel_enabled?: boolean | null
         }
         Update: {
           ativo?: boolean | null
@@ -414,6 +416,7 @@ export type Database = {
           telefone?: string | null
           token?: string | null
           updated_at?: string | null
+          whitelabel_enabled?: boolean | null
         }
         Relationships: []
       }

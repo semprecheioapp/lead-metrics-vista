@@ -5,11 +5,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import { Upload, Palette, Globe, Image as ImageIcon } from "lucide-react";
+import { Upload, Palette, Globe, Image as ImageIcon, Lock, Crown } from "lucide-react";
 import { toast } from "sonner";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 export const WhiteLabelSettings = () => {
-  const { config, updateConfig, isUpdating } = useWhiteLabel();
+  const { config, updateConfig, isUpdating, hasPermission } = useWhiteLabel();
   const [formData, setFormData] = useState({
     nome_empresa: config.nome_empresa || "",
     titulo_sistema: config.titulo_sistema || "",
@@ -26,6 +27,10 @@ export const WhiteLabelSettings = () => {
   };
 
   const handleSave = () => {
+    if (!hasPermission) {
+      toast.error("White Label não está habilitado para sua empresa");
+      return;
+    }
     updateConfig(formData);
     toast.success("Configurações salvas com sucesso!");
   };
@@ -46,11 +51,25 @@ export const WhiteLabelSettings = () => {
 
   return (
     <div className="space-y-6">
-      <Card>
+      {!hasPermission && (
+        <Alert className="border-amber-200 bg-amber-50 dark:border-amber-800 dark:bg-amber-950">
+          <Lock className="h-4 w-4 text-amber-600 dark:text-amber-400" />
+          <AlertDescription className="text-amber-800 dark:text-amber-200">
+            <div className="flex items-center gap-2">
+              <Crown className="h-4 w-4" />
+              <strong>Funcionalidade Premium:</strong> White Label não está habilitado para sua empresa. 
+              Entre em contato com o suporte para habilitar esta funcionalidade.
+            </div>
+          </AlertDescription>
+        </Alert>
+      )}
+      
+      <Card className={!hasPermission ? "opacity-50 pointer-events-none" : ""}>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Globe className="h-5 w-5" />
             Configurações White Label
+            {!hasPermission && <Lock className="h-4 w-4 text-muted-foreground" />}
           </CardTitle>
           <CardDescription>
             Personalize a aparência e identidade visual do seu dashboard
@@ -243,7 +262,7 @@ export const WhiteLabelSettings = () => {
           <div className="flex gap-3 pt-4">
             <Button 
               onClick={handleSave} 
-              disabled={isUpdating}
+              disabled={isUpdating || !hasPermission}
               className="flex-1"
             >
               {isUpdating ? "Salvando..." : "Salvar Configurações"}
@@ -251,7 +270,7 @@ export const WhiteLabelSettings = () => {
             <Button 
               variant="outline" 
               onClick={handleReset}
-              disabled={isUpdating}
+              disabled={isUpdating || !hasPermission}
             >
               Resetar
             </Button>

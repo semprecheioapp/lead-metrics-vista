@@ -17,6 +17,11 @@ export interface WhiteLabelConfig {
   updated_at?: string;
 }
 
+export interface WhiteLabelPermissions {
+  whitelabel_enabled: boolean;
+  has_permission: boolean;
+}
+
 const DEFAULT_CONFIG: Partial<WhiteLabelConfig> = {
   nome_empresa: "Dashboard MBK",
   titulo_sistema: "Dashboard MBK - CRM & IA",
@@ -27,13 +32,16 @@ const DEFAULT_CONFIG: Partial<WhiteLabelConfig> = {
 };
 
 export const useWhiteLabel = () => {
-  const { empresaId } = useAuth();
+  const { empresaId, empresaData } = useAuth();
   const queryClient = useQueryClient();
+
+  // Check if company has white label permission
+  const hasWhiteLabelPermission = (empresaData as any)?.whitelabel_enabled === true;
 
   const { data: config, isLoading, error } = useQuery({
     queryKey: ["whitelabel_config", empresaId],
     queryFn: async () => {
-      if (!empresaId) return DEFAULT_CONFIG;
+      if (!empresaId || !hasWhiteLabelPermission) return DEFAULT_CONFIG;
 
       const { data, error } = await supabase
         .from("configuracoes_empresa")
@@ -50,12 +58,14 @@ export const useWhiteLabel = () => {
         ...data
       } : (DEFAULT_CONFIG as WhiteLabelConfig);
     },
-    enabled: !!empresaId,
+    enabled: !!empresaId && hasWhiteLabelPermission,
   });
 
   const updateConfigMutation = useMutation({
     mutationFn: async (newConfig: Partial<WhiteLabelConfig>) => {
-      if (!empresaId) throw new Error("No empresa ID");
+      if (!empresaId || !hasWhiteLabelPermission) {
+        throw new Error("White Label não está habilitado para sua empresa");
+      }
 
       const { data: existing } = await supabase
         .from("configuracoes_empresa")
@@ -105,9 +115,9 @@ export const useWhiteLabel = () => {
     },
   });
 
-  // Apply dynamic theming
+  // Apply dynamic theming only if has permission
   useEffect(() => {
-    if (config && typeof document !== 'undefined') {
+    if (config && hasWhiteLabelPermission && typeof document !== 'undefined') {
       const root = document.documentElement;
       
       if (config.cor_primaria) {
@@ -144,7 +154,7 @@ export const useWhiteLabel = () => {
         }
       }
     }
-  }, [config]);
+  }, [config, hasWhiteLabelPermission]);
 
   return {
     config: config || DEFAULT_CONFIG,
@@ -152,6 +162,11 @@ export const useWhiteLabel = () => {
     error,
     updateConfig: updateConfigMutation.mutate,
     isUpdating: updateConfigMutation.isPending,
+    hasPermission: hasWhiteLabelPermission,
+    permissions: {
+      whitelabel_enabled: hasWhiteLabelPermission,
+      has_permission: hasWhiteLabelPermission
+    } as WhiteLabelPermissions
   };
 };
 

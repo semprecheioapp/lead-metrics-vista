@@ -12,13 +12,14 @@ import { useSuperAdminControls } from '@/hooks/useSuperAdminControls';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
-import { Building2, Users, Database, FileText, TrendingUp, MessageSquare, UserPlus, Shield } from 'lucide-react';
+import { Building2, Users, Database, FileText, TrendingUp, MessageSquare, UserPlus, Shield, Crown } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { useAllEmpresas } from '@/hooks/useAllEmpresas';
+import { WhiteLabelManagement } from '@/components/WhiteLabelManagement';
 import { endOfDay, startOfDay, subDays } from 'date-fns';
 
 export default function SuperAdminDashboard() {
@@ -114,10 +115,11 @@ export default function SuperAdminDashboard() {
         </div>
 
         <Tabs defaultValue="overview" className="space-y-4 sm:space-y-6">
-          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-5 gap-1">
+          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-6 gap-1">
             <TabsTrigger value="overview" className="text-xs sm:text-sm px-2 sm:px-4">Visão Geral</TabsTrigger>
             <TabsTrigger value="companies" className="text-xs sm:text-sm px-2 sm:px-4">Empresas</TabsTrigger>
             <TabsTrigger value="agents" className="text-xs sm:text-sm px-2 sm:px-4">Agentes</TabsTrigger>
+            <TabsTrigger value="whitelabel" className="text-xs sm:text-sm px-2 sm:px-4">White Label</TabsTrigger>
             <TabsTrigger value="analytics" className="text-xs sm:text-sm px-2 sm:px-4">Analytics</TabsTrigger>
             <TabsTrigger value="tools" className="text-xs sm:text-sm px-2 sm:px-4">Ferramentas</TabsTrigger>
           </TabsList>
@@ -304,6 +306,10 @@ export default function SuperAdminDashboard() {
                 </div>
               </CardContent>
             </Card>
+          </TabsContent>
+
+          <TabsContent value="whitelabel" className="space-y-6">
+            <WhiteLabelManagement />
           </TabsContent>
 
           <TabsContent value="analytics" className="space-y-6">
