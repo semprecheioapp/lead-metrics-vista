@@ -7,7 +7,7 @@ export const useAllEmpresas = () => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("empresas")
-        .select("id, name_empresa")
+        .select("id, name_empresa, whitelabel_enabled")
         .eq("ativo", true)
         .order("name_empresa");
 

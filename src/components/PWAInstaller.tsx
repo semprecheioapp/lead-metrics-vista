@@ -17,6 +17,7 @@ export const PWAInstaller = () => {
   const [showInstallBanner, setShowInstallBanner] = useState(false);
   const [isIOS, setIsIOS] = useState(false);
   const [isStandalone, setIsStandalone] = useState(false);
+  const [isChromeIOS, setIsChromeIOS] = useState(false);
 
   useEffect(() => {
     // Check if running as PWA
@@ -26,6 +27,8 @@ export const PWAInstaller = () => {
     // Check if iOS
     const iOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
     setIsIOS(iOS);
+    const chromeIOS = /CriOS/i.test(navigator.userAgent);
+    setIsChromeIOS(chromeIOS);
 
     // Listen for the beforeinstallprompt event
     const handleBeforeInstallPrompt = (e: BeforeInstallPromptEvent) => {
@@ -72,12 +75,14 @@ export const PWAInstaller = () => {
         <AlertDescription className="flex items-center justify-between gap-3">
           <div className="flex-1">
             <p className="font-medium text-sm">
-              {isIOS ? 'Adicionar à Tela Inicial' : 'Instalar App'}
+              {isIOS ? 'Instalar no iPhone' : 'Instalar App'}
             </p>
             <p className="text-xs text-muted-foreground mt-1">
               {isIOS 
-                ? 'Toque em ⎋ e selecione "Adicionar à Tela Inicial"'
-                : 'Instale nosso app para acesso rápido'
+                ? (isChromeIOS
+                    ? 'No Chrome para iOS, toque em ⋯ e escolha “Abrir no Safari”. Depois, toque no botão Compartilhar e selecione “Adicionar à Tela de Início”.'
+                    : 'No Safari, toque no botão Compartilhar (quadrado com seta) e selecione “Adicionar à Tela de Início”.')
+                : 'Instale nosso app para acesso rápido no seu dispositivo.'
               }
             </p>
           </div>

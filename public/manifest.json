@@ -4,11 +4,13 @@
   "description": "Dashboard profissional para monitoramento de métricas de atendimento com IA em tempo real",
   "start_url": "/",
   "display": "standalone",
+  "display_override": ["standalone", "window-controls-overlay"],
   "background_color": "#0a0f1c",
   "theme_color": "#1e40af",
   "orientation": "portrait-primary",
   "scope": "/",
   "lang": "pt-BR",
+  "prefer_related_applications": false,
   "icons": [
     {
       "src": "/lovable-uploads/885ae572-dec3-4868-92e1-8b1fcd6023e6.png",
