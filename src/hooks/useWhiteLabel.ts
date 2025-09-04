@@ -46,9 +46,9 @@ export const useWhiteLabel = () => {
       }
 
       return data ? {
-        ...DEFAULT_CONFIG,
+        ...(DEFAULT_CONFIG as WhiteLabelConfig),
         ...data
-      } : DEFAULT_CONFIG;
+      } : (DEFAULT_CONFIG as WhiteLabelConfig);
     },
     enabled: !!empresaId,
   });

@@ -120,8 +120,13 @@ export type Database = {
         Row: {
           api_whatsapp: string | null
           auto_resposta: boolean | null
+          cor_accent: string | null
+          cor_background: string | null
+          cor_primaria: string | null
+          cor_secundaria: string | null
           created_at: string | null
           empresa_id: number
+          favicon_url: string | null
           followup_abandono_horas: number | null
           followup_dias_uteis: boolean | null
           followup_horario_fim: string | null
@@ -131,19 +136,27 @@ export type Database = {
           id: number
           llm_enabled: boolean | null
           llm_provider: string | null
+          logo_url: string | null
           mensagem_fora_horario: string | null
+          nome_empresa: string | null
           nome_remetente_padrao: string | null
           prompt_sistema: string | null
           reports_enabled: boolean | null
           reports_frequency: string | null
+          titulo_sistema: string | null
           updated_at: string | null
           webhook_url: string | null
         }
         Insert: {
           api_whatsapp?: string | null
           auto_resposta?: boolean | null
+          cor_accent?: string | null
+          cor_background?: string | null
+          cor_primaria?: string | null
+          cor_secundaria?: string | null
           created_at?: string | null
           empresa_id: number
+          favicon_url?: string | null
           followup_abandono_horas?: number | null
           followup_dias_uteis?: boolean | null
           followup_horario_fim?: string | null
@@ -153,19 +166,27 @@ export type Database = {
           id?: number
           llm_enabled?: boolean | null
           llm_provider?: string | null
+          logo_url?: string | null
           mensagem_fora_horario?: string | null
+          nome_empresa?: string | null
           nome_remetente_padrao?: string | null
           prompt_sistema?: string | null
           reports_enabled?: boolean | null
           reports_frequency?: string | null
+          titulo_sistema?: string | null
           updated_at?: string | null
           webhook_url?: string | null
         }
         Update: {
           api_whatsapp?: string | null
           auto_resposta?: boolean | null
+          cor_accent?: string | null
+          cor_background?: string | null
+          cor_primaria?: string | null
+          cor_secundaria?: string | null
           created_at?: string | null
           empresa_id?: number
+          favicon_url?: string | null
           followup_abandono_horas?: number | null
           followup_dias_uteis?: boolean | null
           followup_horario_fim?: string | null
@@ -175,11 +196,14 @@ export type Database = {
           id?: number
           llm_enabled?: boolean | null
           llm_provider?: string | null
+          logo_url?: string | null
           mensagem_fora_horario?: string | null
+          nome_empresa?: string | null
           nome_remetente_padrao?: string | null
           prompt_sistema?: string | null
           reports_enabled?: boolean | null
           reports_frequency?: string | null
+          titulo_sistema?: string | null
           updated_at?: string | null
           webhook_url?: string | null
         }

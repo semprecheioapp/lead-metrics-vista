@@ -2,6 +2,7 @@ import { BarChart3, Users, AlertTriangle, Settings, Home, Shield, LogOut, Send, 
 import { cn } from "@/lib/utils";
 import { UserMenu } from "./UserMenu";
 import { useAuth } from "@/contexts/AuthContext";
+import { useWhiteLabel } from "@/hooks/useWhiteLabel";
 import { Link, useLocation } from "react-router-dom";
 import { useState } from "react";
 import {
@@ -40,6 +41,7 @@ const menuItems = [
 
 export const AppSidebar = () => {
   const { user, signOut } = useAuth();
+  const { config } = useWhiteLabel();
   const location = useLocation();
   const { state } = useSidebar();
   const isSuperAdmin = user?.email === 'agenciambkautomacoes@gmail.com';
@@ -67,14 +69,28 @@ export const AppSidebar = () => {
         <div className="flex items-center gap-2 p-3 sm:p-2">
           <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-primary-glow flex items-center justify-center relative overflow-hidden">
             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer-slide"></div>
+            {config.logo_url ? (
+              <img 
+                src={config.logo_url} 
+                alt="Logo" 
+                className="w-5 h-5 object-contain relative z-10"
+                onError={(e) => {
+                  e.currentTarget.style.display = 'none';
+                  const fallback = e.currentTarget.nextElementSibling as HTMLElement;
+                  if (fallback) fallback.style.display = 'block';
+                }}
+              />
+            ) : null}
             <img 
               src="/lovable-uploads/885ae572-dec3-4868-92e1-8b1fcd6023e6.png" 
               alt="MBK" 
-              className="w-5 h-5 object-contain relative z-10"
+              className={cn("w-5 h-5 object-contain relative z-10", config.logo_url && "hidden")}
             />
           </div>
           {!collapsed && (
-            <h1 className="text-base sm:text-lg font-bold text-sidebar-foreground">DashBoard_Mbk</h1>
+            <h1 className="text-base sm:text-lg font-bold text-sidebar-foreground">
+              {config.nome_empresa || "DashBoard_Mbk"}
+            </h1>
           )}
         </div>
       </SidebarHeader>

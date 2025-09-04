@@ -14,6 +14,7 @@ import { useConfiguracoesEmpresa } from "@/hooks/useConfiguracoesEmpresa";
 import { useFollowupConfig } from "@/hooks/useFollowupConfig";
 import { toast } from "@/hooks/use-toast";
 import { AgentManagementSection } from "@/components/agents/AgentManagementSection";
+import { WhiteLabelSettings } from "@/components/WhiteLabelSettings";
 
 export default function Configuracoes() {
   const { empresaData } = useAuth();
@@ -95,7 +96,7 @@ export default function Configuracoes() {
         </div>
 
         <Tabs defaultValue="empresa" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4">
+          <TabsList className="grid w-full grid-cols-5">
             <TabsTrigger value="empresa" className="flex items-center gap-2">
               <Building className="w-4 h-4" />
               Empresa
@@ -107,6 +108,10 @@ export default function Configuracoes() {
             <TabsTrigger value="followup" className="flex items-center gap-2">
               <Send className="w-4 h-4" />
               Follow-up
+            </TabsTrigger>
+            <TabsTrigger value="whitelabel" className="flex items-center gap-2">
+              <Settings className="w-4 h-4" />
+              White Label
             </TabsTrigger>
             <TabsTrigger value="seguranca" className="flex items-center gap-2">
               <Shield className="w-4 h-4" />
@@ -184,6 +189,11 @@ export default function Configuracoes() {
           {/* Gestão de Agentes */}
           <TabsContent value="agentes">
             <AgentManagementSection />
+          </TabsContent>
+
+          {/* Configurações White Label */}
+          <TabsContent value="whitelabel">
+            <WhiteLabelSettings />
           </TabsContent>
 
           {/* Configurações de Follow-up */}

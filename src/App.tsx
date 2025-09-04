@@ -24,6 +24,7 @@ import EmailConfirmationPage from "@/pages/EmailConfirmationPage";
 import NotFound from "@/pages/NotFound";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { SuperAdminRoute } from "@/components/SuperAdminRoute";
+import { PWAInstaller } from "@/components/PWAInstaller";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -60,16 +61,17 @@ const App: React.FC = () => {
                 <Route path="/logs" element={<ProtectedRoute><SuperAdminRoute><Logs /></SuperAdminRoute></ProtectedRoute>} />
                 <Route path="/accept-invite-after-register" element={<AcceptInviteAfterRegister />} />
                 <Route path="/auth/confirm" element={<EmailConfirmationPage />} />
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </BrowserRouter>
-            <Toaster />
-            <Sonner />
-          </TooltipProvider>
-        </AuthProvider>
-      </QueryClientProvider>
-    </React.Fragment>
-  );
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+            <PWAInstaller />
+          </BrowserRouter>
+          <Toaster />
+          <Sonner />
+        </TooltipProvider>
+      </AuthProvider>
+    </QueryClientProvider>
+  </React.Fragment>
+);
 };
 
 export default App;
