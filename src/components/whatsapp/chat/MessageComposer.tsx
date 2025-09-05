@@ -50,7 +50,7 @@ export function MessageComposer({
     }
   };
 
-  const handleSendAudio = async (audioBase64: string) => {
+  const handleSendAudio = async (audioBase64: string, mimeType?: string, duration?: number) => {
     if (!phoneNumber) {
       console.error("❌ Número de telefone não encontrado");
       return;
@@ -62,7 +62,9 @@ export function MessageComposer({
       await sendAudioMutation.mutateAsync({
         telefone: phoneNumber,
         audioBase64,
-        remetente
+        remetente,
+        mimeType,
+        duration
       });
       
       setShowAudioRecorder(false);

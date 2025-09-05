@@ -1,11 +1,11 @@
 import { useState, useRef, useEffect } from "react";
 import { Mic, MicOff, Send, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { AudioRecorder as AudioRecorderClass, encodeAudioForAPI } from "@/utils/RealtimeAudio";
 import { cn } from "@/lib/utils";
+import { toast } from "@/hooks/use-toast";
 
 interface AudioRecorderProps {
-  onSendAudio: (audioBase64: string) => void;
+  onSendAudio: (audioBase64: string, mimeType?: string, duration?: number) => void;
   isSending: boolean;
   onCancel: () => void;
 }
@@ -16,20 +16,31 @@ export function AudioRecorder({ onSendAudio, isSending, onCancel }: AudioRecorde
   const [hasRecording, setHasRecording] = useState(false);
   const [permissionDenied, setPermissionDenied] = useState(false);
   
-  const recorderRef = useRef<AudioRecorderClass | null>(null);
-  const audioChunksRef = useRef<Float32Array[]>([]);
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const audioChunksRef = useRef<Blob[]>([]);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const streamRef = useRef<MediaStream | null>(null);
 
   useEffect(() => {
     return () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-      }
-      if (recorderRef.current) {
-        recorderRef.current.stop();
-      }
+      cleanup();
     };
   }, []);
+
+  const cleanup = () => {
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+    if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
+      mediaRecorderRef.current.stop();
+    }
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach(track => track.stop());
+      streamRef.current = null;
+    }
+    mediaRecorderRef.current = null;
+  };
 
   const startRecording = async () => {
     try {
@@ -37,11 +48,50 @@ export function AudioRecorder({ onSendAudio, isSending, onCancel }: AudioRecorde
       setPermissionDenied(false);
       audioChunksRef.current = [];
       
-      recorderRef.current = new AudioRecorderClass((audioData) => {
-        audioChunksRef.current.push(new Float32Array(audioData));
+      // Solicitar acesso ao microfone
+      const stream = await navigator.mediaDevices.getUserMedia({ 
+        audio: {
+          echoCancellation: true,
+          noiseSuppression: true,
+          autoGainControl: true,
+          sampleRate: 16000
+        } 
+      });
+      
+      streamRef.current = stream;
+
+      // Verificar suporte a formatos comprimidos
+      const mimeTypes = [
+        'audio/webm;codecs=opus',
+        'audio/ogg;codecs=opus', 
+        'audio/webm',
+        'audio/mp4',
+        'audio/wav'
+      ];
+
+      let selectedMimeType = 'audio/wav';
+      for (const mimeType of mimeTypes) {
+        if (MediaRecorder.isTypeSupported(mimeType)) {
+          selectedMimeType = mimeType;
+          break;
+        }
+      }
+
+      console.log(`🎵 Usando formato: ${selectedMimeType}`);
+
+      mediaRecorderRef.current = new MediaRecorder(stream, { 
+        mimeType: selectedMimeType,
+        audioBitsPerSecond: 64000 // 64kbps para boa qualidade e tamanho reduzido
       });
 
-      await recorderRef.current.start();
+      mediaRecorderRef.current.ondataavailable = (event) => {
+        if (event.data.size > 0) {
+          audioChunksRef.current.push(event.data);
+          console.log(`📦 Chunk gravado: ${event.data.size} bytes`);
+        }
+      };
+
+      mediaRecorderRef.current.start(100); // Capturar dados a cada 100ms
       setIsRecording(true);
       setRecordingTime(0);
       
@@ -54,15 +104,15 @@ export function AudioRecorder({ onSendAudio, isSending, onCancel }: AudioRecorde
     } catch (error) {
       console.error("❌ Erro ao iniciar gravação:", error);
       setPermissionDenied(true);
+      cleanup();
     }
   };
 
   const stopRecording = () => {
     console.log("🛑 Parando gravação...");
     
-    if (recorderRef.current) {
-      recorderRef.current.stop();
-      recorderRef.current = null;
+    if (mediaRecorderRef.current && mediaRecorderRef.current.state === 'recording') {
+      mediaRecorderRef.current.stop();
     }
     
     if (intervalRef.current) {
@@ -70,55 +120,116 @@ export function AudioRecorder({ onSendAudio, isSending, onCancel }: AudioRecorde
       intervalRef.current = null;
     }
     
-    setIsRecording(false);
-    setHasRecording(audioChunksRef.current.length > 0);
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach(track => track.stop());
+    }
     
-    console.log(`✅ Gravação parada. ${audioChunksRef.current.length} chunks gravados`);
+    setIsRecording(false);
+    
+    // Aguardar um pouco para garantir que todos os chunks foram processados
+    setTimeout(() => {
+      setHasRecording(audioChunksRef.current.length > 0);
+      console.log(`✅ Gravação parada. ${audioChunksRef.current.length} chunks gravados`);
+    }, 100);
   };
 
-  const sendRecording = () => {
+  const sendRecording = async () => {
     if (audioChunksRef.current.length === 0) {
       console.warn("⚠️ Nenhum áudio gravado para enviar");
+      toast({
+        title: "Erro",
+        description: "Nenhum áudio foi gravado",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Validar duração mínima
+    if (recordingTime < 1) {
+      console.warn("⚠️ Gravação muito curta");
+      toast({
+        title: "Aviso",
+        description: "A gravação deve ter pelo menos 1 segundo",
+        variant: "destructive",
+      });
       return;
     }
 
     console.log("📤 Processando áudio para envio...");
     
-    // Combinar todos os chunks de áudio
-    const totalLength = audioChunksRef.current.reduce((sum, chunk) => sum + chunk.length, 0);
-    const combinedAudio = new Float32Array(totalLength);
-    
-    let offset = 0;
-    for (const chunk of audioChunksRef.current) {
-      combinedAudio.set(chunk, offset);
-      offset += chunk.length;
-    }
+    try {
+      // Combinar todos os chunks em um blob
+      const audioBlob = new Blob(audioChunksRef.current, { 
+        type: mediaRecorderRef.current?.mimeType || 'audio/wav' 
+      });
+      
+      console.log(`📊 Tamanho do áudio: ${audioBlob.size} bytes`);
+      console.log(`🎵 Tipo MIME: ${audioBlob.type}`);
+      console.log(`⏱️ Duração: ${recordingTime} segundos`);
 
-    // Converter para base64
-    const audioBase64 = encodeAudioForAPI(combinedAudio);
-    console.log(`✅ Áudio processado: ${audioBase64.length} caracteres base64`);
-    
-    onSendAudio(audioBase64);
-    
-    // Reset
-    audioChunksRef.current = [];
-    setHasRecording(false);
-    setRecordingTime(0);
+      // Validar tamanho mínimo
+      if (audioBlob.size < 1000) { // Menos de 1KB é suspeito
+        console.warn("⚠️ Arquivo de áudio muito pequeno");
+        toast({
+          title: "Erro",
+          description: "Áudio inválido - arquivo muito pequeno",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      // Converter para base64
+      const reader = new FileReader();
+      reader.onload = () => {
+        const base64 = reader.result as string;
+        const base64Data = base64.split(',')[1]; // Remove o prefixo data:audio/...;base64,
+        
+        if (!base64Data || base64Data.length === 0) {
+          console.error("❌ Base64 vazio após conversão");
+          toast({
+            title: "Erro",
+            description: "Falha ao processar o áudio",
+            variant: "destructive",
+          });
+          return;
+        }
+        
+        console.log(`✅ Áudio processado: ${base64Data.length} caracteres base64`);
+        console.log(`📋 Preview Base64: ${base64Data.substring(0, 50)}...${base64Data.substring(base64Data.length - 50)}`);
+        
+        onSendAudio(base64Data, audioBlob.type, recordingTime);
+        
+        // Reset
+        audioChunksRef.current = [];
+        setHasRecording(false);
+        setRecordingTime(0);
+      };
+      
+      reader.onerror = () => {
+        console.error("❌ Erro ao converter áudio para base64");
+        toast({
+          title: "Erro",
+          description: "Falha ao processar o áudio",
+          variant: "destructive",
+        });
+      };
+      
+      reader.readAsDataURL(audioBlob);
+      
+    } catch (error) {
+      console.error("❌ Erro ao processar áudio:", error);
+      toast({
+        title: "Erro",
+        description: "Falha ao processar o áudio",
+        variant: "destructive",
+      });
+    }
   };
 
   const cancelRecording = () => {
     console.log("❌ Cancelando gravação...");
     
-    if (recorderRef.current) {
-      recorderRef.current.stop();
-      recorderRef.current = null;
-    }
-    
-    if (intervalRef.current) {
-      clearInterval(intervalRef.current);
-      intervalRef.current = null;
-    }
-    
+    cleanup();
     audioChunksRef.current = [];
     setIsRecording(false);
     setHasRecording(false);
