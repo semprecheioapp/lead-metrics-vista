@@ -111,6 +111,7 @@ export function ChatPanel({
         isSending={isSending}
         isMobile={isMobile}
         defaultSenderName={config?.nome_remetente_padrao}
+        phoneNumber={currentLead.telefone}
       />
     </div>
   );
