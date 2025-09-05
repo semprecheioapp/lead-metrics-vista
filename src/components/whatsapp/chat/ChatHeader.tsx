@@ -1,8 +1,9 @@
-import { ArrowLeft, Info, MoreVertical, CheckCircle, Clock } from "lucide-react";
+import { ArrowLeft, Info, MoreVertical, CheckCircle, Clock, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { cn } from "@/lib/utils";
 import { ScheduleFollowupModal } from "@/components/ScheduleFollowupModal";
 import { useScheduleFollowup } from "@/hooks/useScheduleFollowup";
@@ -21,6 +22,8 @@ interface ChatHeaderProps {
   isMobile?: boolean;
   onResolveConversation: () => void;
   isResolving: boolean;
+  onDeleteConversation: () => void;
+  isDeleting: boolean;
 }
 
 export function ChatHeader({
@@ -30,14 +33,22 @@ export function ChatHeader({
   infoPanelCollapsed,
   isMobile,
   onResolveConversation,
-  isResolving
+  isResolving,
+  onDeleteConversation,
+  isDeleting
 }: ChatHeaderProps) {
   const [showScheduleModal, setShowScheduleModal] = useState(false);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const { scheduleFollowup, isScheduling } = useScheduleFollowup();
 
   const handleScheduleFollowup = (data: { date: Date; message: string; leadId: string }) => {
     scheduleFollowup(data);
     setShowScheduleModal(false);
+  };
+
+  const handleDeleteConfirm = () => {
+    onDeleteConversation();
+    setShowDeleteDialog(false);
   };
   return (
     <div className="p-3 sm:p-4 border-b border-border bg-card">
@@ -113,6 +124,14 @@ export function ChatHeader({
                 <Clock className="w-4 h-4 mr-2" />
                 Agendar follow-up
               </DropdownMenuItem>
+              <DropdownMenuItem 
+                onClick={() => setShowDeleteDialog(true)}
+                disabled={isDeleting}
+                className="text-destructive focus:text-destructive"
+              >
+                <Trash2 className="w-4 h-4 mr-2" />
+                Excluir conversa
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
@@ -129,6 +148,28 @@ export function ChatHeader({
         onSchedule={handleScheduleFollowup}
         isLoading={isScheduling}
       />
+
+      <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Excluir conversa</AlertDialogTitle>
+            <AlertDialogDescription>
+              Tem certeza que deseja excluir todas as conversas de <strong>{currentLead.name}</strong>? 
+              Esta ação é irreversível e removerá o contato e todo o histórico de mensagens.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={isDeleting}>Cancelar</AlertDialogCancel>
+            <AlertDialogAction 
+              onClick={handleDeleteConfirm}
+              disabled={isDeleting}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              {isDeleting ? "Excluindo..." : "Excluir"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

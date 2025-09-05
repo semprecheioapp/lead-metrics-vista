@@ -3,6 +3,7 @@ import { useLeadConversations } from "@/hooks/useLeadConversations";
 import { useSendWhatsAppMessage } from "@/hooks/useSendWhatsAppMessage";
 import { useConfiguracoesEmpresa } from "@/hooks/useConfiguracoesEmpresa";
 import { useResolveConversation } from "@/hooks/useResolveConversation";
+import { useDeleteContact } from "@/hooks/useDeleteContact";
 import { useAuth } from "@/contexts/AuthContext";
 import { ChatHeader } from "./chat/ChatHeader";
 import { MessageList } from "./chat/MessageList";
@@ -29,6 +30,7 @@ export function ChatPanel({
   const { mutate: sendMessage, isPending: isSending } = useSendWhatsAppMessage();
   const { data: config } = useConfiguracoesEmpresa();
   const { mutate: resolveConversation, isPending: isResolving } = useResolveConversation();
+  const { deleteContact, isDeleting } = useDeleteContact();
   const { empresaData } = useAuth();
 
   const currentLead = leads?.find(lead => lead.session_id === chatId);
@@ -52,6 +54,16 @@ export function ChatPanel({
         nome: currentLead.name,
         numero: currentLead.telefone,
       });
+    }
+  };
+
+  const handleDeleteConversation = () => {
+    if (currentLead) {
+      deleteContact({ phoneNumber: currentLead.telefone });
+      // Return to conversations list after deletion is triggered
+      if (onBackToConversations) {
+        onBackToConversations();
+      }
     }
   };
 
@@ -84,6 +96,8 @@ export function ChatPanel({
           isMobile={isMobile}
           onResolveConversation={handleResolveConversation}
           isResolving={isResolving}
+          onDeleteConversation={handleDeleteConversation}
+          isDeleting={isDeleting}
         />
 
       <MessageList
