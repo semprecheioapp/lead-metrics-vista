@@ -5,8 +5,8 @@ import { toast } from "sonner";
 interface SendAudioPayload {
   tipo_mensagem: "AUDIO";
   codigo: string; // base64 audio data (puro, sem prefixo)
-  base64_audio?: string; // campo adicional compatível com alguns webhooks
-  base64?: string; // alias para compatibilidade extra
+  base64_audio?: string; // compatibilidade com alguns webhooks
+  base64?: string; // alias extra
   empresa_id: number;
   numero: string;
   remetente: string;
@@ -48,16 +48,15 @@ export const useSendWhatsAppAudio = () => {
         throw new Error("Áudio inválido - dados insuficientes");
       }
 
-      // Determinar extensão baseada no MIME type (priorizar .ogg)
-      let filename = "audio.ogg";
+      // Determinar extensão baseada no MIME type
+      let filename = 'audio.ogg';
       if (mimeType) {
-        if (mimeType.includes('webm')) {
-          filename = "audio.webm";
-        } else if (mimeType.includes('wav')) {
-          filename = "audio.wav";
-        } else {
-          filename = "audio.ogg";
-        }
+        if (mimeType.includes('webm')) filename = 'audio.webm';
+        else if (mimeType.includes('wav')) filename = 'audio.wav';
+        else if (mimeType.includes('mp4')) filename = 'audio.m4a';
+        else if (mimeType.includes('aac')) filename = 'audio.m4a';
+        else if (mimeType.includes('mpeg') || mimeType.includes('mp3')) filename = 'audio.mp3';
+        else filename = 'audio.ogg';
       }
 
       // Sanitizar Base64: remover prefixo data: e qualquer whitespace
@@ -83,26 +82,7 @@ export const useSendWhatsAppAudio = () => {
         throw new Error('Áudio inválido - base64 muito curto');
       }
 
-      // Validar cabeçalhos OGG/Opus
-      const isValidOggOpus = (s: string) => {
-        try {
-          const take = Math.min(4096, s.length - (s.length % 4));
-          const chunk = s.slice(0, take);
-          const padded = chunk + '='.repeat((4 - (chunk.length % 4)) % 4);
-          const bin = atob(padded);
-          const hasOggS = bin.startsWith('OggS');
-          const hasOpusHead = bin.includes('OpusHead');
-          return hasOggS && hasOpusHead;
-        } catch (e) {
-          console.error('Erro ao validar OGG/Opus:', e);
-          return false;
-        }
-      };
-
-      if (!isValidOggOpus(sanitized)) {
-        console.error('❌ Áudio não é OGG/Opus válido');
-        throw new Error('Áudio inválido - é necessário OGG com codec Opus');
-      }
+      // Não validar OGG/Opus no frontend — backend fará conversão/validação
 
       const payload: SendAudioPayload = {
         tipo_mensagem: "AUDIO",
