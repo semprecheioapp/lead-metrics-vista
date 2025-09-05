@@ -11,7 +11,7 @@ interface DashboardLayoutProps {
 export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
   return (
     <SidebarProvider defaultOpen={false}>
-      <div className="h-screen w-full flex flex-col bg-gradient-to-br from-background-base via-primary-dark/20 to-background-base relative overflow-hidden">
+      <div className="h-screen w-full flex bg-gradient-to-br from-background-base via-primary-dark/20 to-background-base relative overflow-hidden">
         <AppSidebar />
         <SidebarInset className="flex-1 relative min-w-0 flex flex-col">
           {/* Background Pattern with Corporate Theme */}
