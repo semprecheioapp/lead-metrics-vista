@@ -123,7 +123,7 @@ export function ConversationSidebar({
 
       {/* Lista de Conversas */}
       <div className="flex-1 min-h-0">
-        <ScrollArea className="h-full pr-2">
+        <ScrollArea className="h-full pr-4">
           <ConversationList
             selectedChat={selectedChat}
             onSelectChat={onSelectChat}
