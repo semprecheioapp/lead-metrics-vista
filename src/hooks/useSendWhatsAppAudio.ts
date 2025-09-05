@@ -6,6 +6,7 @@ interface SendAudioPayload {
   tipo_mensagem: "AUDIO";
   codigo: string; // base64 audio data (puro, sem prefixo)
   base64_audio?: string; // campo adicional compatível com alguns webhooks
+  base64?: string; // alias para compatibilidade extra
   empresa_id: number;
   numero: string;
   remetente: string;
@@ -73,19 +74,41 @@ export const useSendWhatsAppAudio = () => {
       console.log(`📋 Preview Base64: ${sanitized.substring(0, 50)}...${sanitized.substring(Math.max(0, sanitized.length - 50))}`);
 
       if (!sanitized || sanitized.trim() === '') {
-        console.error("❌ Base64 está vazio após sanitização");
-        throw new Error("Base64 do áudio está vazio");
+        console.error('❌ Base64 está vazio após sanitização');
+        throw new Error('Base64 do áudio está vazio');
       }
 
       if (sanitized.length < 10000) {
-        console.error("❌ Base64 muito pequeno (<10KB):", sanitized.length);
-        throw new Error("Áudio inválido - base64 muito curto");
+        console.error('❌ Base64 muito pequeno (<10KB):', sanitized.length);
+        throw new Error('Áudio inválido - base64 muito curto');
+      }
+
+      // Validar cabeçalhos OGG/Opus
+      const isValidOggOpus = (s: string) => {
+        try {
+          const take = Math.min(4096, s.length - (s.length % 4));
+          const chunk = s.slice(0, take);
+          const padded = chunk + '='.repeat((4 - (chunk.length % 4)) % 4);
+          const bin = atob(padded);
+          const hasOggS = bin.startsWith('OggS');
+          const hasOpusHead = bin.includes('OpusHead');
+          return hasOggS && hasOpusHead;
+        } catch (e) {
+          console.error('Erro ao validar OGG/Opus:', e);
+          return false;
+        }
+      };
+
+      if (!isValidOggOpus(sanitized)) {
+        console.error('❌ Áudio não é OGG/Opus válido');
+        throw new Error('Áudio inválido - é necessário OGG com codec Opus');
       }
 
       const payload: SendAudioPayload = {
         tipo_mensagem: "AUDIO",
         codigo: sanitized,
         base64_audio: sanitized, // compatibilidade
+        base64: sanitized, // alias extra
         empresa_id: empresaData.id,
         numero: telefone,
         remetente,
