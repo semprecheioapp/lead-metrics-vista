@@ -4,7 +4,8 @@ import { toast } from "sonner";
 
 interface SendAudioPayload {
   tipo_mensagem: "AUDIO";
-  codigo: string; // base64 audio data
+  codigo: string; // base64 audio data (puro, sem prefixo)
+  base64_audio?: string; // campo adicional compatível com alguns webhooks
   empresa_id: number;
   numero: string;
   remetente: string;
@@ -46,23 +47,45 @@ export const useSendWhatsAppAudio = () => {
         throw new Error("Áudio inválido - dados insuficientes");
       }
 
-      // Determinar extensão baseada no MIME type
-      let filename = "audio.wav";
+      // Determinar extensão baseada no MIME type (priorizar .ogg)
+      let filename = "audio.ogg";
       if (mimeType) {
-        if (mimeType.includes('opus')) {
-          filename = "audio.opus";
-        } else if (mimeType.includes('webm')) {
+        if (mimeType.includes('webm')) {
           filename = "audio.webm";
-        } else if (mimeType.includes('ogg')) {
+        } else if (mimeType.includes('wav')) {
+          filename = "audio.wav";
+        } else {
           filename = "audio.ogg";
-        } else if (mimeType.includes('mp4')) {
-          filename = "audio.mp4";
         }
+      }
+
+      // Sanitizar Base64: remover prefixo data: e qualquer whitespace
+      let b64 = audioBase64 || '';
+      if (b64.startsWith('data:')) {
+        b64 = (b64.split(',')[1] || '');
+      }
+      const sanitized = b64.replace(/[\r\n\t ]+/g, '');
+
+      console.log('📏 Base64 antes/depois sanitização:', {
+        antes: (audioBase64 || '').length,
+        depois: sanitized.length,
+      });
+      console.log(`📋 Preview Base64: ${sanitized.substring(0, 50)}...${sanitized.substring(Math.max(0, sanitized.length - 50))}`);
+
+      if (!sanitized || sanitized.trim() === '') {
+        console.error("❌ Base64 está vazio após sanitização");
+        throw new Error("Base64 do áudio está vazio");
+      }
+
+      if (sanitized.length < 10000) {
+        console.error("❌ Base64 muito pequeno (<10KB):", sanitized.length);
+        throw new Error("Áudio inválido - base64 muito curto");
       }
 
       const payload: SendAudioPayload = {
         tipo_mensagem: "AUDIO",
-        codigo: audioBase64,
+        codigo: sanitized,
+        base64_audio: sanitized, // compatibilidade
         empresa_id: empresaData.id,
         numero: telefone,
         remetente,

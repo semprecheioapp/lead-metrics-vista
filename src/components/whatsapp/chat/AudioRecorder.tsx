@@ -54,16 +54,16 @@ export function AudioRecorder({ onSendAudio, isSending, onCancel }: AudioRecorde
           echoCancellation: true,
           noiseSuppression: true,
           autoGainControl: true,
-          sampleRate: 16000
+          sampleRate: 48000
         } 
       });
       
       streamRef.current = stream;
 
-      // Verificar suporte a formatos comprimidos
       const mimeTypes = [
+        'audio/ogg;codecs=opus',
+        'audio/ogg',
         'audio/webm;codecs=opus',
-        'audio/ogg;codecs=opus', 
         'audio/webm',
         'audio/mp4',
         'audio/wav'
@@ -78,6 +78,13 @@ export function AudioRecorder({ onSendAudio, isSending, onCancel }: AudioRecorde
       }
 
       console.log(`🎵 Usando formato: ${selectedMimeType}`);
+      if (!selectedMimeType.startsWith('audio/ogg')) {
+        console.warn('⚠️ Gravando em formato não OGG/Opus:', selectedMimeType);
+        toast({
+          title: 'Aviso',
+          description: 'Seu navegador não suporta OGG/Opus. O WhatsApp pode não aceitar o áudio.',
+        });
+      }
 
       mediaRecorderRef.current = new MediaRecorder(stream, { 
         mimeType: selectedMimeType,
@@ -182,9 +189,10 @@ export function AudioRecorder({ onSendAudio, isSending, onCancel }: AudioRecorde
       const reader = new FileReader();
       reader.onload = () => {
         const base64 = reader.result as string;
-        const base64Data = base64.split(',')[1]; // Remove o prefixo data:audio/...;base64,
+        const base64Data = base64.split(',')[1] || '';
+        const cleanBase64 = base64Data.replace(/[\r\n\t ]+/g, '');
         
-        if (!base64Data || base64Data.length === 0) {
+        if (!cleanBase64 || cleanBase64.length === 0) {
           console.error("❌ Base64 vazio após conversão");
           toast({
             title: "Erro",
@@ -193,11 +201,22 @@ export function AudioRecorder({ onSendAudio, isSending, onCancel }: AudioRecorde
           });
           return;
         }
+
+        // Validação de tamanho mínimo (>10KB)
+        if (cleanBase64.length < 10000) {
+          console.warn("⚠️ Base64 muito curto (<10KB):", cleanBase64.length);
+          toast({
+            title: "Erro",
+            description: "Áudio inválido - tamanho insuficiente",
+            variant: "destructive",
+          });
+          return;
+        }
         
-        console.log(`✅ Áudio processado: ${base64Data.length} caracteres base64`);
-        console.log(`📋 Preview Base64: ${base64Data.substring(0, 50)}...${base64Data.substring(base64Data.length - 50)}`);
+        console.log(`✅ Áudio processado: ${cleanBase64.length} caracteres base64`);
+        console.log(`📋 Preview Base64: ${cleanBase64.substring(0, 50)}...${cleanBase64.substring(cleanBase64.length - 50)}`);
         
-        onSendAudio(base64Data, audioBlob.type, recordingTime);
+        onSendAudio(cleanBase64, audioBlob.type, recordingTime);
         
         // Reset
         audioChunksRef.current = [];
