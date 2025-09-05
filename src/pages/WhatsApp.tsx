@@ -6,9 +6,11 @@ export default function WhatsApp() {
   try {
     return (
       <DashboardLayout>
-        <PageTransition>
-          <LazyWhatsAppCRM />
-        </PageTransition>
+        <div className="h-full flex flex-col min-h-0">
+          <PageTransition>
+            <LazyWhatsAppCRM />
+          </PageTransition>
+        </div>
       </DashboardLayout>
     );
   } catch (error) {

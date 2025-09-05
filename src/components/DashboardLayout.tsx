@@ -11,9 +11,9 @@ interface DashboardLayoutProps {
 export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
   return (
     <SidebarProvider defaultOpen={false}>
-      <div className="min-h-screen w-full flex bg-gradient-to-br from-background-base via-primary-dark/20 to-background-base relative overflow-hidden">
+      <div className="h-screen w-full flex flex-col bg-gradient-to-br from-background-base via-primary-dark/20 to-background-base relative overflow-hidden">
         <AppSidebar />
-        <SidebarInset className="flex-1 relative min-w-0">
+        <SidebarInset className="flex-1 relative min-w-0 flex flex-col">
           {/* Background Pattern with Corporate Theme */}
           <div className="absolute inset-0 opacity-20 pointer-events-none">
             <div className="absolute inset-0 bg-grid-small-white/[0.02] bg-[size:24px_24px]" />
@@ -26,7 +26,7 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
             <NotificationCenter />
           </header>
           
-          <main className="flex-1 p-3 sm:p-4 lg:p-6 xl:p-8 bg-transparent relative z-10 min-w-0">
+          <main className="flex-1 p-3 sm:p-4 lg:p-6 xl:p-8 bg-transparent relative z-10 min-w-0 min-h-0">
             <PageTransition>
               {children}
             </PageTransition>

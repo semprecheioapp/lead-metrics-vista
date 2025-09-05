@@ -68,7 +68,7 @@ export function WhatsAppCRM() {
   };
 
   return (
-    <MobileOptimizations className="h-full bg-background flex min-h-0 rounded-lg border w-full max-w-full">
+    <MobileOptimizations className="h-[calc(100vh-10rem)] bg-background flex min-h-0 rounded-lg border w-full max-w-full">
       {/* Layout Mobile/Tablet */}
       {isMobile ? (
         <>

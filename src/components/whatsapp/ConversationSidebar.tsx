@@ -122,14 +122,16 @@ export function ConversationSidebar({
       )}
 
       {/* Lista de Conversas */}
-      <ScrollArea className="flex-1 min-h-0">
-        <ConversationList
-          selectedChat={selectedChat}
-          onSelectChat={onSelectChat}
-          filters={filters}
-          collapsed={collapsed}
-        />
-      </ScrollArea>
+      <div className="flex-1 min-h-0">
+        <ScrollArea className="h-full">
+          <ConversationList
+            selectedChat={selectedChat}
+            onSelectChat={onSelectChat}
+            filters={filters}
+            collapsed={collapsed}
+          />
+        </ScrollArea>
+      </div>
     </div>
   );
 }

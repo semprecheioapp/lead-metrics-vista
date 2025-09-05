@@ -337,7 +337,7 @@ export function ConversationList({ selectedChat, onSelectChat, filters, collapse
   }
 
   return (
-    <div className={cn("p-1 sm:p-2 space-y-1", collapsed && "px-0.5")}>
+    <div className={cn("p-1 sm:p-2 space-y-1 min-h-0", collapsed && "px-0.5")}>
       {filteredLeads.map((lead) => (
         <ConversationItem
           key={lead.session_id}
