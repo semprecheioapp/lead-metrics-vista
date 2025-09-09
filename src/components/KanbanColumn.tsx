@@ -36,8 +36,8 @@ export function KanbanColumn({ column, leads }: KanbanColumnProps) {
 
   return (
     <>
-      <Card className="w-72 md:w-80 flex-shrink-0 bg-card border-border snap-start">
-        <CardHeader className="pb-3">
+      <Card className="w-64 md:w-80 flex-shrink-0 bg-card border-border snap-start h-full flex flex-col">
+        <CardHeader className="pb-3 flex-shrink-0">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <div 
@@ -67,9 +67,9 @@ export function KanbanColumn({ column, leads }: KanbanColumnProps) {
           </div>
         </CardHeader>
         
-        <CardContent ref={setNodeRef} className="pt-0 h-[300px] md:h-[400px] overflow-y-auto scrollbar-hide">
+        <CardContent ref={setNodeRef} className="pt-0 flex-1 overflow-y-auto scrollbar-hide min-h-0">
           <SortableContext items={leads.map(lead => lead.id)} strategy={verticalListSortingStrategy}>
-            <div className="space-y-3 pb-4">
+            <div className="space-y-2 p-1">
               {leads.map((lead) => (
                 <KanbanCard key={lead.id} lead={lead} />
               ))}

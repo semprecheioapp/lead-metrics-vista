@@ -50,12 +50,12 @@ export function KanbanCard({ lead }: KanbanCardProps) {
         style={style}
         {...attributes}
         onClick={handleCardClick}
-        className={`cursor-pointer bg-background border-border hover:shadow-lg transition-all duration-200 ${
+        className={`cursor-pointer bg-background border-border hover:shadow-lg transition-all duration-200 flex-shrink-0 ${
           isDragging ? "opacity-30 rotate-2 scale-105 shadow-2xl border-primary/50" : ""
         }`}
       >
-      <CardContent className="p-3 md:p-4">
-        <div className="space-y-3">
+      <CardContent className="p-2 md:p-3">
+        <div className="space-y-2">
           {/* Drag handle and Nome do lead */}
           <div className="flex items-center gap-2">
             <div 
@@ -65,7 +65,7 @@ export function KanbanCard({ lead }: KanbanCardProps) {
               <GripVertical className="w-3 h-3 text-muted-foreground" />
             </div>
             <User className="w-4 h-4 text-primary flex-shrink-0" />
-            <h4 className="font-medium text-foreground text-sm truncate">
+            <h4 className="font-medium text-foreground text-xs md:text-sm truncate">
               {lead.name || "Lead sem nome"}
             </h4>
           </div>
