@@ -67,9 +67,9 @@ export function KanbanColumn({ column, leads }: KanbanColumnProps) {
           </div>
         </CardHeader>
         
-        <CardContent ref={setNodeRef} className="pt-0 min-h-[300px] md:min-h-[400px]">
+        <CardContent ref={setNodeRef} className="pt-0 h-[300px] md:h-[400px] overflow-y-auto scrollbar-hide">
           <SortableContext items={leads.map(lead => lead.id)} strategy={verticalListSortingStrategy}>
-            <div className="space-y-3">
+            <div className="space-y-3 pb-4">
               {leads.map((lead) => (
                 <KanbanCard key={lead.id} lead={lead} />
               ))}
