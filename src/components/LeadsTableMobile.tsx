@@ -113,7 +113,7 @@ export const LeadsTableMobile = () => {
       <CardContent>
         <div className="overflow-hidden rounded-lg border border-border">
           <div className="overflow-x-auto">
-            <table className="w-full min-w-[600px]">
+            <table className="w-full min-w-[500px] md:min-w-[600px]">
               <thead className="bg-muted/50">
                 <tr>
                   <th className="text-left p-4 text-sm font-medium text-muted-foreground">Nome</th>

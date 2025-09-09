@@ -631,17 +631,17 @@ export function QualificationForm({ onClose }: QualificationFormProps) {
       </div>
 
       {/* Steps Navigation */}
-      <div className="flex justify-between mb-8 overflow-x-auto pb-2">
+      <div className="flex justify-between mb-8 overflow-x-auto pb-2 scrollbar-hide">
         {STEPS.map((step, index) => (
-          <div key={step.id} className="flex flex-col items-center min-w-0 flex-1">
-            <div className={`w-10 h-10 rounded-full flex items-center justify-center mb-2 transition-colors ${
+          <div key={step.id} className="flex flex-col items-center min-w-[60px] sm:min-w-0 flex-1 flex-shrink-0">
+            <div className={`w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center mb-2 transition-colors ${
               currentStep >= step.id 
                 ? "bg-primary text-primary-foreground" 
                 : "bg-muted text-muted-foreground"
             }`}>
               {step.icon}
             </div>
-            <span className={`text-xs text-center ${
+            <span className={`text-xs text-center leading-tight px-1 ${
               currentStep >= step.id ? "text-primary font-medium" : "text-muted-foreground"
             }`}>
               {step.title}

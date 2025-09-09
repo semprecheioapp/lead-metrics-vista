@@ -140,7 +140,7 @@ export function KanbanBoard({ pipelineId }: KanbanBoardProps) {
         onDragEnd={handleDragEnd}
         collisionDetection={closestCorners}
       >
-        <div className="flex gap-6 overflow-x-auto pb-4 min-h-[600px]">
+        <div className="flex gap-4 md:gap-6 overflow-x-auto pb-4 min-h-[400px] md:min-h-[600px] snap-x snap-mandatory scrollbar-hide kanban-scroll">
           <SortableContext items={columns.map(col => col.id)} strategy={horizontalListSortingStrategy}>
             {columns.map((column) => (
               <KanbanColumn

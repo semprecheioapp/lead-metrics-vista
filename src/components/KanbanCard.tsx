@@ -54,7 +54,7 @@ export function KanbanCard({ lead }: KanbanCardProps) {
           isDragging ? "opacity-30 rotate-2 scale-105 shadow-2xl border-primary/50" : ""
         }`}
       >
-      <CardContent className="p-4">
+      <CardContent className="p-3 md:p-4">
         <div className="space-y-3">
           {/* Drag handle and Nome do lead */}
           <div className="flex items-center gap-2">

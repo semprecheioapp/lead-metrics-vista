@@ -43,7 +43,7 @@ export function AgendamentosTable({ agendamentos, onEdit, onDelete, onConfirmarA
       </CardHeader>
       <CardContent className="p-3 sm:p-6">
         <div className="overflow-x-auto">
-          <Table className="min-w-[700px]">
+          <Table className="min-w-[600px] md:min-w-[700px]">
             <TableHeader>
               <TableRow>
                 <TableHead className="text-xs sm:text-sm">Cliente</TableHead>

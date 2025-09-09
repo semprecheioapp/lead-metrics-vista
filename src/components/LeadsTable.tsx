@@ -44,7 +44,7 @@ export const LeadsTable = () => {
       </CardHeader>
       <CardContent className="p-3 sm:p-6">
         <div className="overflow-x-auto rounded-lg border border-border">
-          <table className="w-full min-w-[700px]">
+          <table className="w-full min-w-[600px] md:min-w-[700px]">
             <thead className="bg-muted/50">
               <tr>
                 <th className="text-left p-2 sm:p-4 text-xs sm:text-sm font-medium text-muted-foreground">Nome</th>
