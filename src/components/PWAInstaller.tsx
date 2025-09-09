@@ -63,8 +63,8 @@ export const PWAInstaller = () => {
     setDeferredPrompt(null);
   };
 
-  // Don't show if already standalone or no install prompt available
-  if (isStandalone || (!deferredPrompt && !isIOS)) {
+  // Don't show if already standalone, dismissed, or no install prompt available
+  if (isStandalone || !showInstallBanner || (!deferredPrompt && !isIOS)) {
     return null;
   }
 
