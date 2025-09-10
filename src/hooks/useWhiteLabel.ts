@@ -32,11 +32,13 @@ const DEFAULT_CONFIG: Partial<WhiteLabelConfig> = {
 };
 
 export const useWhiteLabel = () => {
-  const { empresaId, empresaData } = useAuth();
+  const { empresaId, empresaData, userProfile } = useAuth();
   const queryClient = useQueryClient();
 
-  // Check if company has white label permission
-  const hasWhiteLabelPermission = (empresaData as any)?.whitelabel_enabled === true;
+  // Check if company has white label permission or if user is super admin
+  const hasWhiteLabelPermission = (empresaData as any)?.whitelabel_enabled === true || 
+    userProfile?.role === 'super_admin' ||
+    userProfile?.email === 'agenciambkautomacoes@gmail.com';
 
   const { data: config, isLoading, error } = useQuery({
     queryKey: ["whitelabel_config", empresaId],
