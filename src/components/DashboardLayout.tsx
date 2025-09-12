@@ -26,10 +26,12 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
             <NotificationCenter />
           </header>
           
-          <main className="flex-1 p-3 sm:p-4 lg:p-6 xl:p-8 bg-transparent relative z-10 min-w-0 min-h-0">
-            <PageTransition>
-              {children}
-            </PageTransition>
+          <main className="flex-1 p-3 sm:p-4 lg:p-6 xl:p-8 bg-transparent relative z-10 min-w-0 overflow-y-auto">
+            <div className="max-w-full min-h-full">
+              <PageTransition>
+                {children}
+              </PageTransition>
+            </div>
           </main>
         </SidebarInset>
       </div>
