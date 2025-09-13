@@ -37,7 +37,7 @@ const queryClient = new QueryClient({
 });
 
 const App: React.FC = () => {
-  console.log("App component rendering...");
+  // App component rendering in production mode
   
   return (
     <GlobalErrorBoundary>

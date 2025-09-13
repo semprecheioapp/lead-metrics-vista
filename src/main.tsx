@@ -7,18 +7,13 @@ import { SecurityHelpers } from './utils/securityHelpers.ts';
 // Initialize security monitoring
 SecurityHelpers.initializeSecurity();
 
-console.log("Main.tsx loading...");
-console.log("React version:", React.version);
-
+// Production-ready initialization
 const rootElement = document.getElementById("root");
 if (!rootElement) {
   throw new Error("Root element not found");
 }
 
-console.log("Creating root...");
 const root = createRoot(rootElement);
-
-console.log("Rendering app...");
 root.render(<App />);
 
 // Service Worker management - only in production
@@ -30,27 +25,25 @@ if (import.meta.env.PROD && SW_ENABLED && 'serviceWorker' in navigator) {
     navigator.serviceWorker.getRegistrations().then((registrations) => {
       Promise.all(registrations.map(registration => registration.unregister()))
         .then(() => {
-          console.log('All existing service workers cleared');
           return caches.keys();
         })
         .then((cacheNames) => {
           return Promise.all(cacheNames.map(cacheName => caches.delete(cacheName)));
         })
         .then(() => {
-          console.log('All caches cleared');
           // Register new service worker after cleanup
           setTimeout(() => {
             navigator.serviceWorker.register('/sw.js')
-              .then((registration) => {
-                console.log('SW registered successfully:', registration);
+              .then(() => {
+                // SW registered successfully
               })
-              .catch((error) => {
-                console.log('SW registration failed:', error);
+              .catch(() => {
+                // SW registration failed - continue without SW
               });
           }, 1000);
         })
-        .catch((error) => {
-          console.error('Error during SW cleanup:', error);
+        .catch(() => {
+          // Error during SW cleanup - continue without SW
         });
     });
   });
