@@ -32,6 +32,8 @@ export const AllLeadsTable = () => {
     phoneNumber: ""
   });
 
+  console.log('🔍 Estado do modal de conversas:', conversationModal);
+
   const { data: leadsData, isLoading } = useLeadsOptimized({
     page: currentPage,
     limit: 20,
@@ -280,11 +282,17 @@ export const AllLeadsTable = () => {
                           <Button 
                             variant="ghost" 
                             size="sm"
-                            onClick={() => setConversationModal({
-                              isOpen: true,
-                              leadName: lead.name || "Lead sem nome",
-                              phoneNumber: lead.phone || ""
-                            })}
+                            onClick={() => {
+                              console.log('🔍 Clicou no botão de ver conversas:', { 
+                                leadName: lead.name, 
+                                phoneNumber: lead.phone 
+                              });
+                              setConversationModal({
+                                isOpen: true,
+                                leadName: lead.name || "Lead sem nome",
+                                phoneNumber: lead.phone || ""
+                              });
+                            }}
                             disabled={!lead.phone || lead.phone === "-"}
                           >
                             <Eye className="w-4 h-4" />
