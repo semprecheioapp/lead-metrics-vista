@@ -129,13 +129,15 @@ export const LeadConversationModal = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-5xl max-h-[85vh]">
-        <DialogHeader>
-          <div className="flex items-center justify-between">
-            <DialogTitle className="flex items-center gap-2">
-              <MessageCircle className="w-5 h-5 text-primary" />
-              Conversas com {leadName}
-              <Badge variant="outline" className="text-xs">
+      <DialogContent className="max-w-7xl max-h-[95vh] w-[95vw] overflow-hidden flex flex-col">
+        <DialogHeader className="flex-shrink-0">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <DialogTitle className="flex flex-col sm:flex-row sm:items-center gap-2">
+              <div className="flex items-center gap-2">
+                <MessageCircle className="w-5 h-5 text-primary" />
+                Conversas com {leadName}
+              </div>
+              <Badge variant="outline" className="text-xs w-fit">
                 {phoneNumber}
               </Badge>
             </DialogTitle>
@@ -154,7 +156,7 @@ export const LeadConversationModal = ({
                     ) : (
                       <Brain className="w-4 h-4" />
                     )}
-                    Resumo IA
+                    <span className="hidden sm:inline">Resumo IA</span>
                   </Button>
                   <Button
                     variant="outline"
@@ -163,7 +165,7 @@ export const LeadConversationModal = ({
                     className="flex items-center gap-2"
                   >
                     <Download className="w-4 h-4" />
-                    Exportar
+                    <span className="hidden sm:inline">Exportar</span>
                   </Button>
                 </>
               )}
@@ -171,117 +173,123 @@ export const LeadConversationModal = ({
           </div>
         </DialogHeader>
 
-        <div className="flex-1 min-h-0">
-          {isLoading ? (
-            <div className="flex items-center justify-center h-64">
-              <Loader2 className="w-6 h-6 animate-spin text-primary" />
-              <span className="ml-2 text-muted-foreground">Carregando conversas...</span>
-            </div>
-          ) : !conversations || conversations.length === 0 ? (
-            <div className="flex flex-col items-center justify-center h-64 text-center">
-              <MessageCircle className="w-12 h-12 text-muted-foreground/50 mb-4" />
-              <h3 className="text-lg font-medium text-foreground mb-2">
-                Nenhuma conversa encontrada
-              </h3>
-              <p className="text-muted-foreground">
-                Ainda não há conversas registradas para este lead.
-              </p>
-            </div>
-          ) : (
-            <ScrollArea className="h-[500px] pr-4">
-              <div className="space-y-3">
-                {conversations.map((message, index) => (
-                  <div
-                    key={message.id}
-                    className={`flex gap-3 ${
-                      message.isFromAI ? "justify-start" : "justify-end"
-                    }`}
-                  >
-                    <div
-                      className={`flex gap-3 max-w-[75%] ${
-                        message.isFromAI ? "flex-row" : "flex-row-reverse"
-                      }`}
-                    >
-                      <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 mt-1 ${
-                        message.isFromAI 
-                          ? "bg-primary text-primary-foreground" 
-                          : "bg-muted-foreground text-muted"
-                      }`}>
-                        {message.isFromAI ? (
-                          <Bot className="w-4 h-4" />
-                        ) : (
-                          <User className="w-4 h-4" />
-                        )}
-                      </div>
-                      
-                      <div className={`rounded-2xl px-4 py-3 shadow-sm ${
-                        message.isFromAI
-                          ? "bg-muted/50 text-foreground border border-border/50"
-                          : "bg-primary text-primary-foreground"
-                      }`}>
-                        <p className="text-sm leading-relaxed whitespace-pre-wrap">
-                          {message.content}
-                        </p>
-                        <div className={`text-xs mt-2 flex items-center gap-1 ${
-                          message.isFromAI ? "text-muted-foreground" : "text-primary-foreground/70"
-                        }`}>
-                          <span>{format(new Date(message.timestamp), 'HH:mm')}</span>
-                          <span>•</span>
-                          <span>
-                            {formatDistanceToNow(new Date(message.timestamp), { 
-                              addSuffix: true, 
-                              locale: ptBR 
-                            })}
-                          </span>
+        <div className="flex flex-col lg:grid lg:grid-cols-3 gap-4 lg:gap-6 flex-1 min-h-0">
+          <div className="lg:col-span-2 flex flex-col min-h-0">
+            {isLoading ? (
+              <div className="flex items-center justify-center h-64">
+                <Loader2 className="w-6 h-6 animate-spin text-primary" />
+                <span className="ml-2 text-muted-foreground text-sm">Carregando conversas...</span>
+              </div>
+            ) : !conversations || conversations.length === 0 ? (
+              <div className="flex flex-col items-center justify-center h-64 text-center">
+                <MessageCircle className="w-12 h-12 text-muted-foreground/50 mb-4" />
+                <h3 className="text-lg font-medium text-foreground mb-2">
+                  Nenhuma conversa encontrada
+                </h3>
+                <p className="text-muted-foreground text-sm">
+                  Ainda não há conversas registradas para este lead.
+                </p>
+              </div>
+            ) : (
+              <>
+                <ScrollArea className="flex-1 border rounded-lg p-3 sm:p-4 min-h-[300px] lg:min-h-[400px]">
+                  <div className="space-y-3">
+                    {conversations.map((message, index) => (
+                      <div
+                        key={message.id}
+                        className={`flex gap-2 sm:gap-3 ${
+                          message.isFromAI ? "justify-start" : "justify-end"
+                        }`}
+                      >
+                        <div
+                          className={`flex gap-2 sm:gap-3 max-w-[85%] sm:max-w-[80%] ${
+                            message.isFromAI ? "flex-row" : "flex-row-reverse"
+                          }`}
+                        >
+                          <div className={`w-6 h-6 sm:w-8 sm:h-8 rounded-full flex items-center justify-center flex-shrink-0 mt-1 ${
+                            message.isFromAI 
+                              ? "bg-primary text-primary-foreground" 
+                              : "bg-muted-foreground text-muted"
+                          }`}>
+                            {message.isFromAI ? (
+                              <Bot className="w-3 h-3 sm:w-4 sm:h-4" />
+                            ) : (
+                              <User className="w-3 h-3 sm:w-4 sm:h-4" />
+                            )}
+                          </div>
+                          
+                          <div className={`rounded-2xl px-3 py-2 sm:px-4 sm:py-3 shadow-sm ${
+                            message.isFromAI
+                              ? "bg-muted/50 text-foreground border border-border/50"
+                              : "bg-primary text-primary-foreground"
+                          }`}>
+                            <p className="text-xs sm:text-sm leading-relaxed whitespace-pre-wrap break-words">
+                              {message.content}
+                            </p>
+                            <div className={`text-xs mt-1 sm:mt-2 flex items-center gap-1 ${
+                              message.isFromAI ? "text-muted-foreground" : "text-primary-foreground/70"
+                            }`}>
+                              <span>{format(new Date(message.timestamp), 'HH:mm')}</span>
+                              <span>•</span>
+                              <span>
+                                {formatDistanceToNow(new Date(message.timestamp), { 
+                                  addSuffix: true, 
+                                  locale: ptBR 
+                                })}
+                              </span>
+                            </div>
+                          </div>
                         </div>
                       </div>
+                    ))}
+                  </div>
+                </ScrollArea>
+
+                <div className="border-t pt-3 sm:pt-4 flex-shrink-0">
+                  <div className="grid grid-cols-3 gap-2 sm:gap-4 text-sm">
+                    <div className="text-center">
+                      <div className="font-medium text-foreground">{conversations.length}</div>
+                      <div className="text-muted-foreground text-xs">Mensagens</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="font-medium text-foreground">
+                        {conversations.filter(m => m.isFromAI).length}
+                      </div>
+                      <div className="text-muted-foreground text-xs">Da IA</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="font-medium text-foreground">
+                        {conversations.filter(m => !m.isFromAI).length}
+                      </div>
+                      <div className="text-muted-foreground text-xs">Do Cliente</div>
                     </div>
                   </div>
-                ))}
+                  <div className="mt-2 sm:mt-3 text-center text-xs text-muted-foreground">
+                    Última atividade: {formatDistanceToNow(new Date(conversations[conversations.length - 1].timestamp), { 
+                      addSuffix: true, 
+                      locale: ptBR 
+                    })}
+                  </div>
+                </div>
+              </>
+            )}
+          </div>
+
+          <div className="lg:col-span-1 flex flex-col min-h-0">
+            {summary ? (
+              <div className="h-full overflow-hidden">
+                <ConversationSummary summary={summary} />
               </div>
-            </ScrollArea>
-          )}
+            ) : (
+              <div className="flex flex-col items-center justify-center h-full text-muted-foreground bg-muted/30 rounded-lg p-4 sm:p-6 min-h-[200px]">
+                <Brain className="w-8 h-8 sm:w-12 sm:h-12 mb-4" />
+                <p className="text-center text-xs sm:text-sm">
+                  Clique em "Resumo IA" para gerar um resumo inteligente desta conversa
+                </p>
+              </div>
+            )}
+          </div>
         </div>
-
-        {conversations && conversations.length > 0 && (
-          <div className="border-t pt-4">
-            <div className="grid grid-cols-3 gap-4 text-sm">
-              <div className="text-center">
-                <div className="font-medium text-foreground">{conversations.length}</div>
-                <div className="text-muted-foreground">Mensagens</div>
-              </div>
-              <div className="text-center">
-                <div className="font-medium text-foreground">
-                  {conversations.filter(m => m.isFromAI).length}
-                </div>
-                <div className="text-muted-foreground">Da IA</div>
-              </div>
-              <div className="text-center">
-                <div className="font-medium text-foreground">
-                  {conversations.filter(m => !m.isFromAI).length}
-                </div>
-                <div className="text-muted-foreground">Do Cliente</div>
-              </div>
-            </div>
-            <div className="mt-3 text-center text-xs text-muted-foreground">
-              Última atividade: {formatDistanceToNow(new Date(conversations[conversations.length - 1].timestamp), { 
-                addSuffix: true, 
-                locale: ptBR 
-              })}
-            </div>
-          </div>
-        )}
-
-        {/* Resumo da conversa */}
-        {summary && (
-          <div className="border-t pt-4 bg-muted/10 p-4 rounded-lg">
-            <div className="mb-2 text-sm font-medium text-primary flex items-center gap-2">
-              <Brain className="w-4 h-4" />
-              Resumo da Conversa
-            </div>
-            <ConversationSummary summary={summary} />
-          </div>
-        )}
       </DialogContent>
     </Dialog>
   );
