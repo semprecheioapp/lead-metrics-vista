@@ -1,6 +1,7 @@
 import { Suspense } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { LeadsTable } from '@/components/LeadsTable';
+import { AllLeadsTable } from '@/components/AllLeadsTable';
 import { KanbanBoard } from '@/components/KanbanBoard';
 import { WhatsAppCRM } from '@/components/whatsapp/WhatsAppCRM';
 import { AIInsightsDashboard } from '@/components/AIInsightsDashboard';
@@ -14,6 +15,19 @@ export function LazyLeadsTable(props: any) {
       </div>
     }>
       <LeadsTable {...props} />
+    </Suspense>
+  );
+}
+
+export function LazyAllLeadsTable(props: any) {
+  return (
+    <Suspense fallback={
+      <div className="space-y-4">
+        <Skeleton className="h-10 w-full" />
+        <Skeleton className="h-[400px] w-full" />
+      </div>
+    }>
+      <AllLeadsTable {...props} />
     </Suspense>
   );
 }

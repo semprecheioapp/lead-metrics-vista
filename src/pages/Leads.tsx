@@ -1,6 +1,6 @@
 
 import { DashboardLayout } from "@/components/DashboardLayout";
-import { LazyLeadsTable } from "@/components/LazyComponent";
+import { LazyAllLeadsTable } from "@/components/LazyComponent";
 import { MetricCard } from "@/components/MetricCard";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -160,7 +160,7 @@ export default function Leads() {
               <CardTitle>Lista de Leads</CardTitle>
             </CardHeader>
             <CardContent>
-              <LazyLeadsTable />
+              <LazyAllLeadsTable />
             </CardContent>
           </Card>
 
