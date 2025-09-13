@@ -1014,6 +1014,42 @@ export type Database = {
           },
         ]
       }
+      token_bling: {
+        Row: {
+          acess_token: string | null
+          bruto: string | null
+          conta: string | null
+          created_at: string
+          data: string | null
+          hora: string | null
+          id: number
+          refresh_token: string | null
+          token_usado: string | null
+        }
+        Insert: {
+          acess_token?: string | null
+          bruto?: string | null
+          conta?: string | null
+          created_at?: string
+          data?: string | null
+          hora?: string | null
+          id?: number
+          refresh_token?: string | null
+          token_usado?: string | null
+        }
+        Update: {
+          acess_token?: string | null
+          bruto?: string | null
+          conta?: string | null
+          created_at?: string
+          data?: string | null
+          hora?: string | null
+          id?: number
+          refresh_token?: string | null
+          token_usado?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
