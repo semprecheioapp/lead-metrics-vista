@@ -10,6 +10,7 @@ import { useLeadsOptimized } from "@/hooks/useLeadsOptimized";
 import { useBulkDeleteContacts } from "@/hooks/useDeleteContact";
 import { useDeleteContact } from "@/hooks/useDeleteContact";
 import { BulkActionsBar } from "./BulkActionsBar";
+import { LeadConversationModal } from "./LeadConversationModal";
 import { toast } from "sonner";
 import { Trash2, Eye, Filter, ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -21,6 +22,15 @@ export const AllLeadsTable = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedLeads, setSelectedLeads] = useState<Set<number>>(new Set());
   const [showFilters, setShowFilters] = useState(false);
+  const [conversationModal, setConversationModal] = useState<{
+    isOpen: boolean;
+    leadName: string;
+    phoneNumber: string;
+  }>({
+    isOpen: false,
+    leadName: "",
+    phoneNumber: ""
+  });
 
   const { data: leadsData, isLoading } = useLeadsOptimized({
     page: currentPage,
@@ -267,7 +277,16 @@ export const AllLeadsTable = () => {
                       <TableCell>{formatDate(lead.created_at)}</TableCell>
                       <TableCell className="text-right">
                         <div className="flex justify-end gap-2">
-                          <Button variant="ghost" size="sm">
+                          <Button 
+                            variant="ghost" 
+                            size="sm"
+                            onClick={() => setConversationModal({
+                              isOpen: true,
+                              leadName: lead.name || "Lead sem nome",
+                              phoneNumber: lead.phone || ""
+                            })}
+                            disabled={!lead.phone || lead.phone === "-"}
+                          >
                             <Eye className="w-4 h-4" />
                           </Button>
                           <Button
@@ -317,6 +336,13 @@ export const AllLeadsTable = () => {
           )}
         </CardContent>
       </Card>
+
+      <LeadConversationModal
+        isOpen={conversationModal.isOpen}
+        onClose={() => setConversationModal(prev => ({ ...prev, isOpen: false }))}
+        leadName={conversationModal.leadName}
+        phoneNumber={conversationModal.phoneNumber}
+      />
     </div>
   );
 };
