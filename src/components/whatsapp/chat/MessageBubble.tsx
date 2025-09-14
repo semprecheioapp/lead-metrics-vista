@@ -1,4 +1,7 @@
 import { cn } from "@/lib/utils";
+import { useState } from "react";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface MessageBubbleProps {
   content: string;
@@ -7,6 +10,8 @@ interface MessageBubbleProps {
   isLast?: boolean;
   senderName?: string;
   isManual?: boolean;
+  attachmentType?: string;
+  attachmentUrl?: string;
 }
 
 export function MessageBubble({ 
@@ -15,8 +20,12 @@ export function MessageBubble({
   isFromAI, 
   isLast, 
   senderName, 
-  isManual 
+  isManual,
+  attachmentType,
+  attachmentUrl
 }: MessageBubbleProps) {
+  const [imageLoading, setImageLoading] = useState(true);
+  const [imageError, setImageError] = useState(false);
   const formatTime = (timestamp: string) => {
     return new Date(timestamp).toLocaleTimeString('pt-BR', {
       hour: '2-digit',
@@ -47,9 +56,54 @@ export function MessageBubble({
             ? "bg-primary text-primary-foreground rounded-br-md" 
             : "bg-muted text-foreground rounded-bl-md"
         )}>
-          <p className="text-sm leading-relaxed whitespace-pre-wrap break-words overflow-wrap-anywhere">
-            {content}
-          </p>
+          {/* Renderizar imagem se existir */}
+          {attachmentType === 'image' && attachmentUrl && (
+            <div className="mb-2">
+              <Dialog>
+                <DialogTrigger asChild>
+                  <div className="relative cursor-pointer rounded-lg overflow-hidden border border-border/20 hover:border-border/40 transition-colors">
+                    {imageLoading && !imageError && (
+                      <Skeleton className="w-full h-48 bg-muted/50" />
+                    )}
+                    {!imageError ? (
+                      <img
+                        src={attachmentUrl}
+                        alt="Imagem enviada"
+                        className={cn(
+                          "w-full max-w-xs h-auto rounded-lg transition-opacity",
+                          imageLoading ? "opacity-0 absolute" : "opacity-100"
+                        )}
+                        onLoad={() => setImageLoading(false)}
+                        onError={() => {
+                          setImageLoading(false);
+                          setImageError(true);
+                        }}
+                        loading="lazy"
+                      />
+                    ) : (
+                      <div className="w-full h-32 bg-muted/50 rounded-lg flex items-center justify-center text-muted-foreground text-sm">
+                        Erro ao carregar imagem
+                      </div>
+                    )}
+                  </div>
+                </DialogTrigger>
+                <DialogContent className="max-w-4xl p-0 bg-background/95 border-border">
+                  <img
+                    src={attachmentUrl}
+                    alt="Imagem enviada"
+                    className="w-full h-auto max-h-[80vh] object-contain rounded-lg"
+                  />
+                </DialogContent>
+              </Dialog>
+            </div>
+          )}
+          
+          {/* Texto da mensagem */}
+          {content && (
+            <p className="text-sm leading-relaxed whitespace-pre-wrap break-words overflow-wrap-anywhere">
+              {content}
+            </p>
+          )}
           <div className={cn(
             "flex items-center justify-end mt-1 gap-1",
             isFromAI ? "text-primary-foreground/70" : "text-muted-foreground"
