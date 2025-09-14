@@ -9,6 +9,8 @@ interface Conversation {
   content: string;
   timestamp: string;
   isFromAI: boolean;
+  attachmentType?: string;
+  attachmentUrl?: string;
   rawMessage?: {
     response_metadata?: {
       sender_name?: string;
@@ -57,6 +59,8 @@ export function MessageList({ conversations, isLoading, isSending }: MessageList
                 isLast={index === conversations.length - 1}
                 senderName={conv.rawMessage?.response_metadata?.sender_name}
                 isManual={conv.rawMessage?.response_metadata?.is_manual}
+                attachmentType={conv.attachmentType}
+                attachmentUrl={conv.attachmentUrl}
               />
             ))}
             {isSending && (

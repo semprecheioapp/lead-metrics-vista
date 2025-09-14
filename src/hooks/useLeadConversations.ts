@@ -9,6 +9,8 @@ export interface ConversationMessage {
   timestamp: string;
   isFromAI: boolean;
   rawMessage: any;
+  attachmentType?: string;
+  attachmentUrl?: string;
 }
 
 export const useLeadConversations = (phoneNumber: string) => {
@@ -243,7 +245,9 @@ export const useLeadConversations = (phoneNumber: string) => {
                 content: content.trim(),
                 timestamp: row.created_at,
                 isFromAI,
-                rawMessage: messageData
+                rawMessage: messageData,
+                attachmentType: row.attachment_type || undefined,
+                attachmentUrl: row.attachment_url || undefined
               });
             }
           } else if (messageData && typeof messageData === 'object' && messageData.role) {
@@ -253,7 +257,9 @@ export const useLeadConversations = (phoneNumber: string) => {
               content: messageData.content || "",
               timestamp: row.created_at,
               isFromAI: messageData.role === "assistant",
-              rawMessage: messageData
+              rawMessage: messageData,
+              attachmentType: row.attachment_type || undefined,
+              attachmentUrl: row.attachment_url || undefined
             });
           } else if (typeof messageData === "string") {
             // Simple string format
@@ -262,7 +268,9 @@ export const useLeadConversations = (phoneNumber: string) => {
               content: messageData,
               timestamp: row.created_at,
               isFromAI: false,
-              rawMessage: messageData
+              rawMessage: messageData,
+              attachmentType: row.attachment_type || undefined,
+              attachmentUrl: row.attachment_url || undefined
             });
           }
         } catch (e) {
