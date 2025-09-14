@@ -661,6 +661,8 @@ export type Database = {
       }
       memoria_ai: {
         Row: {
+          attachment_type: string | null
+          attachment_url: string | null
           created_at: string
           data_atual: string | null
           empresa_id: number | null
@@ -670,6 +672,8 @@ export type Database = {
           updated_at: string | null
         }
         Insert: {
+          attachment_type?: string | null
+          attachment_url?: string | null
           created_at?: string
           data_atual?: string | null
           empresa_id?: number | null
@@ -679,6 +683,8 @@ export type Database = {
           updated_at?: string | null
         }
         Update: {
+          attachment_type?: string | null
+          attachment_url?: string | null
           created_at?: string
           data_atual?: string | null
           empresa_id?: number | null
