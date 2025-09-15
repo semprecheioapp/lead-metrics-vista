@@ -168,7 +168,7 @@ export const useLeadConversations = (phoneNumber: string) => {
       for (const variation of phoneVariations) {
         const result = await supabase
           .from("memoria_ai")
-          .select("id, message, created_at")
+          .select("id, message, created_at, attachment_type, attachment_url, empresa_id, session_id")
           .eq("empresa_id", empresaId)
           .eq("session_id", variation)
           .order("created_at", { ascending: true });
@@ -193,6 +193,47 @@ export const useLeadConversations = (phoneNumber: string) => {
       }
 
       console.log("✅ Dados retornados:", data);
+
+      // Processar imagens com base64 pendentes
+      if (data && data.length > 0) {
+        for (const record of data) {
+          try {
+            const messageObj = typeof record.message === 'string' 
+              ? JSON.parse(record.message) 
+              : record.message;
+
+            // Verificar se tem base64 mas ainda não foi processado
+            const hasBase64 = messageObj?.attachment?.base64;
+            const needsProcessing = hasBase64 && !record.attachment_url;
+
+            if (needsProcessing) {
+              console.log('🎯 Processando imagem base64 para registro:', record.id);
+              
+              try {
+                const { data: result, error: processError } = await supabase.functions.invoke('process-whatsapp-media', {
+                  body: { record }
+                });
+
+                if (processError) {
+                  console.error('❌ Erro ao processar mídia:', processError);
+                } else {
+                  console.log('✅ Mídia processada com sucesso:', result);
+                  
+                  // Atualizar o registro local com a URL processada
+                  if (result?.attachment_url) {
+                    record.attachment_url = result.attachment_url;
+                    record.attachment_type = result.attachment_type;
+                  }
+                }
+              } catch (e) {
+                console.error('❌ Erro na chamada da edge function:', e);
+              }
+            }
+          } catch (e) {
+            console.error('❌ Erro ao verificar base64:', e);
+          }
+        }
+      }
 
       const conversations: ConversationMessage[] = [];
 

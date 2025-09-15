@@ -26,9 +26,6 @@ export function MessageBubble({
 }: MessageBubbleProps) {
   const [imageLoading, setImageLoading] = useState(true);
   const [imageError, setImageError] = useState(false);
-  
-  // Debug log para verificar attachment data
-  console.log('MessageBubble attachment data:', { attachmentType, attachmentUrl, content });
   const formatTime = (timestamp: string) => {
     return new Date(timestamp).toLocaleTimeString('pt-BR', {
       hour: '2-digit',
