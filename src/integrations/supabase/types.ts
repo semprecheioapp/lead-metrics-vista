@@ -1126,6 +1126,10 @@ export type Database = {
         Args: { lead_etapa: number; pipeline_id: number }
         Returns: number
       }
+      process_existing_media_record: {
+        Args: { record_id: number }
+        Returns: undefined
+      }
       user_has_scope: {
         Args: { required_scope: string }
         Returns: boolean
