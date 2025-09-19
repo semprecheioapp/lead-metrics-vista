@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Search, Filter, MessageSquare, Users, Star, Archive, Menu, X } from "lucide-react";
+import { Search, Filter, MessageSquare, Users, Star, Archive, Menu, X, UserPlus } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -8,6 +8,7 @@ import { ConversationList } from "./ConversationList";
 import { ConversationFilter } from "./WhatsAppCRM";
 import { useWhatsAppLeads } from "@/hooks/useWhatsAppLeads";
 import { useFavoritesStore } from "@/hooks/useFavoritesStore";
+import { AddContactModal } from "./AddContactModal";
 import { cn } from "@/lib/utils";
 
 interface ConversationSidebarProps {
@@ -37,6 +38,7 @@ export function ConversationSidebar({
 }: ConversationSidebarProps) {
   console.log('ConversationSidebar renderizando...');
   const [searchFocused, setSearchFocused] = useState(false);
+  const [showAddContactModal, setShowAddContactModal] = useState(false);
   const { getFavorites } = useFavoritesStore();
   const { data: leads } = useWhatsAppLeads();
 
@@ -54,14 +56,27 @@ export function ConversationSidebar({
           )}>
             Conversas
           </h2>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={onToggleCollapse}
-            className="h-8 w-8"
-          >
-            {collapsed ? <Menu className="h-4 w-4" /> : <X className="h-4 w-4" />}
-          </Button>
+          <div className="flex items-center gap-1">
+            {!collapsed && (
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setShowAddContactModal(true)}
+                className="h-8 w-8"
+                title="Adicionar novo contato"
+              >
+                <UserPlus className="h-4 w-4" />
+              </Button>
+            )}
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={onToggleCollapse}
+              className="h-8 w-8"
+            >
+              {collapsed ? <Menu className="h-4 w-4" /> : <X className="h-4 w-4" />}
+            </Button>
+          </div>
         </div>
 
         {/* Busca */}
@@ -132,6 +147,12 @@ export function ConversationSidebar({
           />
         </ScrollArea>
       </div>
+
+      {/* Modal para adicionar novo contato */}
+      <AddContactModal 
+        open={showAddContactModal}
+        onOpenChange={setShowAddContactModal}
+      />
     </div>
   );
 }
