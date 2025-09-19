@@ -271,20 +271,20 @@ Seja específico e prático nas recomendações, em JSON com as chaves: growth_o
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-3 gap-4">
-            <div className="text-center p-4 rounded-lg bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800">
-              <CheckCircle2 className="w-8 h-8 mx-auto mb-2 text-green-600" />
-              <p className="text-sm font-medium text-green-700 dark:text-green-300">Positivo</p>
-              <p className="text-2xl font-bold text-green-600">{sentiment.positivo || sentiment.positive || 0}</p>
+            <div className="text-center p-4 rounded-lg bg-success/10 border border-success/20 backdrop-blur-sm">
+              <CheckCircle2 className="w-8 h-8 mx-auto mb-2 text-success" />
+              <p className="text-sm font-medium text-success">Positivo</p>
+              <p className="text-2xl font-bold text-success">{sentiment.positivo || sentiment.positive || 0}</p>
             </div>
-            <div className="text-center p-4 rounded-lg bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800">
-              <Clock className="w-8 h-8 mx-auto mb-2 text-yellow-600" />
-              <p className="text-sm font-medium text-yellow-700 dark:text-yellow-300">Neutro</p>
-              <p className="text-2xl font-bold text-yellow-600">{sentiment.neutro || sentiment.neutral || 0}</p>
+            <div className="text-center p-4 rounded-lg bg-warning/10 border border-warning/20 backdrop-blur-sm">
+              <Clock className="w-8 h-8 mx-auto mb-2 text-warning" />
+              <p className="text-sm font-medium text-warning">Neutro</p>
+              <p className="text-2xl font-bold text-warning">{sentiment.neutro || sentiment.neutral || 0}</p>
             </div>
-            <div className="text-center p-4 rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800">
-              <AlertTriangle className="w-8 h-8 mx-auto mb-2 text-red-600" />
-              <p className="text-sm font-medium text-red-700 dark:text-red-300">Negativo</p>
-              <p className="text-2xl font-bold text-red-600">{sentiment.negativo || sentiment.negative || 0}</p>
+            <div className="text-center p-4 rounded-lg bg-danger/10 border border-danger/20 backdrop-blur-sm">
+              <AlertTriangle className="w-8 h-8 mx-auto mb-2 text-danger" />
+              <p className="text-sm font-medium text-danger">Negativo</p>
+              <p className="text-2xl font-bold text-danger">{sentiment.negativo || sentiment.negative || 0}</p>
             </div>
           </div>
         </CardContent>
@@ -354,7 +354,7 @@ Seja específico e prático nas recomendações, em JSON com as chaves: growth_o
                     key.replace('_', ' ').toUpperCase(),
                     String(value),
                     <BarChart3 className="w-4 h-4" />,
-                    "from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20"
+                    "from-primary/10 to-primary/20 border-primary/20"
                   )
                 )}
               </div>
