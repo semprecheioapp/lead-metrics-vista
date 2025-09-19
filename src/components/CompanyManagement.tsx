@@ -30,6 +30,8 @@ interface Company {
   instance?: string | null;
   token?: string | null;
   prompt?: string | null;
+  tipo_de_api_conectada?: string | null;
+  versao_api?: string | null;
 }
 
 interface NewCompany {
@@ -39,6 +41,8 @@ interface NewCompany {
   plano: string;
   limite_leads: number;
   limite_mensagens: number;
+  tipo_de_api_conectada: string;
+  versao_api: string;
 }
 
 export const CompanyManagement = () => {
@@ -50,7 +54,9 @@ export const CompanyManagement = () => {
     telefone: "",
     plano: "free",
     limite_leads: 1000,
-    limite_mensagens: 10000
+    limite_mensagens: 10000,
+    tipo_de_api_conectada: "api_oficial",
+    versao_api: "v19.0"
   });
   const queryClient = useQueryClient();
 
@@ -139,7 +145,9 @@ export const CompanyManagement = () => {
           nome_usuario: companyData.email.split('@')[0],
           plano: companyData.plano,
           limite_leads: companyData.limite_leads,
-          limite_mensagens: companyData.limite_mensagens
+          limite_mensagens: companyData.limite_mensagens,
+          tipo_de_api_conectada: companyData.tipo_de_api_conectada,
+          versao_api: companyData.versao_api
         }
       });
       
@@ -155,7 +163,9 @@ export const CompanyManagement = () => {
         telefone: "",
         plano: "free",
         limite_leads: 1000,
-        limite_mensagens: 10000
+        limite_mensagens: 10000,
+        tipo_de_api_conectada: "api_oficial",
+        versao_api: "v19.0"
       });
       toast({
         title: "Sucesso",
@@ -290,6 +300,44 @@ export const CompanyManagement = () => {
                       <SelectItem value="basic">Basic</SelectItem>
                       <SelectItem value="premium">Premium</SelectItem>
                       <SelectItem value="enterprise">Enterprise</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                
+                {/* Configuração da API */}
+                <div>
+                  <Label htmlFor="new-tipo-api">Tipo de API</Label>
+                  <Select
+                    value={newCompany.tipo_de_api_conectada}
+                    onValueChange={(value) => setNewCompany({
+                      ...newCompany,
+                      tipo_de_api_conectada: value
+                    })}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="api_oficial">API Oficial</SelectItem>
+                      <SelectItem value="mega_api">Mega API</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div>
+                  <Label htmlFor="new-versao-api">Versão da API</Label>
+                  <Select
+                    value={newCompany.versao_api}
+                    onValueChange={(value) => setNewCompany({
+                      ...newCompany,
+                      versao_api: value
+                    })}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="v19.0">v19.0</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -486,14 +534,51 @@ export const CompanyManagement = () => {
 
                         <Separator />
 
-                        {/* Configurações da API */}
-                        <div className="space-y-4">
-                          <div className="flex items-center gap-2">
-                            <Building2 className="h-4 w-4" />
-                            <h3 className="font-medium">Configurações da API Mega</h3>
-                          </div>
-                          
-                          <div>
+                         {/* Configurações da API */}
+                         <div className="space-y-4">
+                           <div className="flex items-center gap-2">
+                             <Building2 className="h-4 w-4" />
+                             <h3 className="font-medium">Configurações da API</h3>
+                           </div>
+                           
+                           <div>
+                             <Label htmlFor="tipo-api">Tipo de API</Label>
+                             <Select
+                               value={editingCompany.tipo_de_api_conectada || "api_oficial"}
+                               onValueChange={(value) => setEditingCompany({
+                                 ...editingCompany,
+                                 tipo_de_api_conectada: value
+                               })}
+                             >
+                               <SelectTrigger>
+                                 <SelectValue />
+                               </SelectTrigger>
+                               <SelectContent>
+                                 <SelectItem value="api_oficial">API Oficial</SelectItem>
+                                 <SelectItem value="mega_api">Mega API</SelectItem>
+                               </SelectContent>
+                             </Select>
+                           </div>
+
+                           <div>
+                             <Label htmlFor="versao-api">Versão da API</Label>
+                             <Select
+                               value={editingCompany.versao_api || "v19.0"}
+                               onValueChange={(value) => setEditingCompany({
+                                 ...editingCompany,
+                                 versao_api: value
+                               })}
+                             >
+                               <SelectTrigger>
+                                 <SelectValue />
+                               </SelectTrigger>
+                               <SelectContent>
+                                 <SelectItem value="v19.0">v19.0</SelectItem>
+                               </SelectContent>
+                             </Select>
+                           </div>
+                           
+                           <div>
                             <Label htmlFor="host">Host Instance</Label>
                             <Input
                               id="host"
