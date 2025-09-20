@@ -6,6 +6,11 @@ import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { QualificationForm } from "@/components/QualificationForm";
 import RetroGrid from "@/components/magicui/retro-grid";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
+import { GlassCard } from "@/components/ui/glass-card";
+import { FloatingElements } from "@/components/ui/floating-elements";
+import { TestimonialsCarousel } from "@/components/ui/testimonials-carousel";
+import { FloatingActionButton } from "@/components/ui/floating-action-button";
 import { 
   MessageSquare, 
   Zap, 
@@ -103,321 +108,464 @@ export default function Landing() {
   const testimonials = [
     {
       name: "Dr. Carlos Silva",
-      role: "Clínica Médica",
-      content: "Conseguimos triplicar nossos agendamentos e reduzir drasticamente as faltas com o sistema de follow-up automático.",
-      rating: 5
+      role: "Clínica Médica Premium",
+      content: "Conseguimos triplicar nossos agendamentos e reduzir drasticamente as faltas com o sistema de follow-up automático. O ROI foi impressionante!",
+      rating: 5,
+      avatar: "/lovable-uploads/3b0a6feb-daff-4f37-a637-809d259c8ef4.png"
     },
     {
       name: "Marina Santos",
-      role: "Barbearia Premium",
-      content: "A IA entende perfeitamente nossos clientes e consegue agendar com precisão. Incrível!",
-      rating: 5
+      role: "CEO - Barbearia Premium",
+      content: "A IA entende perfeitamente nossos clientes e consegue agendar com precisão. Nunca vi nada igual no mercado. Simplesmente transformador!",
+      rating: 5,
+      avatar: "/lovable-uploads/3b0a6feb-daff-4f37-a637-809d259c8ef4.png"
     },
     {
       name: "Advocacia Lima & Associados",
-      role: "Escritório de Advocacia",
-      content: "O dashboard nos dá visibilidade total do funil. Nunca mais perdemos um lead qualificado.",
-      rating: 5
+      role: "Sócios Fundadores",
+      content: "O dashboard nos dá visibilidade total do funil de captação. Nunca mais perdemos um lead qualificado e nossa conversão aumentou 400%.",
+      rating: 5,
+      avatar: "/lovable-uploads/3b0a6feb-daff-4f37-a637-809d259c8ef4.png"
     }
   ];
 
   const integrations = [
-    { name: "WhatsApp Business", icon: "💬" },
-    { name: "ChatGPT", icon: "🤖" },
-    { name: "Google Calendar", icon: "📅" }
+    { 
+      name: "WhatsApp Business", 
+      icon: "💬",
+      description: "API oficial integrada"
+    },
+    { 
+      name: "OpenAI GPT-4", 
+      icon: "🤖",
+      description: "IA de última geração"
+    },
+    { 
+      name: "Google Calendar", 
+      icon: "📅",
+      description: "Sync automático"
+    },
+    { 
+      name: "Claude AI", 
+      icon: "🧠",
+      description: "Análise avançada"
+    },
+    { 
+      name: "Zapier", 
+      icon: "⚡",
+      description: "1000+ integrações"
+    },
+    { 
+      name: "Stripe", 
+      icon: "💳",
+      description: "Pagamentos seguros"
+    }
   ];
 
   return (
     <>
       <LandingHeader onOpenQualification={() => setIsQualificationOpen(true)} />
-      <div className="min-h-screen bg-gradient-to-br from-background-base via-primary-dark/10 to-background-base">
-      {/* Hero Section */}
-      <section className="relative overflow-hidden">
-        {/* Retro Grid Background Effect */}
-        <RetroGrid className="opacity-40" />
+      <div className="min-h-screen bg-gradient-to-br from-background-base via-primary-dark/5 to-background-base relative overflow-hidden">
         
-        {/* Background Pattern Overlay */}
-        <div className="absolute inset-0 opacity-20 pointer-events-none">
-          <div className="absolute inset-0 bg-gradient-to-t from-background-base via-transparent to-background-base" />
-        </div>
+        {/* Enhanced background effects */}
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-primary/5 via-transparent to-transparent" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,_var(--tw-gradient-stops))] from-primary-glow/5 via-transparent to-transparent" />
+        
+        {/* Floating elements */}
+        <FloatingElements />
+        {/* Hero Section */}
+        <section className="relative overflow-hidden min-h-screen flex items-center">
+          {/* Retro Grid Background Effect */}
+          <RetroGrid className="opacity-30" />
+          
+          {/* Enhanced background overlays */}
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background-base/50 to-background-base" />
+          <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-primary-glow/5" />
 
-        <div className="relative container mx-auto px-4 pt-8 sm:pt-16 pb-16 sm:pb-24 lg:pt-24 lg:pb-32">
-          <motion.div 
-            className="text-center max-w-4xl mx-auto"
-            {...fadeInUp}
-          >
-            {/* Logo */}
-            <div className="flex justify-center mb-8">
-              <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-gradient-to-br from-primary to-primary-glow flex items-center justify-center relative overflow-hidden shadow-lg">
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-shimmer-slide"></div>
-                <img 
-                  src="/lovable-uploads/885ae572-dec3-4868-92e1-8b1fcd6023e6.png" 
-                  alt="MBK" 
-                  className="w-8 h-8 sm:w-10 sm:h-10 object-contain relative z-10"
-                />
-              </div>
-            </div>
-
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-6 bg-gradient-to-r from-primary via-primary-glow to-secondary bg-clip-text text-transparent leading-tight">
-              Transforme seu Atendimento com IA Inteligente
-            </h1>
-            
-            <p className="text-lg sm:text-xl text-muted-foreground mb-8 max-w-2xl mx-auto leading-relaxed">
-              Automatize WhatsApp, qualifique leads, agende compromissos e multiplique suas vendas com nossa plataforma de IA conversacional
-            </p>
-
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
-              <Dialog open={isQualificationOpen} onOpenChange={setIsQualificationOpen}>
-                <DialogTrigger asChild>
-                  <Button 
-                    size="lg" 
-                    className="px-8 py-4 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 bg-gradient-to-r from-primary to-primary-glow"
-                  >
-                    <Target className="w-5 h-5 mr-2" />
-                    CONTRATAR AGORA
-                    <ArrowRight className="w-5 h-5 ml-2" />
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-                  <DialogHeader>
-                    <DialogTitle className="text-2xl font-bold text-center">
-                      Vamos Personalizar sua Solução
-                    </DialogTitle>
-                  </DialogHeader>
-                  <QualificationForm onClose={() => setIsQualificationOpen(false)} />
-                </DialogContent>
-              </Dialog>
-
-              <Button 
-                variant="outline" 
-                size="lg" 
-                onClick={() => navigate("/auth")}
-                className="px-8 py-4 text-lg font-semibold border-2 hover:bg-primary/10"
-              >
-                <Bot className="w-5 h-5 mr-2" />
-                Ver Dashboard
-              </Button>
-            </div>
-
-            {/* Stats */}
+          <div className="relative container mx-auto px-4 py-8 sm:py-16 lg:py-24">
             <motion.div 
-              className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-8 mt-16"
+              className="text-center max-w-6xl mx-auto"
+              {...fadeInUp}
+            >
+              {/* Enhanced Logo */}
+              <motion.div 
+                className="flex justify-center mb-12"
+                initial={{ scale: 0.5, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ duration: 0.8, ease: "easeOut" }}
+              >
+                <div className="relative">
+                  {/* Glow effect */}
+                  <div className="absolute inset-0 w-20 h-20 sm:w-24 sm:h-24 rounded-3xl bg-gradient-to-br from-primary to-primary-glow blur-xl opacity-60 animate-pulse-glow" />
+                  
+                  {/* Logo container */}
+                  <div className="relative w-20 h-20 sm:w-24 sm:h-24 rounded-3xl bg-gradient-to-br from-primary/90 to-primary-glow/90 flex items-center justify-center backdrop-blur-sm border border-primary/20 shadow-2xl">
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer-slide rounded-3xl"></div>
+                    <img 
+                      src="/lovable-uploads/885ae572-dec3-4868-92e1-8b1fcd6023e6.png" 
+                      alt="MBK" 
+                      className="w-10 h-10 sm:w-12 sm:h-12 object-contain relative z-10"
+                    />
+                  </div>
+                </div>
+              </motion.div>
+
+              {/* Enhanced Hero Title */}
+              <motion.h1 
+                className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold mb-8 leading-tight"
+                initial={{ opacity: 0, y: 50 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.2 }}
+              >
+                <span className="bg-gradient-to-r from-primary via-primary-glow to-primary bg-clip-text text-transparent">
+                  Transforme
+                </span>{' '}
+                <span className="text-foreground">seu</span>{' '}
+                <span className="bg-gradient-to-r from-primary-glow via-primary to-primary-dark bg-clip-text text-transparent">
+                  Atendimento
+                </span>
+                <br />
+                <span className="text-foreground">com</span>{' '}
+                <span className="bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent glow-text">
+                  IA Inteligente
+                </span>
+              </motion.h1>
+              
+              <motion.p 
+                className="text-xl sm:text-2xl text-muted-foreground mb-12 max-w-4xl mx-auto leading-relaxed font-light"
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.4 }}
+              >
+                <span className="text-primary font-semibold">Automatize WhatsApp</span>, qualifique leads, agende compromissos e{' '}
+                <span className="text-primary-glow font-semibold">multiplique suas vendas</span> com nossa plataforma de IA conversacional de última geração
+              </motion.p>
+
+              {/* Enhanced CTA Buttons */}
+              <motion.div 
+                className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-16"
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.6 }}
+              >
+                <Dialog open={isQualificationOpen} onOpenChange={setIsQualificationOpen}>
+                  <DialogTrigger asChild>
+                    <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                      <Button 
+                        size="lg" 
+                        className="relative px-12 py-6 text-xl font-bold shadow-2xl hover:shadow-3xl transition-all duration-500 bg-gradient-to-r from-primary via-primary-glow to-primary text-white border-0 rounded-2xl overflow-hidden group"
+                      >
+                        {/* Button glow effect */}
+                        <div className="absolute inset-0 bg-gradient-to-r from-primary/50 via-primary-glow/50 to-primary/50 blur-xl opacity-75 group-hover:opacity-100 transition-opacity duration-300" />
+                        
+                        {/* Button content */}
+                        <div className="relative flex items-center gap-3">
+                          <Target className="w-6 h-6" />
+                          CONTRATAR AGORA
+                          <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform duration-300" />
+                        </div>
+                        
+                        {/* Shimmer effect */}
+                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer-slide" />
+                      </Button>
+                    </motion.div>
+                  </DialogTrigger>
+                  <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+                    <DialogHeader>
+                      <DialogTitle className="text-2xl font-bold text-center">
+                        Vamos Personalizar sua Solução
+                      </DialogTitle>
+                    </DialogHeader>
+                    <QualificationForm onClose={() => setIsQualificationOpen(false)} />
+                  </DialogContent>
+                </Dialog>
+
+                <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+                  <Button 
+                    variant="outline" 
+                    size="lg" 
+                    onClick={() => navigate("/auth")}
+                    className="px-10 py-6 text-lg font-semibold border-2 border-primary/30 hover:border-primary/60 bg-card/60 backdrop-blur-sm hover:bg-primary/10 rounded-xl transition-all duration-300"
+                  >
+                    <Bot className="w-5 h-5 mr-2" />
+                    Ver Dashboard Demo
+                  </Button>
+                </motion.div>
+              </motion.div>
+
+              {/* Enhanced Stats with Animated Counters */}
+              <motion.div 
+                className="grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 mt-20"
+                variants={staggerChildren}
+                initial="initial"
+                animate="animate"
+              >
+                {benefits.map((stat, index) => (
+                  <AnimatedCounter
+                    key={index}
+                    value={stat.value}
+                    label={stat.label}
+                    description={stat.description}
+                    className="transition-transform duration-300 hover:scale-105"
+                  />
+                ))}
+              </motion.div>
+            </motion.div>
+          </div>
+        </section>
+
+        {/* Features Section */}
+        <section id="features" className="py-20 lg:py-32 relative">
+          <div className="container mx-auto px-4">
+            <motion.div 
+              className="text-center mb-20"
+              {...fadeInUp}
+            >
+              <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-8 text-foreground">
+                Recursos que{' '}
+                <span className="bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent">
+                  Transformam
+                </span>{' '}
+                seu Negócio
+              </h2>
+              <p className="text-xl sm:text-2xl text-muted-foreground max-w-4xl mx-auto leading-relaxed">
+                Uma plataforma completa com tudo que você precisa para{' '}
+                <span className="text-primary font-semibold">automatizar</span> e{' '}
+                <span className="text-primary-glow font-semibold">escalar</span> seu atendimento
+              </p>
+            </motion.div>
+
+            <motion.div 
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10"
               variants={staggerChildren}
               initial="initial"
               animate="animate"
             >
-              {benefits.map((stat, index) => (
-                <motion.div 
-                  key={index}
-                  variants={fadeInUp}
-                  className="text-center"
-                >
-                  <div className="text-2xl sm:text-3xl lg:text-4xl font-bold text-primary mb-2">
-                    {stat.value}
-                  </div>
-                  <div className="text-sm sm:text-base font-semibold text-foreground mb-1">
-                    {stat.label}
-                  </div>
-                  <div className="text-xs sm:text-sm text-muted-foreground">
-                    {stat.description}
-                  </div>
+              {features.map((feature, index) => (
+                <motion.div key={index} variants={fadeInUp}>
+                  <GlassCard hover3D={true} glow={true} className="h-full group">
+                    <CardHeader className="pb-6">
+                      <motion.div 
+                        className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary/20 to-primary-glow/20 flex items-center justify-center mb-6 text-primary relative overflow-hidden"
+                        whileHover={{ scale: 1.1, rotate: 5 }}
+                        transition={{ type: "spring", stiffness: 300 }}
+                      >
+                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-primary/20 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
+                        <div className="relative z-10">
+                          {feature.icon}
+                        </div>
+                      </motion.div>
+                      <CardTitle className="text-2xl font-bold text-foreground group-hover:text-primary transition-colors duration-300">
+                        {feature.title}
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <CardDescription className="text-lg leading-relaxed text-muted-foreground">
+                        {feature.description}
+                      </CardDescription>
+                    </CardContent>
+                  </GlassCard>
                 </motion.div>
               ))}
             </motion.div>
-          </motion.div>
-        </div>
-      </section>
+          </div>
+        </section>
 
-      {/* Features Section */}
-      <section id="features" className="py-12 sm:py-16 lg:py-24">
-        <div className="container mx-auto px-4">
-          <motion.div 
-            className="text-center mb-16"
-            {...fadeInUp}
-          >
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-6 text-foreground">
-              Recursos que Transformam seu Negócio
-            </h2>
-            <p className="text-lg sm:text-xl text-muted-foreground max-w-3xl mx-auto">
-              Uma plataforma completa com tudo que você precisa para automatizar e escalar seu atendimento
-            </p>
-          </motion.div>
-
-          <motion.div 
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8"
-            variants={staggerChildren}
-            initial="initial"
-            animate="animate"
-          >
-            {features.map((feature, index) => (
-              <motion.div key={index} variants={fadeInUp}>
-                <Card className="h-full hover:shadow-xl transition-all duration-300 hover:scale-105 border-2 hover:border-primary/20 bg-card/90 backdrop-blur-sm">
-                  <CardHeader className="pb-4">
-                    <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-primary/20 to-primary-glow/20 flex items-center justify-center mb-4 text-primary">
-                      {feature.icon}
-                    </div>
-                    <CardTitle className="text-xl font-bold">{feature.title}</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <CardDescription className="text-base leading-relaxed">
-                      {feature.description}
-                    </CardDescription>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Integrations Section */}
-      <section className="py-12 sm:py-16 lg:py-24 bg-muted/30">
-        <div className="container mx-auto px-4">
-          <motion.div 
-            className="text-center mb-16"
-            {...fadeInUp}
-          >
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-6 text-foreground">
-              Integrações Nativas
-            </h2>
-            <p className="text-lg sm:text-xl text-muted-foreground max-w-3xl mx-auto">
-              Conecte-se facilmente com as ferramentas que você já usa
-            </p>
-          </motion.div>
-
-          <motion.div 
-            className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 max-w-4xl mx-auto"
-            variants={staggerChildren}
-            initial="initial"
-            animate="animate"
-          >
-            {integrations.map((integration, index) => (
-              <motion.div key={index} variants={fadeInUp}>
-                <Card className="text-center hover:shadow-xl transition-all duration-300 hover:scale-105 bg-card/90 backdrop-blur-sm border-2 hover:border-primary/20">
-                  <CardContent className="p-6 sm:p-8">
-                    <div className="text-4xl sm:text-5xl mb-4">{integration.icon}</div>
-                    <div className="text-base sm:text-lg font-semibold text-foreground mb-2">{integration.name}</div>
-                    <Badge variant="secondary" className="text-xs">
-                      Integração Nativa
-                    </Badge>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Testimonials Section */}
-      <section id="testimonials" className="py-12 sm:py-16 lg:py-24">
-        <div className="container mx-auto px-4">
-          <motion.div 
-            className="text-center mb-16"
-            {...fadeInUp}
-          >
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-6 text-foreground">
-              Clientes que Confiam em Nós
-            </h2>
-            <p className="text-lg sm:text-xl text-muted-foreground max-w-3xl mx-auto">
-              Veja como empresas estão transformando seus resultados
-            </p>
-          </motion.div>
-
-          <motion.div 
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8"
-            variants={staggerChildren}
-            initial="initial"
-            animate="animate"
-          >
-            {testimonials.map((testimonial, index) => (
-              <motion.div key={index} variants={fadeInUp}>
-                <Card className="h-full bg-card/90 backdrop-blur-sm border-2 hover:border-primary/20 transition-all duration-300">
-                  <CardContent className="p-6">
-                    <div className="flex mb-4">
-                      {[...Array(testimonial.rating)].map((_, i) => (
-                        <Star key={i} className="w-5 h-5 text-yellow-400 fill-current" />
-                      ))}
-                    </div>
-                    <p className="text-muted-foreground mb-6 italic">
-                      "{testimonial.content}"
-                    </p>
-                    <div>
-                      <div className="font-semibold text-foreground">{testimonial.name}</div>
-                      <div className="text-sm text-muted-foreground">{testimonial.role}</div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
-          </motion.div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section id="contact" className="py-12 sm:py-16 lg:py-24 bg-gradient-to-r from-primary/10 via-primary-glow/10 to-secondary/10">
-        <div className="container mx-auto px-4">
-          <motion.div 
-            className="text-center max-w-4xl mx-auto"
-            {...fadeInUp}
-          >
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-6 text-foreground">
-              Pronto para Transformar seu Atendimento?
-            </h2>
-            <p className="text-lg sm:text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-              Junte-se a centenas de empresas que já automatizaram seus processos e multiplicaram suas vendas
-            </p>
-
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <Dialog open={isQualificationOpen} onOpenChange={setIsQualificationOpen}>
-                <DialogTrigger asChild>
-                  <Button 
-                    size="lg" 
-                    className="px-8 py-4 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 bg-gradient-to-r from-primary to-primary-glow"
-                  >
-                    <Target className="w-5 h-5 mr-2" />
-                    COMEÇAR AGORA
-                    <ArrowRight className="w-5 h-5 ml-2" />
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-                  <DialogHeader>
-                    <DialogTitle className="text-2xl font-bold text-center">
-                      Vamos Personalizar sua Solução
-                    </DialogTitle>
-                  </DialogHeader>
-                  <QualificationForm onClose={() => setIsQualificationOpen(false)} />
-                </DialogContent>
-              </Dialog>
-
-              <p className="text-sm text-muted-foreground">
-                💬 <strong>Implementação rápida</strong> • 🔒 <strong>Dados seguros</strong> • 📞 <strong>Suporte especializado</strong>
+        {/* Integrations Section */}
+        <section className="py-20 lg:py-32 bg-gradient-to-b from-muted/20 to-transparent relative">
+          <div className="container mx-auto px-4">
+            <motion.div 
+              className="text-center mb-20"
+              {...fadeInUp}
+            >
+              <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-8 text-foreground">
+                Integrações{' '}
+                <span className="bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent">
+                  Nativas
+                </span>
+              </h2>
+              <p className="text-xl sm:text-2xl text-muted-foreground max-w-4xl mx-auto leading-relaxed">
+                Conecte-se facilmente com as{' '}
+                <span className="text-primary font-semibold">ferramentas que você já usa</span>
               </p>
-            </div>
-          </motion.div>
-        </div>
-      </section>
+            </motion.div>
 
-      {/* Footer */}
-      <footer className="py-8 border-t border-border bg-card/50">
-        <div className="container mx-auto px-4">
-          <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-primary-glow flex items-center justify-center">
-                <img 
-                  src="/lovable-uploads/885ae572-dec3-4868-92e1-8b1fcd6023e6.png" 
-                  alt="MBK" 
-                  className="w-4 h-4 object-contain"
-                />
+            <motion.div 
+              className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 lg:gap-8 max-w-6xl mx-auto"
+              variants={staggerChildren}
+              initial="initial"
+              animate="animate"
+            >
+              {integrations.map((integration, index) => (
+                <motion.div key={index} variants={fadeInUp}>
+                  <GlassCard hover3D={true} className="text-center group">
+                    <CardContent className="p-6">
+                      <motion.div 
+                        className="text-4xl lg:text-5xl mb-4"
+                        whileHover={{ scale: 1.2, rotate: 10 }}
+                        transition={{ type: "spring", stiffness: 300 }}
+                      >
+                        {integration.icon}
+                      </motion.div>
+                      <div className="text-sm lg:text-base font-bold text-foreground mb-2 group-hover:text-primary transition-colors duration-300">
+                        {integration.name}
+                      </div>
+                      <div className="text-xs text-muted-foreground mb-3">
+                        {integration.description}
+                      </div>
+                      <Badge 
+                        variant="secondary" 
+                        className="text-xs bg-primary/10 text-primary border-primary/20 group-hover:bg-primary/20 transition-colors duration-300"
+                      >
+                        Nativo
+                      </Badge>
+                    </CardContent>
+                  </GlassCard>
+                </motion.div>
+              ))}
+            </motion.div>
+          </div>
+        </section>
+
+        {/* Testimonials Section */}
+        <section id="testimonials" className="py-20 lg:py-32 relative">
+          <div className="container mx-auto px-4">
+            <motion.div 
+              className="text-center mb-20"
+              {...fadeInUp}
+            >
+              <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-8 text-foreground">
+                Clientes que{' '}
+                <span className="bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent">
+                  Confiam
+                </span>{' '}
+                em Nós
+              </h2>
+              <p className="text-xl sm:text-2xl text-muted-foreground max-w-4xl mx-auto leading-relaxed">
+                Veja como empresas estão{' '}
+                <span className="text-primary font-semibold">transformando seus resultados</span>{' '}
+                com nossa plataforma
+              </p>
+            </motion.div>
+
+            <motion.div
+              {...fadeInUp}
+              className="relative"
+            >
+              <TestimonialsCarousel testimonials={testimonials} />
+            </motion.div>
+          </div>
+        </section>
+
+        {/* CTA Section */}
+        <section id="contact" className="py-20 lg:py-32 relative overflow-hidden">
+          {/* Enhanced background */}
+          <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-primary-glow/10 to-primary/5" />
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-primary/5 to-transparent" />
+          
+          <div className="container mx-auto px-4 relative">
+            <motion.div 
+              className="text-center max-w-6xl mx-auto"
+              {...fadeInUp}
+            >
+              <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-8 text-foreground">
+                Pronto para{' '}
+                <span className="bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent glow-text">
+                  Transformar
+                </span>{' '}
+                seu Atendimento?
+              </h2>
+              <p className="text-xl sm:text-2xl text-muted-foreground mb-12 max-w-4xl mx-auto leading-relaxed">
+                Junte-se a{' '}
+                <span className="text-primary font-bold">centenas de empresas</span>{' '}
+                que já automatizaram seus processos e{' '}
+                <span className="text-primary-glow font-bold">multiplicaram suas vendas</span>
+              </p>
+
+              <div className="flex flex-col gap-8 justify-center items-center">
+                <Dialog open={isQualificationOpen} onOpenChange={setIsQualificationOpen}>
+                  <DialogTrigger asChild>
+                    <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                      <Button 
+                        size="lg" 
+                        className="relative px-16 py-8 text-2xl font-bold shadow-2xl hover:shadow-3xl transition-all duration-500 bg-gradient-to-r from-primary via-primary-glow to-primary text-white border-0 rounded-2xl overflow-hidden group"
+                      >
+                        {/* Enhanced button glow */}
+                        <div className="absolute -inset-1 bg-gradient-to-r from-primary/60 via-primary-glow/60 to-primary/60 rounded-2xl blur-xl opacity-75 group-hover:opacity-100 transition-opacity duration-300" />
+                        
+                        {/* Button content */}
+                        <div className="relative flex items-center gap-4">
+                          <Target className="w-7 h-7" />
+                          COMEÇAR AGORA
+                          <ArrowRight className="w-7 h-7 group-hover:translate-x-2 transition-transform duration-300" />
+                        </div>
+                        
+                        {/* Enhanced shimmer */}
+                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-shimmer-slide" />
+                      </Button>
+                    </motion.div>
+                  </DialogTrigger>
+                  <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+                    <DialogHeader>
+                      <DialogTitle className="text-2xl font-bold text-center">
+                        Vamos Personalizar sua Solução
+                      </DialogTitle>
+                    </DialogHeader>
+                    <QualificationForm onClose={() => setIsQualificationOpen(false)} />
+                  </DialogContent>
+                </Dialog>
+
+                <motion.div 
+                  className="flex flex-wrap justify-center gap-6 text-muted-foreground"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.8 }}
+                >
+                  <div className="flex items-center gap-2 bg-card/60 backdrop-blur-sm px-4 py-2 rounded-full border border-primary/20">
+                    <span className="text-green-400">💬</span>
+                    <strong className="text-foreground">Implementação rápida</strong>
+                  </div>
+                  <div className="flex items-center gap-2 bg-card/60 backdrop-blur-sm px-4 py-2 rounded-full border border-primary/20">
+                    <span className="text-blue-400">🔒</span>
+                    <strong className="text-foreground">Dados seguros</strong>
+                  </div>
+                  <div className="flex items-center gap-2 bg-card/60 backdrop-blur-sm px-4 py-2 rounded-full border border-primary/20">
+                    <span className="text-yellow-400">📞</span>
+                    <strong className="text-foreground">Suporte 24/7</strong>
+                  </div>
+                </motion.div>
               </div>
-              <span className="font-semibold text-foreground">MBK Dashboard</span>
-            </div>
-            <div className="text-sm text-muted-foreground">
-              © 2024 MBK. Todos os direitos reservados.
+            </motion.div>
+          </div>
+        </section>
+
+        {/* Enhanced Footer */}
+        <footer className="py-12 border-t border-border bg-card/30 backdrop-blur-sm">
+          <div className="container mx-auto px-4">
+            <div className="flex flex-col sm:flex-row justify-between items-center gap-6">
+              <div className="flex items-center gap-4">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-primary-glow flex items-center justify-center shadow-lg">
+                  <img 
+                    src="/lovable-uploads/885ae572-dec3-4868-92e1-8b1fcd6023e6.png" 
+                    alt="MBK" 
+                    className="w-5 h-5 object-contain"
+                  />
+                </div>
+                <div>
+                  <div className="font-bold text-foreground text-lg">MBK Dashboard</div>
+                  <div className="text-xs text-muted-foreground">Powered by AI</div>
+                </div>
+              </div>
+              <div className="text-sm text-muted-foreground">
+                © 2024 MBK Tecnologia. Todos os direitos reservados.
+              </div>
             </div>
           </div>
-        </div>
-      </footer>
-    </div>
+        </footer>
+
+        {/* Floating Action Button */}
+        <FloatingActionButton />
+      </div>
     </>
   );
 }
